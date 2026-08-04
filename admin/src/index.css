@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+/*
+ * Light theme. Variable names are kept as-is from the original dark theme
+ * (--navy = primary background, --white = primary text) so no component
+ * markup had to change — only the values were flipped/retuned for light-on-white.
+ */
+:root {
+  --navy: #FFFFFF;
+  --navy2: #F1F5F9;
+  --navy3: #E9EEF6;
+  --surface: #FFFFFF;
+  --blue: #2563EB;
+  --blue2: #3B82F6;
+  --cyan: #0891B2;
+  --gold: #D97706;
+  --white: #0A0F1E;
+  --gray: #64748B;
+  --gray2: #334155;
+  --border: rgba(15,23,42,0.10);
+  --grad: linear-gradient(135deg, #2563EB 0%, #06B6D4 100%);
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--navy);
+  color: var(--white);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--navy);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--blue);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cyan);
+}
+
+.grad-text {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
