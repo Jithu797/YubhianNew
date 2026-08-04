@@ -1,26 +1,289 @@
 @import "tailwindcss";
 
+/*
+ * Light theme. Variable names are kept as-is from the original dark theme
+ * (--navy = primary background, --white = primary text) so no component
+ * markup had to change — only the values were flipped/retuned for light-on-white.
+ *
+ * Color values below are tuned to antigravity.google's actual shipped palette (pulled
+ * from their production CSS): a restrained neutral grey scale plus one blue accent,
+ * rather than the wider navy/blue/cyan/gold spread this site started with. --cyan is
+ * kept as a variable (dozens of components reference it) but its value now lives in the
+ * same blue family instead of being a separate hue, to match that one-accent restraint.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --navy: #FFFFFF;
+  --navy2: #F8F9FC;
+  --navy3: #EFF2F7;
+  --surface: #FFFFFF;
+  --blue: #3279F9;
+  --blue2: #5C93FA;
+  --cyan: #2E6ADB;
+  --gold: #D97706;
+  --white: #121317;
+  --gray: #45474D;
+  --gray2: #212226;
+  --border: rgba(33,34,38,0.12);
+  --grad: linear-gradient(135deg, #3279F9 0%, #2E6ADB 100%);
+
+  /* Spacing scale — antigravity.google's exact 8px-rooted scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 36px;
+  --space-2xl: 48px;
+  --space-3xl: 60px;
+  --space-4xl: 80px;
+  --space-5xl: 88px;
+  --space-6xl: 120px;
+  --space-7xl: 180px;
+
+  /* Corner radius scale */
+  --shape-corner-xs: 4px;
+  --shape-corner-sm: 8px;
+  --shape-corner-md: 16px;
+  --shape-corner-lg: 24px;
+  --shape-corner-xl: 36px;
+  --shape-corner-2xl: 48px;
+  --shape-corner-rounded: 9999px;
+
+  --nav-height: 84px;
+
+  /* Display headline scale, responsive — matches their .landing-main sizing exactly */
+  --landing-main-text-size: 107px;
+  --landing-main-text-line-height: 107px;
+  --landing-main-text-letter-spacing: -2.14px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@media (width <= 1600px) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --landing-main-text-size: 72px;
+    --landing-main-text-line-height: 72.04px;
+    --landing-main-text-letter-spacing: -1.44px;
+  }
+}
+@media (width <= 1024px) {
+  :root {
+    --landing-main-text-size: 56px;
+    --landing-main-text-line-height: 56.04px;
+    --landing-main-text-letter-spacing: -1.12px;
+  }
+}
+@media (width <= 767px) {
+  :root {
+    --landing-main-text-size: 40px;
+    --landing-main-text-line-height: 44.04px;
+    --landing-main-text-letter-spacing: -0.8px;
+  }
+}
+@media (width <= 425px) {
+  :root {
+    --landing-main-text-size: 44px;
+    --landing-main-text-line-height: 46.04px;
+    --landing-main-text-letter-spacing: -0.6px;
   }
 }
 
+@theme inline {
+  --font-syne: var(--font-syne);
+  --font-dm-sans: var(--font-dm-sans);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Lenis drives scroll physics itself once mounted — native smooth-scroll would fight
+   its easing on anchor jumps, so it's turned off in favor of Lenis's own animation. */
+html.lenis, html.lenis body {
+  height: auto;
+}
+html.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+/* Light sweep across primary CTA buttons on hover — same effect the ithub reference
+   applies to its buttons, done in plain CSS since it's a static hover effect rather
+   than anything scroll- or state-driven. */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.45), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.65s ease;
+  pointer-events: none;
+}
+.btn-shine:hover::after {
+  left: 125%;
+}
+
+/* Infinite horizontal scroll for logo/text strips — content is duplicated once in
+   markup so translateX(-50%) loops seamlessly. Pauses on hover so items are readable. */
+@keyframes marquee-x {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee-x 32s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Label slides up on hover, a duplicate slides in from below to replace it — used on
+   secondary/outline links (kept off primary CTAs, which already use .btn-shine, so the
+   two effects don't stack on the same element). */
+.link-swap {
+  display: inline-block;
+  overflow: hidden;
+}
+.link-swap-inner {
+  position: relative;
+  display: inline-block;
+  transition: transform 0.35s ease;
+}
+.link-swap-inner::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 100%;
+}
+.link-swap:hover .link-swap-inner {
+  transform: translateY(-100%);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--navy);
+  color: var(--white);
+  font-family: var(--font-dm-sans), 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-syne), 'Plus Jakarta Sans', sans-serif;
+}
+
+::selection {
+  background: #2563EB;
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--navy);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--blue);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cyan);
+}
+
+/* Gradient text utility */
+.grad-text {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Dot grid background */
+.dot-grid {
+  background-image: radial-gradient(circle, rgba(15,23,42,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* Pulse glow for badge dot */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(1.4); }
+}
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Slow, gentle drift for hero background blobs — deliberately subtle, not a fast pulse */
+@keyframes blob-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(3%, -4%) scale(1.06); }
+  66%       { transform: translate(-4%, 3%) scale(0.96); }
+}
+.blob-drift {
+  animation-name: blob-drift;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .blob-drift {
+    animation: none;
+  }
+}
+
+/* Rendering for rich HTML blog content authored via the admin's TipTap editor */
+.blog-content {
+  color: var(--gray2);
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 1.8;
+}
+.blog-content h1, .blog-content h2, .blog-content h3 {
+  color: var(--white);
+  font-family: var(--font-syne);
+  font-weight: 700;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+.blog-content p {
+  margin-bottom: 1.2em;
+}
+.blog-content ul, .blog-content ol {
+  margin-bottom: 1.2em;
+  padding-left: 1.5em;
+}
+.blog-content li {
+  margin-bottom: 0.4em;
+}
+.blog-content a {
+  color: var(--cyan);
+  text-decoration: underline;
+}
+.blog-content blockquote {
+  border-left: 3px solid var(--blue);
+  padding-left: 1em;
+  font-style: italic;
+  color: var(--gray);
+  margin: 1.5em 0;
+}
+.blog-content img {
+  border-radius: 12px;
+  margin: 1.5em 0;
+  max-width: 100%;
+}
+.blog-content code {
+  background: var(--navy2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+.blog-content pre {
+  background: var(--navy2);
+  padding: 1em;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-bottom: 1.2em;
 }

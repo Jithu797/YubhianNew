@@ -1,0 +1,39 @@
+rules_version = '2';
+
+// Paste this into Firebase Console -> Storage -> Rules, then Publish.
+//
+// This is a separate rules system from Firestore's (Firestore rules only cover
+// database documents, not uploaded files) -- it was never configured, which is why
+// uploads from the admin were being rejected. A permission-denied rejection here often
+// shows up in the browser as a failed CORS preflight rather than a clean 403, which is
+// misleading but is the same underlying cause.
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAdmin() {
+      return request.auth != null;
+    }
+
+    // Team photos, client logos, blog cover images: public on the website, only
+    // signed-in admins can upload/replace them.
+    match /team/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /clients/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /blogs/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Career application resumes: applicants upload without being logged in, but the
+    // files contain personal data, so only signed-in admins can read them back.
+    match /career-applications/{fileName} {
+      allow write: if true;
+      allow read: if isAdmin();
+    }
+  }
+}
