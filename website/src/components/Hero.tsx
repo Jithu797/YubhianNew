@@ -1,31 +1,39 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useSiteSettings } from "@/lib/useSiteSettings";
 import HeroNetworkBackground from "./HeroNetworkBackground";
 import { EASE_OUT_QUART } from "@/lib/motion";
 
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.7, delay, ease: EASE_OUT_QUART },
-});
+function fadeUp(reduceMotion: boolean, delay = 0) {
+  if (reduceMotion) {
+    return { initial: { opacity: 1, y: 0 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0 } };
+  }
+  return {
+    initial: { opacity: 0, y: 24 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.7, delay, ease: EASE_OUT_QUART },
+  };
+}
 
 export default function Hero() {
   const settings = useSiteSettings();
+  const reduceMotion = useReducedMotion() ?? false;
 
   return (
     <section
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden dot-grid"
-      style={{ background: "var(--navy)" }}
+      // svh excludes mobile browser chrome, so the hero doesn't overflow the visible
+      // area on phones. Browsers without svh support simply keep the min-h-screen class.
+      style={{ background: "var(--navy)", minHeight: "100svh" }}
     >
       {/* Slow-breathing base glow — a gentle "alive" ambient pulse rather than a static shape */}
       <motion.div
         className="pointer-events-none absolute top-[-10%] left-1/2 -translate-x-1/2 w-[900px] h-[500px]"
         style={{ background: "radial-gradient(ellipse, rgba(37,99,235,0.12) 0%, transparent 70%)" }}
-        animate={{ scale: [1, 1.08, 1], opacity: [0.85, 1, 0.85] }}
+        animate={reduceMotion ? undefined : { scale: [1, 1.08, 1], opacity: [0.85, 1, 0.85] }}
         transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
       />
 
@@ -35,7 +43,7 @@ export default function Hero() {
 
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center flex flex-col items-center gap-8 pt-24">
         {/* Headline */}
-        <motion.div {...fadeUp(0)}>
+        <motion.div {...fadeUp(reduceMotion, 0)}>
           <h1
             className="font-extrabold"
             style={{
@@ -50,7 +58,7 @@ export default function Hero() {
             <br />
             <motion.span
               style={{ color: "var(--blue)" }}
-              animate={{ textShadow: ["0 0 0px rgba(37,99,235,0)", "0 0 28px rgba(37,99,235,0.45)", "0 0 0px rgba(37,99,235,0)"] }}
+              animate={reduceMotion ? undefined : { textShadow: ["0 0 0px rgba(37,99,235,0)", "0 0 28px rgba(37,99,235,0.45)", "0 0 0px rgba(37,99,235,0)"] }}
               transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
               className="inline-block"
             >
@@ -61,15 +69,15 @@ export default function Hero() {
 
         {/* Subheadline */}
         <motion.p
-          {...fadeUp(0.15)}
-          className="max-w-xl text-lg md:text-xl leading-relaxed font-light"
+          {...fadeUp(reduceMotion, 0.15)}
+          className="max-w-xl text-lg md:text-xl leading-relaxed font-normal"
           style={{ color: "var(--gray)", fontFamily: "var(--font-dm-sans)" }}
         >
           {settings.hero_subtitle}
         </motion.p>
 
         {/* CTA buttons */}
-        <motion.div {...fadeUp(0.3)} className="flex flex-col sm:flex-row gap-4">
+        <motion.div {...fadeUp(reduceMotion, 0.3)} className="flex flex-col sm:flex-row gap-4">
           <Link
             href="/services"
             className="btn-shine flex items-center gap-2 px-7 py-3.5 rounded-full text-white font-medium transition-all duration-300 hover:-translate-y-1"
@@ -113,7 +121,7 @@ export default function Hero() {
       {/* Scroll arrow — gentle continuous bounce cue */}
       <motion.div
         className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10"
-        animate={{ y: [0, 7, 0] }}
+        animate={reduceMotion ? undefined : { y: [0, 7, 0] }}
         transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
       >
         <button

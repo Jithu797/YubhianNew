@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
 import { Brain, Zap, Layers, BadgeCheck, HeartHandshake, Globe } from "lucide-react";
+import ScrollReveal from "./ScrollReveal";
+import { REVEAL_STAGGER } from "@/lib/motion";
 
 const CARDS = [
   { title: "Intelligence, built in", desc: "We don't bolt AI on as an afterthought — it's part of how we architect the product from the first sprint.", icon: Brain },
@@ -14,19 +14,10 @@ const CARDS = [
 ];
 
 export default function WhyUs() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-
   return (
     <section className="py-[var(--space-6xl)] px-6" style={{ background: "var(--navy2)" }} id="why-us">
       <div className="max-w-6xl mx-auto">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="mb-14"
-        >
+        <ScrollReveal className="mb-14">
           <p className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>Why Us</p>
           <h2 className="text-4xl md:text-5xl font-extrabold mb-4" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             Engineering partners who build like founders
@@ -34,15 +25,15 @@ export default function WhyUs() {
           <p className="text-lg max-w-xl" style={{ color: "var(--gray)" }}>
             We combine startup speed with enterprise quality.
           </p>
-        </motion.div>
+        </ScrollReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12">
           {CARDS.map((card, i) => (
-            <motion.div
+            <ScrollReveal
               key={card.title}
-              initial={{ opacity: 0, y: 16 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: i * 0.06 }}
+              delay={i * REVEAL_STAGGER}
+              y={16}
+              duration={0.5}
               className="flex items-start gap-5 py-6"
               style={{ borderBottom: i < CARDS.length - 2 ? "1px solid var(--border)" : "none" }}
             >
@@ -51,11 +42,11 @@ export default function WhyUs() {
                 <h3 className="text-base font-bold mb-1.5" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
                   {card.title}
                 </h3>
-                <p className="text-sm leading-relaxed font-light" style={{ color: "var(--gray)" }}>
+                <p className="text-sm leading-relaxed font-normal" style={{ color: "var(--gray)" }}>
                   {card.desc}
                 </p>
               </div>
-            </motion.div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

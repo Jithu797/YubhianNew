@@ -36,7 +36,7 @@ export default function TiltServiceCard({ slug, title, longDesc, techStack, acce
         </div>
         <div>
           <h2 className="text-xl font-bold mb-2" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>{title}</h2>
-          <p className="text-sm font-light leading-relaxed" style={{ color: "var(--gray)" }}>{longDesc}</p>
+          <p className="text-sm font-normal leading-relaxed" style={{ color: "var(--gray)" }}>{longDesc}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           {techStack.map((t) => (

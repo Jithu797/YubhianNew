@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { initials } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
@@ -26,10 +27,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-function initials(name: string) {
-  return name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
-}
-
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const post = await getPostBySlugRemote(slug);
@@ -43,7 +40,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   return (
     <>
       <Navbar />
-      <main className="pt-32 px-6 pb-24" style={{ background: "var(--navy)" }}>
+      <main className="page-top px-6 pb-24" style={{ background: "var(--navy)" }}>
         <div className="max-w-3xl mx-auto text-center mb-12">
           <span className="inline-block px-3 py-1 rounded-full text-xs font-medium mb-5" style={{ background: color + "22", color }}>
             {post.category}
@@ -68,7 +65,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <article className="flex flex-col gap-5 max-w-2xl">
             {Array.isArray(post.content) ? (
               post.content.map((para, i) => (
-                <p key={i} className="text-[15px] leading-loose font-light" style={{ color: "var(--gray2)" }}>
+                <p key={i} className="text-[15px] leading-loose font-normal" style={{ color: "var(--gray2)" }}>
                   {para}
                 </p>
               ))

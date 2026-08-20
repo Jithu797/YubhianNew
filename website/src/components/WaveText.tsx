@@ -1,33 +1,22 @@
-"use client";
-
-import { motion } from "framer-motion";
 import type { CSSProperties } from "react";
 
-const NBSP = " ";
+const NBSP = "\u00A0";
 
-/** Per-character squash-and-bounce wave, looping with a pause between cycles — a
- *  Framer Motion stand-in for the reference site's GSAP SplitText + elastic-easing
- *  character animation (no SplitText/GSAP dependency needed for a single looping word). */
+/** Per-character squash-and-bounce wave. The motion itself lives in CSS (.wave-char in
+ *  globals.css) — only the per-character stagger is computed here, so this renders as
+ *  plain markup with no client-side animation runtime. */
 export default function WaveText({ text, className, style }: { text: string; className?: string; style?: CSSProperties }) {
-  const chars = Array.from(text);
   return (
     <span aria-label={text} className={className} style={{ display: "inline-block", ...style }}>
-      {chars.map((ch, i) => (
-        <motion.span
+      {Array.from(text).map((ch, i) => (
+        <span
           key={i}
           aria-hidden
-          style={{ display: "inline-block", transformOrigin: "center bottom" }}
-          animate={{ y: [0, -14, 0], scaleY: [1, 0.7, 1.15, 1] }}
-          transition={{
-            duration: 1.6,
-            repeat: Infinity,
-            repeatDelay: 1.6,
-            ease: "easeInOut",
-            delay: i * 0.045,
-          }}
+          className="wave-char"
+          style={{ animationDelay: `${i * 0.045}s` }}
         >
           {ch === " " ? NBSP : ch}
-        </motion.span>
+        </span>
       ))}
     </span>
   );

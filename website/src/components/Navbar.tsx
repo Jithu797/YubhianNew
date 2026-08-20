@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ArrowRight, Menu, X, ChevronDown } from "lucide-react";
 import { SERVICES, SERVICE_CATEGORIES, getAllServices, type ServiceDef } from "@/lib/services-data";
 import { EASE_OUT_QUART } from "@/lib/motion";
@@ -29,6 +29,7 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const reduceMotion = useReducedMotion();
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -110,17 +111,22 @@ export default function Navbar() {
             : "bg-transparent"
         }`}
       >
-        <div className="w-full px-6 xl:px-10 flex items-center" style={{ height: "var(--nav-height)" }}>
+        <motion.div
+          className="w-full px-6 xl:px-10 flex items-center"
+          style={{ height: "var(--nav-height)", transformOrigin: "left center" }}
+          animate={{ scale: scrolled ? 0.88 : 1 }}
+          transition={{ duration: reduceMotion ? 0 : 0.35, ease: EASE_OUT_QUART }}
+        >
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0">
+          <Link href="/" className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl overflow-hidden shrink-0">
               <Image src="/logo.jpg" alt="Yubhian Technologies" width={48} height={48} className="w-full h-full object-cover" priority />
             </div>
-            <div className="flex flex-col leading-tight">
-              <span className="font-bold text-2xl" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+            <div className="flex flex-col leading-tight min-w-0">
+              <span className="font-bold text-xl sm:text-2xl" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
                 Yubhian
               </span>
-              <span className="text-xs font-medium tracking-wide -mt-0.5" style={{ color: "var(--gray)" }}>
+              <span className="text-[10px] sm:text-xs font-medium tracking-wide -mt-0.5 truncate" style={{ color: "var(--gray)" }}>
                 Technologies LLP
               </span>
             </div>
@@ -201,7 +207,7 @@ export default function Navbar() {
               )}
             </AnimatePresence>
           </button>
-        </div>
+        </motion.div>
 
         {/* Services mega-menu — viewport-centered so it can be far wider than its trigger */}
         <AnimatePresence>

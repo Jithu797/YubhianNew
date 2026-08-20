@@ -174,7 +174,7 @@ export default function Footer() {
                   <span className="text-xs font-medium tracking-wide" style={{ color: PANEL_MUTED }}>Technologies LLP</span>
                 </div>
               </Link>
-              <p className="text-sm leading-relaxed font-light" style={{ color: PANEL_MUTED }}>
+              <p className="text-sm leading-relaxed font-normal" style={{ color: PANEL_MUTED }}>
                 Enterprise IT solutions from Andhra Pradesh, India. Building intelligent digital products that drive business growth.
               </p>
               {socials.length > 0 && (

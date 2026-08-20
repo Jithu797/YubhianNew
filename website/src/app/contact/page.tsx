@@ -13,13 +13,13 @@ export default function ContactPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-32 px-6 pb-24" style={{ background: "var(--navy)" }}>
+      <main className="page-top px-6 pb-24" style={{ background: "var(--navy)" }}>
         <div className="max-w-6xl mx-auto text-center lg:text-right mb-16">
           <p className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>Get in Touch</p>
           <h1 className="text-4xl md:text-6xl font-extrabold mb-5" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             Let&apos;s build something great
           </h1>
-          <p className="text-lg font-light max-w-xl mx-auto lg:ml-auto lg:mr-0" style={{ color: "var(--gray)" }}>
+          <p className="text-lg font-normal max-w-xl mx-auto lg:ml-auto lg:mr-0" style={{ color: "var(--gray)" }}>
             Tell us about your project and we&apos;ll get back to you within 24 hours.
           </p>
         </div>

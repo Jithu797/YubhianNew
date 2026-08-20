@@ -96,7 +96,7 @@ export default function BlogListing() {
                   <h3 className="text-base font-medium leading-snug line-clamp-2 transition-colors group-hover:text-[var(--cyan)]" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
                     {p.title}
                   </h3>
-                  <p className="text-sm font-light leading-relaxed line-clamp-3 flex-1" style={{ color: "var(--gray)" }}>
+                  <p className="text-sm font-normal leading-relaxed line-clamp-3 flex-1" style={{ color: "var(--gray)" }}>
                     {p.excerpt}
                   </p>
                   <p className="text-xs pt-3" style={{ color: "var(--gray)", borderTop: "1px solid rgba(15,23,42,0.08)" }}>

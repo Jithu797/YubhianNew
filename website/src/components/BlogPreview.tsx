@@ -2,14 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
 import { BLOG_POSTS, CATEGORY_COLOR, formatDate, getAllPosts, type BlogPost } from "@/lib/blog-data";
+import ScrollReveal from "./ScrollReveal";
+import { REVEAL_STAGGER } from "@/lib/motion";
 
 export default function BlogPreview() {
   const [posts, setPosts] = useState<BlogPost[]>(BLOG_POSTS.slice(0, 3));
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
 
   useEffect(() => {
     getAllPosts().then((all) => setPosts(all.slice(0, 3)));
@@ -18,13 +16,7 @@ export default function BlogPreview() {
   return (
     <section className="py-[var(--space-6xl)] px-6" style={{ background: "var(--navy)", borderTop: "1px solid var(--border)" }} id="blog">
       <div className="max-w-7xl mx-auto">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14"
-        >
+        <ScrollReveal className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14">
           <div>
             <p className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>Insights</p>
             <h2 className="text-4xl md:text-5xl font-extrabold" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
@@ -36,18 +28,13 @@ export default function BlogPreview() {
               <span className="link-swap-inner" data-text="View all posts →">View all posts →</span>
             </span>
           </Link>
-        </motion.div>
+        </ScrollReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {posts.map((p, i) => {
             const color = CATEGORY_COLOR[p.category] ?? "var(--blue)";
             return (
-              <motion.div
-                key={p.slug}
-                initial={{ opacity: 0, y: 30 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-              >
+              <ScrollReveal key={p.slug} delay={i * REVEAL_STAGGER}>
                 <Link href={`/blog/${p.slug}`} className="group flex flex-col h-full rounded-2xl overflow-hidden"
                   style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
                   <div className="relative h-44 overflow-hidden" style={{ background: `linear-gradient(135deg, ${color}33, ${color}0d)` }}>
@@ -77,7 +64,7 @@ export default function BlogPreview() {
                     >
                       {p.title}
                     </h3>
-                    <p className="text-sm font-light leading-relaxed line-clamp-3 flex-1" style={{ color: "var(--gray)" }}>
+                    <p className="text-sm font-normal leading-relaxed line-clamp-3 flex-1" style={{ color: "var(--gray)" }}>
                       {p.excerpt}
                     </p>
                     <p className="text-xs pt-3" style={{ color: "var(--gray)", borderTop: "1px solid rgba(15,23,42,0.08)" }}>
@@ -85,7 +72,7 @@ export default function BlogPreview() {
                     </p>
                   </div>
                 </Link>
-              </motion.div>
+              </ScrollReveal>
             );
           })}
         </div>

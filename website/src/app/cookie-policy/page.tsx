@@ -26,10 +26,10 @@ export default function CookiePolicyPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-32 px-6 pb-24" style={{ background: "var(--navy)" }}>
+      <main className="page-top px-6 pb-24" style={{ background: "var(--navy)" }}>
         <div className="max-w-3xl mx-auto">
           <p className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>Legal</p>
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-4" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+          <h1 className="text-4xl md:text-6xl font-extrabold mb-5" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             Cookie Policy
           </h1>
           <p className="text-sm mb-14" style={{ color: "var(--gray)" }}>Last updated: July 2026</p>
@@ -39,7 +39,7 @@ export default function CookiePolicyPage() {
               <h2 className="text-xl font-bold mb-3" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
                 What Are Cookies
               </h2>
-              <p className="text-sm font-light leading-relaxed" style={{ color: "var(--gray2)" }}>
+              <p className="text-sm font-normal leading-relaxed" style={{ color: "var(--gray2)" }}>
                 Cookies are small text files placed on your device when you visit a website. They help the website
                 remember information about your visit, which can make it easier to use the site and more useful
                 to you.
@@ -56,7 +56,7 @@ export default function CookiePolicyPage() {
                     <h3 className="text-sm font-semibold mb-1.5" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
                       {c.title}
                     </h3>
-                    <p className="text-sm font-light leading-relaxed" style={{ color: "var(--gray2)" }}>{c.body}</p>
+                    <p className="text-sm font-normal leading-relaxed" style={{ color: "var(--gray2)" }}>{c.body}</p>
                   </div>
                 ))}
               </div>
@@ -66,7 +66,7 @@ export default function CookiePolicyPage() {
               <h2 className="text-xl font-bold mb-3" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
                 Managing Your Preferences
               </h2>
-              <p className="text-sm font-light leading-relaxed" style={{ color: "var(--gray2)" }}>
+              <p className="text-sm font-normal leading-relaxed" style={{ color: "var(--gray2)" }}>
                 You can accept all cookies, reject non-essential cookies, or customize your preferences at any time
                 using the &quot;Cookie Settings&quot; link in our website footer.
               </p>
@@ -76,7 +76,7 @@ export default function CookiePolicyPage() {
               <h2 className="text-xl font-bold mb-3" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
                 Contact Us
               </h2>
-              <p className="text-sm font-light leading-relaxed" style={{ color: "var(--gray2)" }}>
+              <p className="text-sm font-normal leading-relaxed" style={{ color: "var(--gray2)" }}>
                 If you have questions about this Cookie Policy, contact us at info@yubhiantechnologies.in.
               </p>
             </div>

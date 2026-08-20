@@ -1,8 +1,10 @@
 "use client";
 
 import { useRef } from "react";
+import { fadeUp } from "@/lib/motion";
 import { motion, useInView } from "framer-motion";
 import { Eye, Target, HeartHandshake } from "lucide-react";
+import EnvelopeReveal from "@/components/EnvelopeReveal";
 
 const VALUES = [
   { icon: Eye, title: "Vision", accent: "#2563EB", text: "To be India's most trusted partner for building intelligent, enterprise-grade software — from Andhra Pradesh to the world." },
@@ -15,15 +17,6 @@ const TIMELINE = [
   { year: "2025", title: "First client projects delivered", text: "Early web, mobile, and AI/ML engagements shipped for startups and growing businesses across India." },
   { year: "2026", title: "Building our own product", text: "Yubhian begins building its first in-house product, applying everything learned from client work to solve a problem the team knows firsthand." },
 ];
-
-function fadeUp(delay = 0) {
-  return {
-    initial: { opacity: 0, y: 24 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, margin: "-80px" },
-    transition: { duration: 0.6, delay },
-  };
-}
 
 export default function AboutContent() {
   const valuesRef = useRef<HTMLDivElement>(null);
@@ -40,7 +33,7 @@ export default function AboutContent() {
           <motion.h1 {...fadeUp(0.05)} className="text-4xl md:text-6xl font-extrabold mb-6" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             Enterprise-grade software, built from Andhra Pradesh
           </motion.h1>
-          <motion.p {...fadeUp(0.1)} className="text-lg font-light leading-relaxed" style={{ color: "var(--gray)" }}>
+          <motion.p {...fadeUp(0.1)} className="text-lg font-normal leading-relaxed" style={{ color: "var(--gray)" }}>
             Yubhian Technologies LLP started in Kaikaluru, Andhra Pradesh, with a simple belief: enterprise-grade
             software doesn&apos;t need to come from Silicon Valley or a metro city. We combine startup speed with
             enterprise discipline — AI-first, full-stack, and fully accountable for what we build.
@@ -64,7 +57,7 @@ export default function AboutContent() {
                 <v.icon size={22} style={{ color: v.accent }} />
               </div>
               <h3 className="text-xl font-bold mb-3" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>{v.title}</h3>
-              <p className="text-sm font-light leading-relaxed" style={{ color: "var(--gray)" }}>{v.text}</p>
+              <p className="text-sm font-normal leading-relaxed" style={{ color: "var(--gray)" }}>{v.text}</p>
             </motion.div>
           ))}
         </div>
@@ -85,11 +78,32 @@ export default function AboutContent() {
                 />
                 <p className="text-sm font-semibold mb-1" style={{ color: "var(--cyan)", fontFamily: "var(--font-syne)" }}>{t.year}</p>
                 <h3 className="text-lg font-bold mb-2" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>{t.title}</h3>
-                <p className="text-sm font-light leading-relaxed max-w-xl" style={{ color: "var(--gray)" }}>{t.text}</p>
+                <p className="text-sm font-normal leading-relaxed max-w-xl" style={{ color: "var(--gray)" }}>{t.text}</p>
               </motion.div>
             ))}
           </div>
         </div>
+      </section>
+
+      {/* A note from the team */}
+      <section className="px-6 py-24">
+        <EnvelopeReveal>
+          <p className="text-sm font-medium mb-4 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>
+            A Note From Our Team
+          </p>
+          <p className="text-lg font-normal leading-relaxed mb-4" style={{ color: "var(--gray2)" }}>
+            Thank you for taking the time to learn about Yubhian. We started this company in Kaikaluru with a simple
+            bet — that great software doesn&apos;t require a Silicon Valley address, just a team willing to hold
+            itself to that bar anyway.
+          </p>
+          <p className="text-lg font-normal leading-relaxed" style={{ color: "var(--gray2)" }}>
+            Whether you&apos;re here to build something with us or just to see what we&apos;re about, we&apos;re glad
+            you stopped by.
+          </p>
+          <p className="text-sm font-semibold mt-6" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+            — The Yubhian Team
+          </p>
+        </EnvelopeReveal>
       </section>
     </>
   );

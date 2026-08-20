@@ -1,27 +1,26 @@
 import type { Metadata } from "next";
-import { Roboto_Flex } from "next/font/google";
+import { Sora, Inter } from "next/font/google";
 import "./globals.css";
 import PageLoader from "@/components/PageLoader";
 import PageTransition from "@/components/PageTransition";
 import CookieConsent from "@/components/CookieConsent";
 import SmoothScroll from "@/components/SmoothScroll";
 
-// Variable names are kept as --font-syne/--font-dm-sans (the original pairing) so no
-// component markup had to change. Both point at Roboto Flex — a real, openly-licensed
-// variable font (unlike Google's proprietary "Google Sans Flex", which isn't safe to
-// use on a third-party commercial site) with the same optical-size/width/weight axis
-// technology, giving the same one-family, many-cuts approach via existing font-weight
-// utility classes rather than switching typefaces between headings and body.
-const headingFont = Roboto_Flex({
+// Two families, deliberately contrasting: Sora carries the headings (geometric,
+// technical character) while Inter handles everything else (designed for legibility at
+// small sizes). Both are variable fonts, so no discrete `weight` array is passed —
+// requesting per-weight files from a variable-only family 404s on Google's CDN.
+//
+// The CSS variable names are unchanged from the original pairing so no component markup
+// had to be touched.
+const headingFont = Sora({
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
   variable: "--font-syne",
   display: "swap",
 });
 
-const bodyFont = Roboto_Flex({
+const bodyFont = Inter({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
   variable: "--font-dm-sans",
   display: "swap",
 });
@@ -95,6 +94,11 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
+        {/* The preloader is dismissed by JS; without it the overlay would cover the
+            site permanently, so hide it outright when scripting is unavailable. */}
+        <noscript>
+          <style>{`.preloader-overlay{display:none !important}`}</style>
+        </noscript>
       </head>
       <body className="min-h-screen">
         <SmoothScroll />

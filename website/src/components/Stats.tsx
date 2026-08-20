@@ -1,47 +1,35 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useSiteSettings } from "@/lib/useSiteSettings";
-
-function useCountUp(target: number, active: boolean, duration = 2000) {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    if (!active) return;
-    let start = 0;
-    const step = (timestamp: number) => {
-      if (!start) start = timestamp;
-      const progress = Math.min((timestamp - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(eased * target));
-      if (progress < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }, [active, target, duration]);
-  return count;
-}
+import { useCountUp } from "./CountUp";
 
 type Stat = { value: number; suffix: string; label: string };
 
 function StatItem({ stat, active, isLast }: { stat: Stat; active: boolean; isLast: boolean }) {
+  const reduceMotion = useReducedMotion();
   const count = useCountUp(stat.value, active);
-  const settled = count === stat.value;
+  const settled = Math.floor(count) === stat.value;
   return (
-    <div className="flex items-center flex-1">
-      <div className="flex-1 text-center py-8 px-6">
+    // basis-1/2 until lg: with `flex-1` alone (flex-basis 0) all four columns would
+    // stay on a single row at every width, squeezing the numbers off-screen on phones.
+    <div className="flex items-center basis-1/2 lg:basis-0 lg:grow">
+      <div className="flex-1 text-center py-8 px-4 sm:px-6 min-w-0">
         <motion.div
-          animate={settled ? { scale: [1, 1.12, 1] } : {}}
+          animate={settled && !reduceMotion ? { scale: [1, 1.12, 1] } : {}}
           transition={{ duration: 0.4, ease: "easeOut" }}
-          className="text-6xl md:text-7xl font-extrabold grad-text mb-2"
-          style={{ fontFamily: "var(--font-syne)" }}
+          className="font-extrabold grad-text mb-2 tabular-nums"
+          style={{ fontFamily: "var(--font-syne)", fontSize: "clamp(2.5rem, 9vw, 4.5rem)", lineHeight: 1.05 }}
         >
-          {count}{stat.suffix}
+          {Math.floor(count)}{stat.suffix}
         </motion.div>
-        <div className="text-sm font-medium" style={{ color: "var(--gray)" }}>
+        <div className="text-xs sm:text-sm font-medium" style={{ color: "var(--gray)" }}>
           {stat.label}
         </div>
       </div>
-      {!isLast && <div className="hidden md:block w-px h-16 opacity-40 bg-black/20" />}
+      {/* Divider only belongs in the single-row (4-across) layout. */}
+      {!isLast && <div className="hidden lg:block w-px h-16 opacity-40 bg-black/20" />}
     </div>
   );
 }

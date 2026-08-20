@@ -35,7 +35,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
       <Navbar />
       <main style={{ background: "var(--navy)" }}>
         {/* Hero */}
-        <section className="pt-40 pb-20 px-6 text-center relative overflow-hidden">
+        <section className="page-top pb-20 px-6 text-center relative overflow-hidden">
           <div
             className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full"
             style={{ background: `radial-gradient(ellipse, ${service.accent}22 0%, transparent 70%)` }}
@@ -50,7 +50,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             <h1 className="text-4xl md:text-6xl font-extrabold mb-5" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
               {service.title}
             </h1>
-            <p className="text-lg font-light leading-relaxed" style={{ color: "var(--gray)" }}>
+            <p className="text-lg font-normal leading-relaxed" style={{ color: "var(--gray)" }}>
               {service.longDesc}
             </p>
           </div>
@@ -59,7 +59,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         {/* Process */}
         <section className="px-6 pb-20">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-extrabold mb-10 text-center" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-10 text-center" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
               Our Process
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -81,7 +81,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         {/* Tech stack */}
         <section className="px-6 pb-20" style={{ background: "var(--navy2)" }}>
           <div className="max-w-4xl mx-auto py-16 text-center">
-            <h2 className="text-2xl md:text-3xl font-extrabold mb-8" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-8" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
               Technology We Use
             </h2>
             <div className="flex flex-wrap justify-center gap-3">
@@ -101,7 +101,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         {/* Why choose us for this */}
         <section className="px-6 pb-24">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-extrabold mb-8 text-center" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-8 text-center" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
               Why Yubhian for {service.title}
             </h2>
             <div className="flex flex-col gap-4">
@@ -115,7 +115,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                   <span className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: service.accent + "20" }}>
                     <Check size={13} style={{ color: service.accent }} />
                   </span>
-                  <p className="text-sm font-light" style={{ color: "var(--gray2)" }}>{point}</p>
+                  <p className="text-sm font-normal" style={{ color: "var(--gray2)" }}>{point}</p>
                 </div>
               ))}
             </div>

@@ -18,13 +18,13 @@ export default async function ServicesPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-32 px-6 pb-8" style={{ background: "var(--navy)" }}>
+      <main className="page-top px-6 pb-8" style={{ background: "var(--navy)" }}>
         <div className="max-w-4xl mx-auto text-center mb-16">
           <p className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>What We Do</p>
           <h1 className="text-4xl md:text-6xl font-extrabold mb-5" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             Our Services
           </h1>
-          <p className="text-lg font-light" style={{ color: "var(--gray)" }}>
+          <p className="text-lg font-normal" style={{ color: "var(--gray)" }}>
             End-to-end technology services built for modern enterprises — from first prototype to production scale.
           </p>
         </div>

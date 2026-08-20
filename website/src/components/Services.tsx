@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { ArrowRight, Check } from "lucide-react";
 import Link from "next/link";
 import { SERVICES, getAllServices, type ServiceDef } from "@/lib/services-data";
 import { useTilt } from "@/lib/useTilt";
+import ScrollReveal from "./ScrollReveal";
+import { REVEAL_STAGGER } from "@/lib/motion";
 
 // The homepage shows a curated preview, not the full catalog — the dedicated /services
 // page is where all specialties get listed in full.
@@ -13,7 +15,7 @@ const HOMEPAGE_PREVIEW_COUNT = 6;
 
 export default function Services() {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: "-15% 0px -15% 0px" });
   const [services, setServices] = useState<ServiceDef[]>(SERVICES);
 
   useEffect(() => {
@@ -26,13 +28,7 @@ export default function Services() {
     <section className="py-[var(--space-6xl)] px-6" style={{ background: "var(--navy)", borderTop: "1px solid var(--border)" }} id="services">
       <div className="max-w-7xl mx-auto">
         {/* Heading */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="mb-14 max-w-2xl"
-          ref={ref}
-        >
+        <ScrollReveal className="mb-14 max-w-2xl" id="services-heading">
           <p className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>
             What We Do
           </p>
@@ -42,10 +38,10 @@ export default function Services() {
           <p className="text-lg" style={{ color: "var(--gray)" }}>
             End-to-end technology solutions tailored for businesses at every stage — from first prototype to production scale.
           </p>
-        </motion.div>
+        </ScrollReveal>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6" ref={ref}>
           {preview.map((s, i) => (
             <ServiceCard key={s.slug} service={s} index={i} parentInView={inView} />
           ))}
@@ -73,13 +69,14 @@ export default function Services() {
 function ServiceCard({ service: s, index, parentInView }: {
   service: ServiceDef; index: number; parentInView: boolean;
 }) {
+  const reduceMotion = useReducedMotion();
   const { rotateX, rotateY, onMouseMove, onMouseLeave: resetTilt } = useTilt(6);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
       animate={parentInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: index * 0.08 }}
+      transition={{ duration: reduceMotion ? 0 : 0.5, delay: reduceMotion ? 0 : index * REVEAL_STAGGER }}
       className="group relative rounded-2xl p-8 flex flex-col gap-6 transition-colors duration-300 overflow-hidden"
       style={{ background: "var(--surface)", border: "1px solid var(--border)", rotateX, rotateY, transformPerspective: 1000 }}
       onMouseMove={onMouseMove}
@@ -109,7 +106,7 @@ function ServiceCard({ service: s, index, parentInView }: {
           <h3 className="text-xl font-bold mb-1.5" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             {s.title}
           </h3>
-          <p className="text-sm leading-relaxed font-light" style={{ color: "var(--gray)" }}>
+          <p className="text-sm leading-relaxed font-normal" style={{ color: "var(--gray)" }}>
             {s.longDesc}
           </p>
         </div>

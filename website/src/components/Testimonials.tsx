@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, AnimatePresence, useInView, type PanInfo } from "framer-motion";
+import { initials } from "@/lib/utils";
+import { motion, AnimatePresence, useInView, useReducedMotion, type PanInfo } from "framer-motion";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
+import ScrollReveal from "./ScrollReveal";
 
 type Testimonial = {
   name: string;
@@ -20,11 +22,8 @@ const FALLBACK: Testimonial[] = [];
 
 const AUTO_ADVANCE_MS = 5500;
 
-function initials(name: string) {
-  return name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
-}
-
 export default function Testimonials() {
+  const reduceMotion = useReducedMotion();
   const [items, setItems] = useState<Testimonial[]>(FALLBACK);
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
@@ -86,14 +85,14 @@ export default function Testimonials() {
   return (
     <section className="py-[var(--space-6xl)] px-6" style={{ background: "var(--navy)", borderTop: "1px solid var(--border)" }} id="testimonials">
       <div className="max-w-3xl mx-auto">
-        <div className="mb-14 text-center">
+        <ScrollReveal className="mb-14 text-center">
           <p className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>
             Testimonials
           </p>
           <h2 className="text-4xl md:text-5xl font-extrabold" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             What clients say about us
           </h2>
-        </div>
+        </ScrollReveal>
 
         <div
           ref={ref}
@@ -106,9 +105,9 @@ export default function Testimonials() {
               <motion.div
                 key={index}
                 custom={direction}
-                initial={{ opacity: 0, x: direction * 40 }}
+                initial={{ opacity: 0, x: reduceMotion ? 0 : direction * 40 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: direction * -40 }}
+                exit={{ opacity: 0, x: reduceMotion ? 0 : direction * -40 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
                 drag={items.length > 1 ? "x" : false}
                 dragConstraints={{ left: 0, right: 0 }}
@@ -121,7 +120,7 @@ export default function Testimonials() {
                     <Star key={i} size={14} fill="#F59E0B" stroke="#F59E0B" />
                   ))}
                 </div>
-                <p className="text-lg leading-relaxed font-light" style={{ color: "var(--gray2)" }}>
+                <p className="text-lg leading-relaxed font-normal" style={{ color: "var(--gray2)" }}>
                   &ldquo;{t.quote}&rdquo;
                 </p>
                 <div className="pt-4 flex items-center gap-3" style={{ borderTop: "1px solid rgba(15,23,42,0.08)" }}>
@@ -147,7 +146,7 @@ export default function Testimonials() {
               <button
                 onClick={() => goTo(index - 1)}
                 aria-label="Previous testimonial"
-                className="hidden md:flex absolute top-1/2 -left-14 -translate-y-1/2 w-10 h-10 rounded-full items-center justify-center transition-colors"
+                className="hidden lg:flex absolute top-1/2 -left-14 -translate-y-1/2 w-10 h-10 rounded-full items-center justify-center transition-colors"
                 style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--gray)" }}
               >
                 <ChevronLeft size={16} />
@@ -155,7 +154,7 @@ export default function Testimonials() {
               <button
                 onClick={() => goTo(index + 1)}
                 aria-label="Next testimonial"
-                className="hidden md:flex absolute top-1/2 -right-14 -translate-y-1/2 w-10 h-10 rounded-full items-center justify-center transition-colors"
+                className="hidden lg:flex absolute top-1/2 -right-14 -translate-y-1/2 w-10 h-10 rounded-full items-center justify-center transition-colors"
                 style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--gray)" }}
               >
                 <ChevronRight size={16} />

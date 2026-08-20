@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { fadeUp } from "@/lib/motion";
 import { motion } from "framer-motion";
 import { Sparkles, Shield, Zap, LineChart, Plug } from "lucide-react";
 import { useProductData } from "@/lib/useProductData";
@@ -25,15 +26,6 @@ const FAQ = [
   { q: "Will it cost anything?", a: "Waitlist members will get early access with special founding pricing. Full pricing details will be announced closer to launch." },
   { q: "Can I give feedback before launch?", a: "Yes — waitlist members are invited to shape the product through beta feedback sessions." },
 ];
-
-function fadeUp(delay = 0) {
-  return {
-    initial: { opacity: 0, y: 24 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, margin: "-80px" },
-    transition: { duration: 0.6, delay },
-  };
-}
 
 export default function ProductContent() {
   const product = useProductData();
@@ -73,7 +65,7 @@ export default function ProductContent() {
           <motion.h1 {...fadeUp(0.05)} className="text-4xl md:text-6xl font-extrabold mb-5" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             {product.tagline}
           </motion.h1>
-          <motion.p {...fadeUp(0.1)} className="text-lg font-light leading-relaxed" style={{ color: "var(--gray)" }}>
+          <motion.p {...fadeUp(0.1)} className="text-lg font-normal leading-relaxed" style={{ color: "var(--gray)" }}>
             {product.description}
           </motion.p>
         </div>
@@ -89,7 +81,7 @@ export default function ProductContent() {
                 <f.icon size={22} style={{ color: f.accent }} />
               </div>
               <h3 className="text-lg font-bold mb-2" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>{f.title}</h3>
-              <p className="text-sm font-light leading-relaxed" style={{ color: "var(--gray)" }}>{f.text}</p>
+              <p className="text-sm font-normal leading-relaxed" style={{ color: "var(--gray)" }}>{f.text}</p>
             </motion.div>
           ))}
         </div>
@@ -98,7 +90,7 @@ export default function ProductContent() {
       {/* Roadmap */}
       <section className="px-6 pb-24" style={{ background: "var(--navy2)" }}>
         <div className="max-w-4xl mx-auto py-16">
-          <motion.h2 {...fadeUp(0)} className="text-3xl font-extrabold mb-12 text-center" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+          <motion.h2 {...fadeUp(0)} className="text-3xl md:text-4xl font-extrabold mb-12 text-center" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             Roadmap
           </motion.h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -110,7 +102,7 @@ export default function ProductContent() {
                 </span>
                 <p className="text-xs mt-4 mb-1 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>{r.phase}</p>
                 <h3 className="text-lg font-bold mb-2" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>{r.title}</h3>
-                <p className="text-sm font-light" style={{ color: "var(--gray)" }}>{r.text}</p>
+                <p className="text-sm font-normal" style={{ color: "var(--gray)" }}>{r.text}</p>
               </motion.div>
             ))}
           </div>
@@ -120,10 +112,10 @@ export default function ProductContent() {
       {/* Waitlist */}
       <section className="px-6 pb-24">
         <div className="max-w-2xl mx-auto text-center rounded-3xl p-12" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
-          <h2 className="text-2xl md:text-3xl font-extrabold mb-3" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-3" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             Be first to know when we launch
           </h2>
-          <p className="text-sm font-light mb-8" style={{ color: "var(--gray)" }}>
+          <p className="text-sm font-normal mb-8" style={{ color: "var(--gray)" }}>
             {product.waitlistCount > 0
               ? `Join ${product.waitlistCount}+ others on the waitlist for early access and founding-member pricing.`
               : "Join the waitlist for early access and founding-member pricing."}
@@ -151,7 +143,7 @@ export default function ProductContent() {
       {/* FAQ */}
       <section className="px-6 pb-24">
         <div className="max-w-3xl mx-auto">
-          <motion.h2 {...fadeUp(0)} className="text-3xl font-extrabold mb-10 text-center" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+          <motion.h2 {...fadeUp(0)} className="text-3xl md:text-4xl font-extrabold mb-10 text-center" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             Frequently asked questions
           </motion.h2>
           <div className="flex flex-col gap-3">
@@ -166,7 +158,7 @@ export default function ProductContent() {
                   <span className="text-lg" style={{ color: "var(--cyan)" }}>{openFaq === i ? "−" : "+"}</span>
                 </button>
                 {openFaq === i && (
-                  <p className="px-6 pb-5 text-sm font-light leading-relaxed" style={{ color: "var(--gray)" }}>{f.a}</p>
+                  <p className="px-6 pb-5 text-sm font-normal leading-relaxed" style={{ color: "var(--gray)" }}>{f.a}</p>
                 )}
               </div>
             ))}

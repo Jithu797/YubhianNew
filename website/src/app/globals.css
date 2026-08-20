@@ -34,9 +34,11 @@
   --space-xl: 36px;
   --space-2xl: 48px;
   --space-3xl: 60px;
-  --space-4xl: 80px;
+  --space-4xl: clamp(48px, 6vw, 80px);
   --space-5xl: 88px;
-  --space-6xl: 120px;
+  /* Section rhythm. Fluid rather than a flat 120px: on large screens that left big
+     empty bands between sections, and on phones it wasted most of the viewport. */
+  --space-6xl: clamp(64px, 8vw, 104px);
   --space-7xl: 180px;
 
   /* Corner radius scale */
@@ -48,6 +50,7 @@
   --shape-corner-2xl: 48px;
   --shape-corner-rounded: 9999px;
 
+  /* Overridden to a shorter bar on phones — see the media query below. */
   --nav-height: 84px;
 
   /* Display headline scale, responsive — matches their .landing-main sizing exactly */
@@ -77,11 +80,13 @@
     --landing-main-text-letter-spacing: -0.8px;
   }
 }
+/* Must stay smaller than the <=767px step above — this previously scaled *up* to
+   44px on the narrowest phones, making the hero headline overflow its container. */
 @media (width <= 425px) {
   :root {
-    --landing-main-text-size: 44px;
-    --landing-main-text-line-height: 46.04px;
-    --landing-main-text-letter-spacing: -0.6px;
+    --landing-main-text-size: 32px;
+    --landing-main-text-line-height: 36.04px;
+    --landing-main-text-letter-spacing: -0.5px;
   }
 }
 
@@ -90,8 +95,42 @@
   --font-dm-sans: var(--font-dm-sans);
 }
 
+/* The UI was built almost entirely from text-sm (14px) and text-xs (12px), which read
+   as cramped and hard to scan. Rather than rewriting ~170 class usages, the scale
+   itself is lifted one step and given roomier line-heights — every existing utility
+   inherits the change and no layout logic moves. */
+@theme {
+  --text-xs: 0.8125rem;   /* 13px */
+  --text-xs--line-height: 1.55;
+  --text-sm: 0.9375rem;   /* 15px */
+  --text-sm--line-height: 1.62;
+  --text-base: 1.0625rem; /* 17px */
+  --text-base--line-height: 1.68;
+  --text-lg: 1.1875rem;   /* 19px */
+  --text-lg--line-height: 1.62;
+  --text-xl: 1.3125rem;   /* 21px */
+  --text-xl--line-height: 1.55;
+  --text-2xl: 1.5625rem;  /* 25px */
+  --text-2xl--line-height: 1.4;
+}
+
 html {
   scroll-behavior: smooth;
+}
+
+/* Safety net so an oversized decorative element can never produce a horizontal
+   scrollbar at any viewport width. Must be `clip`, not `hidden`: `hidden` turns the
+   body into a scroll container, which silently breaks position:sticky and GSAP's
+   ScrollTrigger pinning. */
+body {
+  overflow-x: clip;
+}
+
+/* A full 84px bar costs too much of a phone screen; the desktop size is kept above. */
+@media (max-width: 640px) {
+  :root {
+    --nav-height: 64px;
+  }
 }
 
 /* Lenis drives scroll physics itself once mounted — native smooth-scroll would fight
@@ -126,6 +165,9 @@ html.lenis.lenis-smooth {
   left: 125%;
 }
 
+/* Paired with a <noscript> override in layout.tsx — without JS the overlay would
+   never be dismissed, hiding the entire site behind it. */
+
 /* Infinite horizontal scroll for logo/text strips — content is duplicated once in
    markup so translateX(-50%) loops seamlessly. Pauses on hover so items are readable. */
 @keyframes marquee-x {
@@ -134,10 +176,18 @@ html.lenis.lenis-smooth {
   }
 }
 .marquee-track {
-  animation: marquee-x 32s linear infinite;
+  animation: marquee-x var(--marquee-duration, 32s) linear infinite;
 }
 .marquee-track:hover {
   animation-play-state: paused;
+}
+.marquee-track.marquee-reverse {
+  animation-direction: reverse;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
 }
 
 /* Label slides up on hover, a duplicate slides in from below to replace it — used on
@@ -165,6 +215,8 @@ html.lenis.lenis-smooth {
 body {
   background: var(--navy);
   color: var(--white);
+  font-size: 1.0625rem;
+  line-height: 1.68;
   font-family: var(--font-dm-sans), 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -207,38 +259,13 @@ h1, h2, h3, h4, h5, h6 {
   background-size: 28px 28px;
 }
 
-/* Pulse glow for badge dot */
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.6; transform: scale(1.4); }
-}
-.pulse-dot {
-  animation: pulse-dot 2s ease-in-out infinite;
-}
 
-/* Slow, gentle drift for hero background blobs — deliberately subtle, not a fast pulse */
-@keyframes blob-drift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%       { transform: translate(3%, -4%) scale(1.06); }
-  66%       { transform: translate(-4%, 3%) scale(0.96); }
-}
-.blob-drift {
-  animation-name: blob-drift;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  will-change: transform;
-}
-@media (prefers-reduced-motion: reduce) {
-  .blob-drift {
-    animation: none;
-  }
-}
 
 /* Rendering for rich HTML blog content authored via the admin's TipTap editor */
 .blog-content {
   color: var(--gray2);
-  font-weight: 300;
-  font-size: 15px;
+  font-weight: 400;
+  font-size: 1.0625rem;
   line-height: 1.8;
 }
 .blog-content h1, .blog-content h2, .blog-content h3 {
@@ -286,4 +313,34 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 8px;
   overflow-x: auto;
   margin-bottom: 1.2em;
+}
+
+/* Clears the fixed navbar without hardcoding its height. --nav-height changes between
+   breakpoints, so every page hero derives its top padding from the same token rather
+   than a magic pt-32 that silently drifts out of sync. */
+.page-top {
+  padding-top: calc(var(--nav-height) + var(--space-3xl));
+}
+
+/* Per-character squash-and-bounce wave for the footer CTA. Driven in CSS rather than
+   JS: 26 characters each running their own JS animation loop was both heavier and
+   unreliable, whereas a keyframe with a per-character animation-delay stays on the
+   compositor. The back half of the cycle is a deliberate rest before it loops. */
+@keyframes wave-char {
+  0%        { transform: translateY(0) scaleY(1); }
+  12%       { transform: translateY(-6px) scaleY(0.76); }
+  25%       { transform: translateY(-14px) scaleY(1.12); }
+  40%       { transform: translateY(0) scaleY(1.04); }
+  50%, 100% { transform: translateY(0) scaleY(1); }
+}
+.wave-char {
+  display: inline-block;
+  transform-origin: center bottom;
+  animation: wave-char 3.2s ease-in-out infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wave-char {
+    animation: none;
+  }
 }

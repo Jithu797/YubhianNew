@@ -25,7 +25,7 @@ export default function NotFound() {
           <h1 className="text-2xl md:text-3xl font-bold mb-3 -mt-4" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             Page not found
           </h1>
-          <p className="text-sm font-light mb-8 max-w-sm mx-auto" style={{ color: "var(--gray)" }}>
+          <p className="text-sm font-normal mb-8 max-w-sm mx-auto" style={{ color: "var(--gray)" }}>
             The page you&apos;re looking for doesn&apos;t exist or has been moved.
           </p>
           <Link

@@ -3,22 +3,46 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Cookie } from "lucide-react";
+import {
+  CONSENT_STORAGE_KEY,
+  CONSENT_VERSION,
+  getVisitorId,
+  readStoredConsent,
+  type ConsentAction,
+  type ConsentPrefs,
+} from "@/lib/consent";
 
-type Prefs = { necessary: true; analytics: boolean; marketing: boolean };
-
-const STORAGE_KEY = "yubhian-cookie-consent";
-
-function savePrefs(prefs: Prefs) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+function savePrefs(prefs: ConsentPrefs) {
+  localStorage.setItem(
+    CONSENT_STORAGE_KEY,
+    JSON.stringify({ ...prefs, version: CONSENT_VERSION, at: new Date().toISOString() })
+  );
 }
 
-function logConsent(action: string, prefs: Prefs) {
-  // Fire-and-forget compliance record — the visitor's IP is only knowable server-side,
-  // so this hits an API route rather than writing to Firestore directly from the browser.
+/** Fire-and-forget compliance record. The visitor's IP and geo are only knowable
+ *  server-side, so this posts to an API route rather than writing to Firestore from
+ *  the browser — and the optional context below is only attached when analytics was
+ *  actually accepted, so a rejection stores strictly the minimum. */
+function logConsent(action: ConsentAction, prefs: ConsentPrefs) {
+  const payload: Record<string, unknown> = {
+    action,
+    analytics: prefs.analytics,
+    marketing: prefs.marketing,
+    visitor_id: getVisitorId(),
+  };
+
+  if (prefs.analytics) {
+    payload.page = window.location.pathname;
+    payload.referrer = document.referrer || null;
+    payload.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    payload.screen = `${window.screen.width}x${window.screen.height}`;
+  }
+
   fetch("/api/log-consent", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ action, analytics: prefs.analytics, marketing: prefs.marketing }),
+    body: JSON.stringify(payload),
+    keepalive: true,
   }).catch(() => {});
 }
 
@@ -30,15 +54,17 @@ export default function CookieConsent() {
 
   useEffect(() => {
     // Client-only: localStorage isn't available during SSR, so this must run post-mount.
+    const stored = readStoredConsent();
+    // Re-ask when there is no choice on record, or when the stored choice predates the
+    // current policy version.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (!localStorage.getItem(STORAGE_KEY)) setVisible(true);
+    if (!stored || stored.version < CONSENT_VERSION) setVisible(true);
 
     function openSettings() {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const prefs = JSON.parse(stored) as Prefs;
-        setAnalytics(prefs.analytics);
-        setMarketing(prefs.marketing);
+      const current = readStoredConsent();
+      if (current) {
+        setAnalytics(current.analytics);
+        setMarketing(current.marketing);
       }
       setVisible(true);
       setCustomizing(true);
@@ -47,29 +73,16 @@ export default function CookieConsent() {
     return () => window.removeEventListener("open-cookie-settings", openSettings);
   }, []);
 
-  function acceptAll() {
-    const prefs: Prefs = { necessary: true, analytics: true, marketing: true };
+  function commit(action: ConsentAction, prefs: ConsentPrefs) {
     savePrefs(prefs);
-    logConsent("accept_all", prefs);
+    logConsent(action, prefs);
     setVisible(false);
     setCustomizing(false);
   }
 
-  function rejectNonEssential() {
-    const prefs: Prefs = { necessary: true, analytics: false, marketing: false };
-    savePrefs(prefs);
-    logConsent("reject_non_essential", prefs);
-    setVisible(false);
-    setCustomizing(false);
-  }
-
-  function savePreferences() {
-    const prefs: Prefs = { necessary: true, analytics, marketing };
-    savePrefs(prefs);
-    logConsent("custom", prefs);
-    setVisible(false);
-    setCustomizing(false);
-  }
+  const acceptAll = () => commit("accept_all", { necessary: true, analytics: true, marketing: true });
+  const rejectNonEssential = () => commit("reject_non_essential", { necessary: true, analytics: false, marketing: false });
+  const savePreferences = () => commit("custom", { necessary: true, analytics, marketing });
 
   if (!visible) return null;
 
@@ -93,7 +106,7 @@ export default function CookieConsent() {
                 <h2 className="text-sm font-bold mb-1.5" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
                   We value your privacy
                 </h2>
-                <p className="text-xs leading-relaxed font-light" style={{ color: "var(--gray)" }}>
+                <p className="text-xs leading-relaxed font-normal" style={{ color: "var(--gray)" }}>
                   We use cookies to keep our website secure, improve your experience, analyze traffic, and deliver
                   relevant content. You can accept all cookies, reject non-essential cookies, or customize your
                   preferences at any time. Your consent can be changed or withdrawn by accessing the Cookie Settings

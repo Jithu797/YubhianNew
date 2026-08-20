@@ -18,7 +18,7 @@ const SECTIONS = [
   },
   {
     title: "Cookies",
-    body: "Our website uses cookies to keep the site secure, remember your preferences, and understand how visitors use our site. You can manage your cookie preferences at any time — see our Cookie Policy for details. When you make a cookie consent choice, we log your IP address, browser information, and the choice you made, as a record that consent was obtained — this record is kept for compliance purposes and is not used for tracking or marketing.",
+    body: "Our website uses cookies to keep the site secure, remember your preferences, and understand how visitors use our site. You can manage your cookie preferences at any time — see our Cookie Policy for details. When you make a cookie consent choice, we record that choice together with your IP address, browser user-agent, country, a randomly generated first-party visitor ID, and the version of this policy you agreed to. This is kept as proof that consent was obtained, as required for compliance. If you accept analytics cookies we also record limited context about that visit — the page you consented on, the referring site, your browser language, approximate region/city, timezone and screen size. If you decline, none of that additional context is stored. The visitor ID is random, is not derived from any personal information, is never shared with third parties, and cannot be used to track you across other websites. These records are readable only by our administrators and are never sold or used for advertising.",
   },
   {
     title: "Data Sharing",
@@ -46,10 +46,10 @@ export default function PrivacyPolicyPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-32 px-6 pb-24" style={{ background: "var(--navy)" }}>
+      <main className="page-top px-6 pb-24" style={{ background: "var(--navy)" }}>
         <div className="max-w-3xl mx-auto">
           <p className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>Legal</p>
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-4" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+          <h1 className="text-4xl md:text-6xl font-extrabold mb-5" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             Privacy Policy
           </h1>
           <p className="text-sm mb-14" style={{ color: "var(--gray)" }}>Last updated: July 2026</p>
@@ -60,7 +60,7 @@ export default function PrivacyPolicyPage() {
                 <h2 className="text-xl font-bold mb-3" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
                   {s.title}
                 </h2>
-                <p className="text-sm font-light leading-relaxed" style={{ color: "var(--gray2)" }}>
+                <p className="text-sm font-normal leading-relaxed" style={{ color: "var(--gray2)" }}>
                   {s.body}
                 </p>
               </div>

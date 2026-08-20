@@ -12,7 +12,7 @@ export default function AboutPage() {
   return (
     <>
       <Navbar />
-      <main className="pt-32" style={{ background: "var(--navy)" }}>
+      <main className="page-top" style={{ background: "var(--navy)" }}>
         <AboutContent />
       </main>
       <Footer />

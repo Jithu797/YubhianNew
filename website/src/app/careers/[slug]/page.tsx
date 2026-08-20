@@ -33,7 +33,7 @@ export default async function CareerDetailPage({ params }: { params: Promise<{ s
   return (
     <>
       <Navbar />
-      <main className="pt-32 px-6 pb-24" style={{ background: "var(--navy)" }}>
+      <main className="page-top px-6 pb-24" style={{ background: "var(--navy)" }}>
         <div className="max-w-5xl mx-auto">
           <Link href="/careers" className="inline-flex items-center gap-2 text-sm font-medium mb-8" style={{ color: "var(--gray)" }}>
             <ArrowLeft size={15} /> Back to Careers
@@ -57,7 +57,7 @@ export default async function CareerDetailPage({ params }: { params: Promise<{ s
                 </div>
               </div>
 
-              <p className="text-sm leading-relaxed font-light whitespace-pre-wrap" style={{ color: "var(--gray2)" }}>
+              <p className="text-sm leading-relaxed font-normal whitespace-pre-wrap" style={{ color: "var(--gray2)" }}>
                 {career.description}
               </p>
 
@@ -70,7 +70,7 @@ export default async function CareerDetailPage({ params }: { params: Promise<{ s
                         <span className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ background: "rgba(6,182,212,0.15)" }}>
                           <Check size={11} style={{ color: "var(--cyan)" }} />
                         </span>
-                        <p className="text-sm font-light" style={{ color: "var(--gray2)" }}>{req}</p>
+                        <p className="text-sm font-normal" style={{ color: "var(--gray2)" }}>{req}</p>
                       </div>
                     ))}
                   </div>
