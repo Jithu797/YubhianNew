@@ -12,7 +12,7 @@ export default function ProductPage() {
   return (
     <>
       <Navbar />
-      <main className="page-top" style={{ background: "var(--navy)" }}>
+      <main style={{ background: "var(--navy)" }}>
         <ProductContent />
       </main>
       <Footer />

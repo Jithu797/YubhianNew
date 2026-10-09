@@ -48,8 +48,8 @@ export default function PrivacyPolicyPage() {
       <Navbar />
       <main className="page-top px-6 pb-24" style={{ background: "var(--navy)" }}>
         <div className="max-w-3xl mx-auto">
-          <p className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>Legal</p>
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-5" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+          <p className="kicker mb-5">Legal</p>
+          <h1 className="page-title mb-5" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             Privacy Policy
           </h1>
           <p className="text-sm mb-14" style={{ color: "var(--gray)" }}>Last updated: July 2026</p>

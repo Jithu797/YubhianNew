@@ -18,9 +18,9 @@ export default function BlogPreview() {
       <div className="max-w-7xl mx-auto">
         <ScrollReveal className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-14">
           <div>
-            <p className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>Insights</p>
-            <h2 className="text-4xl md:text-5xl font-extrabold" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
-              From the Yubhian blog
+            <p className="kicker mb-5">10 · Insights</p>
+            <h2 className="section-title" style={{ color: "var(--white)" }}>
+              From the Yubhian <span className="serif-accent">blog</span>
             </h2>
           </div>
           <Link href="/blog" className="text-sm font-medium transition-colors hover:text-[var(--white)]" style={{ color: "var(--cyan)" }}>
@@ -67,7 +67,7 @@ export default function BlogPreview() {
                     <p className="text-sm font-normal leading-relaxed line-clamp-3 flex-1" style={{ color: "var(--gray)" }}>
                       {p.excerpt}
                     </p>
-                    <p className="text-xs pt-3" style={{ color: "var(--gray)", borderTop: "1px solid rgba(15,23,42,0.08)" }}>
+                    <p className="text-xs pt-3" style={{ color: "var(--gray)", borderTop: "1px solid rgba(11,16,51,0.08)" }}>
                       {p.author} · {p.readTime} min read · {formatDate(p.date)}
                     </p>
                   </div>

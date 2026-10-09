@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "framer-motion";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { SERVICES, getAllServices, type ServiceDef } from "@/lib/services-data";
+import { SERVICE_ART } from "@/lib/service-art";
 import { useTilt } from "@/lib/useTilt";
 import ScrollReveal from "./ScrollReveal";
 import { REVEAL_STAGGER } from "@/lib/motion";
@@ -25,15 +26,15 @@ export default function Services() {
   const preview = services.slice(0, HOMEPAGE_PREVIEW_COUNT);
 
   return (
-    <section className="py-[var(--space-6xl)] px-6" style={{ background: "var(--navy)", borderTop: "1px solid var(--border)" }} id="services">
+    <section className="py-[var(--space-6xl)] px-6" style={{ background: "var(--navy)", borderTop: "1px solid var(--border)" }} id="services-list">
       <div className="max-w-7xl mx-auto">
         {/* Heading */}
         <ScrollReveal className="mb-14 max-w-2xl" id="services-heading">
-          <p className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>
-            What We Do
+          <p className="kicker mb-5">
+            01 · What we do
           </p>
-          <h2 className="text-4xl md:text-5xl font-extrabold mb-4" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
-            Our Services
+          <h2 className="section-title mb-4" style={{ color: "var(--white)" }}>
+            Our <span className="serif-accent">Services</span>
           </h2>
           <p className="text-lg" style={{ color: "var(--gray)" }}>
             End-to-end technology solutions tailored for businesses at every stage — from first prototype to production scale.
@@ -41,7 +42,7 @@ export default function Services() {
         </ScrollReveal>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6" ref={ref}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 lg:pb-32" ref={ref}>
           {preview.map((s, i) => (
             <ServiceCard key={s.slug} service={s} index={i} parentInView={inView} />
           ))}
@@ -66,87 +67,62 @@ export default function Services() {
   );
 }
 
+
+// Contra-style framed picture card: a tall painting in a paper mat, a serif caption
+// plate, then one line of copy. Columns are staggered on desktop so the grid reads
+// like prints pinned at different heights.
 function ServiceCard({ service: s, index, parentInView }: {
   service: ServiceDef; index: number; parentInView: boolean;
 }) {
   const reduceMotion = useReducedMotion();
-  const { rotateX, rotateY, onMouseMove, onMouseLeave: resetTilt } = useTilt(6);
+  const { rotateX, rotateY, onMouseMove, onMouseLeave } = useTilt(5);
+  const art = SERVICE_ART[s.slug];
+  const stagger = ["", "lg:mt-16", "lg:mt-32"][index % 3];
 
   return (
     <motion.div
-      initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+      initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
       animate={parentInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: reduceMotion ? 0 : 0.5, delay: reduceMotion ? 0 : index * REVEAL_STAGGER }}
-      className="group relative rounded-2xl p-8 flex flex-col gap-6 transition-colors duration-300 overflow-hidden"
-      style={{ background: "var(--surface)", border: "1px solid var(--border)", rotateX, rotateY, transformPerspective: 1000 }}
+      transition={{ duration: reduceMotion ? 0 : 0.8, delay: reduceMotion ? 0 : index * REVEAL_STAGGER, ease: [0.165, 0.84, 0.44, 1] }}
+      className={stagger}
+      style={{ rotateX, rotateY, transformPerspective: 1000 }}
       onMouseMove={onMouseMove}
-      onMouseEnter={(e) => {
-        const el = e.currentTarget as HTMLElement;
-        el.style.borderColor = s.accent + "55";
-        el.style.boxShadow = `0 20px 60px ${s.accent}18`;
-      }}
-      onMouseLeave={(e) => {
-        const el = e.currentTarget as HTMLElement;
-        el.style.borderColor = "var(--border)";
-        el.style.boxShadow = "none";
-        resetTilt();
-      }}
+      onMouseLeave={onMouseLeave}
     >
-      {/* Left accent bar — always visible, not just on hover */}
-      <div className="absolute top-0 left-0 bottom-0 w-[3px]" style={{ background: s.accent }} />
-
-      <div className="flex items-start gap-4">
-        <div
-          className="w-14 h-14 rounded-xl flex items-center justify-center shrink-0"
-          style={{ background: s.accent + "18" }}
-        >
-          <s.icon size={26} style={{ color: s.accent }} />
-        </div>
-        <div className="flex-1 pt-1">
-          <h3 className="text-xl font-bold mb-1.5" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
-            {s.title}
-          </h3>
-          <p className="text-sm leading-relaxed font-normal" style={{ color: "var(--gray)" }}>
-            {s.longDesc}
-          </p>
-        </div>
-      </div>
-
-      {/* Process highlights — first 3 steps */}
-      {s.process.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {s.process.slice(0, 3).map((step) => (
-            <div key={step} className="flex items-start gap-2">
-              <Check size={14} className="shrink-0 mt-0.5" style={{ color: s.accent }} />
-              <span className="text-xs leading-snug" style={{ color: "var(--gray2)" }}>{step}</span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Tech stack */}
-      <div className="flex flex-wrap gap-2">
-        {s.techStack.slice(0, 5).map((tech) => (
-          <span
-            key={tech}
-            className="px-2.5 py-1 rounded-full text-xs font-medium"
-            style={{ background: s.accent + "15", color: s.accent }}
-          >
-            {tech}
-          </span>
-        ))}
-      </div>
-
-      {/* Learn more — always visible for clarity and touch-device usability */}
       <Link
         href={`/services/${s.slug}`}
-        className="flex items-center gap-1.5 text-sm font-medium transition-all duration-300 group-hover:gap-2.5 mt-auto"
-        style={{ color: s.accent }}
+        className="group block p-3 sm:p-4 transition-shadow duration-500 hover:shadow-[0_24px_60px_rgba(11,16,51,0.16)]"
+        style={{ background: "var(--surface)", border: "1px solid var(--hairline)" }}
       >
-        <span className="link-swap">
-          <span className="link-swap-inner" data-text="Learn more">Learn more</span>
+        <div className="relative overflow-hidden aspect-[3/4]" style={{ background: s.accent + "18" }}>
+          {art ? (
+            // eslint-disable-next-line @next/next/no-img-element -- static artwork; next/image adds nothing for these local, pre-sized files
+            <img
+              src={art}
+              alt=""
+              loading="lazy"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.06]"
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <s.icon size={56} style={{ color: s.accent }} />
+            </div>
+          )}
+        </div>
+
+        {/* Caption plate */}
+        <div className="mt-3 sm:mt-4 px-3 py-3 text-center" style={{ border: "1px solid var(--hairline)" }}>
+          <h3 className="text-lg leading-snug" style={{ color: "var(--white)", fontWeight: 500 }}>
+            {s.title}
+          </h3>
+        </div>
+
+        <p className="mt-4 px-1 text-sm leading-relaxed" style={{ color: "var(--gray)" }}>
+          {s.shortDesc}
+        </p>
+        <span className="mt-3 mb-1 px-1 inline-flex items-center gap-1.5 text-sm font-medium transition-all duration-300 group-hover:gap-2.5" style={{ color: "var(--blue)" }}>
+          Learn more <ArrowRight size={13} />
         </span>
-        <ArrowRight size={13} />
       </Link>
     </motion.div>
   );

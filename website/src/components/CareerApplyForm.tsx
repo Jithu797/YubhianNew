@@ -119,7 +119,7 @@ export default function CareerApplyForm({ careerSlug, careerTitle }: { careerSlu
         type="submit"
         disabled={status === "loading"}
         className="btn-shine px-6 py-3.5 rounded-full text-white font-medium transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-60 disabled:translate-y-0"
-        style={{ background: "var(--grad)", boxShadow: "0 4px 24px rgba(37,99,235,0.35)" }}
+        style={{ background: "var(--grad)", boxShadow: "0 4px 24px rgba(30,63,168,0.35)" }}
       >
         {status === "loading" ? "Submitting..." : "Submit Application"}
       </button>

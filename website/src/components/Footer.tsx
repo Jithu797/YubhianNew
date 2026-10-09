@@ -29,10 +29,10 @@ const COMPANY_LINKS = [
 // Dark, floating footer panel — sits on its own inset card against the site's light
 // background rather than reusing the --navy/--white tokens (those are calibrated for
 // light-on-light body content, and are literally inverted for a dark surface like this).
-const PANEL_TEXT = "#F5F6FA";
-const PANEL_MUTED = "rgba(245,246,250,0.62)";
-const PANEL_BORDER = "rgba(245,246,250,0.12)";
-const PANEL_SURFACE = "rgba(245,246,250,0.06)";
+const PANEL_TEXT = "#F6F7FB";
+const PANEL_MUTED = "rgba(246,247,251,0.62)";
+const PANEL_BORDER = "rgba(246,247,251,0.12)";
+const PANEL_SURFACE = "rgba(246,247,251,0.06)";
 
 export default function Footer() {
   const settings = useSiteSettings();
@@ -77,8 +77,8 @@ export default function Footer() {
       {showTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-8 right-8 z-50 w-11 h-11 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:-translate-y-1"
-          style={{ background: "var(--grad)", boxShadow: "0 4px 20px rgba(37,99,235,0.4)" }}
+          className="fixed bottom-8 md:bottom-20 right-8 z-50 w-11 h-11 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:-translate-y-1"
+          style={{ background: "var(--grad)", boxShadow: "0 4px 20px rgba(30,63,168,0.4)" }}
           aria-label="Back to top"
         >
           <ChevronUp size={18} />
@@ -88,18 +88,18 @@ export default function Footer() {
       <footer className="px-3 md:px-4 pb-3 md:pb-4 pt-10" style={{ background: "var(--navy)" }}>
         <div
           className="relative overflow-hidden rounded-[28px] md:rounded-[40px]"
-          style={{ background: "linear-gradient(165deg, #0B1220 0%, #12203B 55%, #1A2C4E 100%)" }}
+          style={{ background: "linear-gradient(165deg, #050A2E 0%, #0A1550 55%, #0D2F78 100%)" }}
         >
           {/* Giant watermark wordmark — typed and deleted on a loop, echoing the reference
               footer's TypeIt.js treatment instead of sitting static. */}
           <TypewriterText
             text="YUBHIAN"
-            className="pointer-events-none select-none absolute left-1/2 -bottom-[6%] -translate-x-1/2 whitespace-nowrap font-bold"
+            className="pointer-events-none select-none absolute left-1/2 -bottom-[6%] -translate-x-1/2 whitespace-nowrap font-normal"
             style={{
               fontFamily: "var(--font-syne)",
               fontSize: "clamp(4rem, 16vw, 13rem)",
               lineHeight: 1,
-              color: "rgba(245,246,250,0.05)",
+              color: "rgba(246,247,251,0.05)",
             }}
           />
 
@@ -107,8 +107,8 @@ export default function Footer() {
           <div className="relative px-6 md:px-14 pt-16 pb-10">
             <Link href="/contact" className="group inline-flex items-center gap-4 md:gap-6">
               <WaveText
-                text="Let's build something great"
-                className="font-bold tracking-tight transition-colors group-hover:text-[var(--cyan)]"
+                text="Have a project in mind? Say hello"
+                className="font-normal tracking-tight transition-colors group-hover:text-[var(--lime)]"
                 style={{
                   fontFamily: "var(--font-syne)",
                   fontSize: "clamp(2.25rem, 7vw, 5rem)",
@@ -119,7 +119,7 @@ export default function Footer() {
               <ArrowUpRight
                 size={40}
                 className="shrink-0 transition-transform duration-300 group-hover:translate-x-1.5 group-hover:-translate-y-1.5"
-                style={{ color: "var(--cyan)" }}
+                style={{ color: "var(--lime)" }}
               />
             </Link>
           </div>
@@ -136,7 +136,7 @@ export default function Footer() {
                 </p>
               </div>
               {subscribed ? (
-                <p className="text-sm font-medium" style={{ color: "var(--cyan)" }}>Thanks for subscribing! ✓</p>
+                <p className="text-sm font-medium" style={{ color: "var(--lime)" }}>Thanks for subscribing! ✓</p>
               ) : (
                 <form onSubmit={handleSubscribe} className="flex gap-3">
                   <input
@@ -145,7 +145,7 @@ export default function Footer() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="your@email.com"
                     required
-                    className="px-4 py-2.5 rounded-xl text-sm outline-none w-64 focus:border-[var(--cyan)]"
+                    className="px-4 py-2.5 rounded-xl text-sm outline-none w-64 focus:border-[var(--lime)]"
                     style={{ background: PANEL_SURFACE, border: `1px solid ${PANEL_BORDER}`, color: PANEL_TEXT }}
                   />
                   <button
@@ -188,7 +188,7 @@ export default function Footer() {
                       aria-label={s.label}
                       className="w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200 hover:scale-110"
                       style={{ background: PANEL_SURFACE, border: `1px solid ${PANEL_BORDER}`, color: PANEL_MUTED }}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--cyan)"; }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--lime)"; }}
                       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = PANEL_MUTED; }}
                     >
                       <s.icon size={15} />
@@ -206,7 +206,7 @@ export default function Footer() {
               <ul className="flex flex-col gap-3">
                 {SERVICES_LINKS.map((l) => (
                   <li key={l.label}>
-                    <Link href={l.href} className="text-sm transition-colors hover:text-[var(--cyan)]" style={{ color: PANEL_MUTED }}>
+                    <Link href={l.href} className="text-sm transition-colors hover:text-[var(--lime)]" style={{ color: PANEL_MUTED }}>
                       {l.label}
                     </Link>
                   </li>
@@ -222,7 +222,7 @@ export default function Footer() {
               <ul className="flex flex-col gap-3">
                 {COMPANY_LINKS.map((l) => (
                   <li key={l.label}>
-                    <Link href={l.href} className="text-sm transition-colors hover:text-[var(--cyan)]" style={{ color: PANEL_MUTED }}>
+                    <Link href={l.href} className="text-sm transition-colors hover:text-[var(--lime)]" style={{ color: PANEL_MUTED }}>
                       {l.label}
                     </Link>
                   </li>
@@ -237,8 +237,8 @@ export default function Footer() {
               </p>
               <ul className="flex flex-col gap-4">
                 <li>
-                  <a href={`mailto:${settings.contact_email}`} className="flex items-center gap-2.5 text-sm transition-colors hover:text-[var(--cyan)] group" style={{ color: PANEL_MUTED }}>
-                    <Mail size={14} className="shrink-0 group-hover:text-[var(--cyan)] transition-colors" />
+                  <a href={`mailto:${settings.contact_email}`} className="flex items-center gap-2.5 text-sm transition-colors hover:text-[var(--lime)] group" style={{ color: PANEL_MUTED }}>
+                    <Mail size={14} className="shrink-0 group-hover:text-[var(--lime)] transition-colors" />
                     {settings.contact_email}
                   </a>
                 </li>
@@ -266,20 +266,20 @@ export default function Footer() {
                 © {new Date().getFullYear()} Yubhian Technologies LLP. All rights reserved.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <Link href="/privacy-policy" className="text-xs transition-colors hover:text-[var(--cyan)]" style={{ color: PANEL_MUTED }}>
+                <Link href="/privacy-policy" className="text-xs transition-colors hover:text-[var(--lime)]" style={{ color: PANEL_MUTED }}>
                   Privacy Policy
                 </Link>
-                <Link href="/cookie-policy" className="text-xs transition-colors hover:text-[var(--cyan)]" style={{ color: PANEL_MUTED }}>
+                <Link href="/cookie-policy" className="text-xs transition-colors hover:text-[var(--lime)]" style={{ color: PANEL_MUTED }}>
                   Cookie Policy
                 </Link>
                 <button
                   onClick={() => window.dispatchEvent(new Event("open-cookie-settings"))}
-                  className="text-xs transition-colors hover:text-[var(--cyan)]"
+                  className="text-xs transition-colors hover:text-[var(--lime)]"
                   style={{ color: PANEL_MUTED }}
                 >
                   Cookie Settings
                 </button>
-                <Link href="/sitemap.xml" className="text-xs transition-colors hover:text-[var(--cyan)]" style={{ color: PANEL_MUTED }}>
+                <Link href="/sitemap.xml" className="text-xs transition-colors hover:text-[var(--lime)]" style={{ color: PANEL_MUTED }}>
                   Sitemap
                 </Link>
               </div>

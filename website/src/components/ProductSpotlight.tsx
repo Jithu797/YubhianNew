@@ -54,16 +54,16 @@ export default function ProductSpotlight() {
           {/* Left — content, each piece assembling in sequence rather than one flat fade */}
           <div>
             <ScrollReveal delay={0}>
-              <div
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm mb-6"
-                style={{ background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)", color: "var(--gold)" }}
-              >
-                Our Flagship Product — Coming Soon
+              <div className="flex flex-wrap items-center gap-3 mb-5">
+                <p className="kicker">05 · Our flagship product</p>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-medium" style={{ background: "var(--peach)", color: "var(--ink)" }}>
+                  Coming soon
+                </span>
               </div>
             </ScrollReveal>
 
             <ScrollReveal delay={REVEAL_STAGGER}>
-              <h2 className="text-3xl md:text-[44px] font-extrabold mb-5 leading-tight" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+              <h2 className="section-title mb-5" style={{ color: "var(--white)" }}>
                 {product.tagline}
               </h2>
             </ScrollReveal>
@@ -80,7 +80,7 @@ export default function ProductSpotlight() {
                   <div className="flex items-center gap-3 transition-opacity duration-300" style={{ opacity: active === i ? 1 : 0.4 }}>
                     <span
                       className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300"
-                      style={{ background: active === i ? "var(--blue)" : "rgba(37,99,235,0.15)" }}
+                      style={{ background: active === i ? "var(--blue)" : "rgba(30,63,168,0.15)" }}
                     >
                       <Check size={13} className={active === i ? "text-white" : "text-[var(--blue)]"} />
                     </span>

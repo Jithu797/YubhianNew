@@ -94,12 +94,12 @@ export default function CookieConsent() {
     >
       <div
         className="rounded-2xl p-6"
-        style={{ background: "var(--surface)", border: "1px solid var(--border)", boxShadow: "0 20px 60px rgba(15,23,42,0.18)" }}
+        style={{ background: "var(--surface)", border: "1px solid var(--border)", boxShadow: "0 20px 60px rgba(11,16,51,0.18)" }}
       >
         {!customizing ? (
           <div className="flex flex-col gap-4">
             <div className="flex items-start gap-3">
-              <span className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: "rgba(37,99,235,0.12)" }}>
+              <span className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: "rgba(30,63,168,0.12)" }}>
                 <Cookie size={17} style={{ color: "var(--blue)" }} />
               </span>
               <div>

@@ -43,7 +43,7 @@ export default async function CareerDetailPage({ params }: { params: Promise<{ s
             {/* Job details */}
             <div className="flex flex-col gap-6">
               <div>
-                <h1 className="text-3xl md:text-4xl font-extrabold mb-3" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+                <h1 className="subsection-title mb-3" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
                   {career.title}
                 </h1>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm" style={{ color: "var(--gray)" }}>
@@ -53,7 +53,7 @@ export default async function CareerDetailPage({ params }: { params: Promise<{ s
                   {career.location && (
                     <span className="flex items-center gap-1.5"><MapPin size={13} /> {career.location}</span>
                   )}
-                  <span className="px-2.5 py-1 rounded-full text-xs" style={{ background: "rgba(37,99,235,0.15)", color: "var(--blue2)" }}>{career.type}</span>
+                  <span className="px-2.5 py-1 rounded-full text-xs" style={{ background: "rgba(30,63,168,0.15)", color: "var(--blue2)" }}>{career.type}</span>
                 </div>
               </div>
 

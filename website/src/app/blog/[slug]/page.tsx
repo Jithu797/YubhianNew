@@ -45,7 +45,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <span className="inline-block px-3 py-1 rounded-full text-xs font-medium mb-5" style={{ background: color + "22", color }}>
             {post.category}
           </span>
-          <h1 className="text-3xl md:text-5xl font-extrabold mb-5 leading-tight" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+          <h1 className="article-title mb-5 leading-tight" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             {post.title}
           </h1>
           <p className="text-sm" style={{ color: "var(--gray)" }}>
