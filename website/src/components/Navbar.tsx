@@ -24,7 +24,7 @@ function toMenuItems(list: ServiceDef[]) {
 // starts with light text until it gains its paper background on scroll.
 function opensOnArtwork(path: string) {
   return (
-    ["/", "/about", "/services", "/product", "/blog", "/careers", "/contact"].includes(path) ||
+    ["/", "/about", "/services", "/product", "/blog", "/careers", "/contact", "/work"].includes(path) ||
     path.startsWith("/services/")
   );
 }
@@ -33,6 +33,7 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "Services", href: "/services", hasDropdown: true },
   { label: "Product", href: "/product" },
+  { label: "Work", href: "/work" },
   { label: "About", href: "/about" },
   { label: "Blog", href: "/blog" },
   { label: "Careers", href: "/careers" },

@@ -9,15 +9,18 @@ export type ProductData = {
   waitlistCount: number;
 };
 
+// Defaults describe YuCampus, Yubhian's first product. The admin's Product editor
+// (Firestore "product" document) overrides tagline, description and features.
 export const PRODUCT_DEFAULTS: ProductData = {
-  tagline: "Something powerful is coming",
-  description: "We are not just a services company. Yubhian is building its own product — designed to solve a real problem for businesses across India.",
+  tagline: "YuCampus keeps every campus accreditation-ready, all year round",
+  description:
+    "A web-based platform that helps Indian colleges and universities prepare for NAAC, NBA and NIRF — faculty upload evidence all year, YuCampus organises it by criteria and generates ready-to-submit reports.",
   features: [
-    "AI-powered insights built in from day one",
-    "Designed for Indian SMEs and enterprises alike",
-    "Seamless integration with your existing stack",
-    "Enterprise-grade security and reliability",
-    "Continuous updates based on real user feedback",
+    "Faculty upload documents, photos and data from laptop or phone",
+    "Everything organised under the right NAAC and NBA criteria",
+    "IQAC sees what's complete and what's missing at a glance",
+    "Ready-to-submit SSR, AQAR and SAR reports",
+    "Rules update instantly when NAAC or NBA change formats",
   ],
   waitlistCount: 0,
 };

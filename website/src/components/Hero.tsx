@@ -134,7 +134,7 @@ export default function Hero() {
             </span>
           </Link>
           <Link
-            href="/about"
+            href="/work"
             className="font-medium underline underline-offset-[6px] decoration-1 transition-colors hover:text-[var(--lime)]"
             style={{ color: "var(--white)", textDecorationColor: "rgba(246,247,251,0.5)" }}
           >

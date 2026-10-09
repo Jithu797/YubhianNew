@@ -20,7 +20,8 @@ const SERVICES_LINKS = [
 
 const COMPANY_LINKS = [
   { label: "About Us", href: "/about" },
-  { label: "Our Product", href: "/product" },
+  { label: "YuCampus", href: "/product" },
+  { label: "Our Work", href: "/work" },
   { label: "Blog & Insights", href: "/blog" },
   { label: "Careers", href: "/careers" },
   { label: "Contact Us", href: "/contact" },

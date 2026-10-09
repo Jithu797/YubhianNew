@@ -4,8 +4,8 @@ import Footer from "@/components/Footer";
 import ProductContent from "./ProductContent";
 
 export const metadata: Metadata = {
-  title: "Our Product",
-  description: "Yubhian Technologies is building its own flagship product — designed to solve a real problem for businesses across India. Join the waitlist.",
+  title: "YuCampus — accreditation-ready, all year round",
+  description: "YuCampus by Yubhian helps Indian colleges and universities stay ready for NAAC, NBA and NIRF all year — faculty upload evidence, YuCampus organises it by criteria and generates SSR, AQAR and SAR reports. Free pilots for early colleges.",
 };
 
 export default function ProductPage() {

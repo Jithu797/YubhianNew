@@ -2,7 +2,9 @@
 
 import { useRef, useState } from "react";
 import { motion, useInView, useScroll, useTransform, useMotionValueEvent, useReducedMotion } from "framer-motion";
-import { Check, Sparkles } from "lucide-react";
+import { ArrowRight, Check, GraduationCap } from "lucide-react";
+import Link from "next/link";
+import { YUCAMPUS, YUCAMPUS_MODULES } from "@/lib/yucampus";
 import { useProductData } from "@/lib/useProductData";
 import ScrollReveal from "./ScrollReveal";
 import { REVEAL_STAGGER } from "@/lib/motion";
@@ -55,7 +57,7 @@ export default function ProductSpotlight() {
           <div>
             <ScrollReveal delay={0}>
               <div className="flex flex-wrap items-center gap-3 mb-5">
-                <p className="kicker">05 · Our flagship product</p>
+                <p className="kicker">05 · Our product · YuCampus</p>
                 <span className="px-2.5 py-0.5 rounded-full text-xs font-medium" style={{ background: "var(--peach)", color: "var(--ink)" }}>
                   Coming soon
                 </span>
@@ -110,7 +112,7 @@ export default function ProductSpotlight() {
                     className="btn-shine px-6 py-3 rounded-full text-white text-sm font-medium whitespace-nowrap transition-opacity disabled:opacity-60"
                     style={{ background: "var(--grad)" }}
                   >
-                    {loading ? "Joining..." : "Join Waitlist"}
+                    {loading ? "Joining..." : "Get early access"}
                   </button>
                 </form>
               )}
@@ -120,41 +122,47 @@ export default function ProductSpotlight() {
             </ScrollReveal>
           </div>
 
-          {/* Right — plain, honest placeholder (deliberately not a fake screenshot —
-              the product doesn't have a UI yet, so we don't pretend it does). Its own
-              pieces still assemble with a stagger, same "showcase reveal" mechanic
-              applied to real elements instead of fabricated mockup chrome. */}
+          {/* Right — YuCampus at a glance: its promise and module plan, straight from the
+              product brief (no mock screenshots or invented metrics). */}
           <div ref={headRef} className="relative flex items-center justify-center">
-            <div
-              className="relative w-full max-w-md aspect-square rounded-2xl flex flex-col items-center justify-center gap-4 px-10 text-center"
-              style={{ background: "var(--surface)", border: "1px dashed var(--border)" }}
+            <motion.div
+              initial={reduceMotion ? false : { opacity: 0, y: 30, rotate: -1.5 }}
+              animate={rightInView ? { opacity: 1, y: 0, rotate: 0 } : {}}
+              transition={{ duration: 0.8, ease: [0.165, 0.84, 0.44, 1] }}
+              className="tone-light relative w-full max-w-md rounded-2xl p-8 overflow-hidden"
+              style={{ background: "linear-gradient(150deg, #050A2E 0%, #0A1550 55%, #1E3FA8 100%)", boxShadow: "0 30px 70px rgba(11,16,51,0.25)" }}
             >
-              <motion.div
-                initial={reduceMotion ? false : { opacity: 0, scale: 0.6, rotate: -15 }}
-                animate={rightInView ? { opacity: 1, scale: 1, rotate: 0 } : {}}
-                transition={{ duration: 0.5, ease: "backOut" }}
-              >
-                <Sparkles size={28} strokeWidth={1.5} style={{ color: "var(--blue)" }} />
-              </motion.div>
-              <motion.p
-                initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-                animate={rightInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: REVEAL_STAGGER, ease: "easeOut" }}
-                className="text-sm font-medium uppercase tracking-widest"
-                style={{ color: "var(--gold)" }}
-              >
-                In Development
-              </motion.p>
-              <motion.p
-                initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-                animate={rightInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: REVEAL_STAGGER * 2, ease: "easeOut" }}
-                className="text-sm font-normal"
-                style={{ color: "var(--gray)" }}
-              >
-                We&apos;re building this in the open. Join the waitlist to get early access and shape the product before launch.
-              </motion.p>
-            </div>
+              <GraduationCap aria-hidden className="absolute -right-10 -bottom-10" size={220} strokeWidth={0.7} style={{ color: "#7CC4FF", opacity: 0.1 }} />
+              <p className="text-xs uppercase tracking-[0.16em]" style={{ color: "var(--gray)" }}>{YUCAMPUS.byline}</p>
+              <p className="mt-3 text-4xl" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>{YUCAMPUS.name}</p>
+              <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--gray2)" }}>{YUCAMPUS.oneLiner}</p>
+              <ul className="mt-7 flex flex-col gap-2.5">
+                {YUCAMPUS_MODULES.map((mod, i) => (
+                  <motion.li
+                    key={mod.name}
+                    initial={reduceMotion ? false : { opacity: 0, x: 20 }}
+                    animate={rightInView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ duration: 0.5, delay: 0.3 + i * REVEAL_STAGGER, ease: "easeOut" }}
+                    className="flex items-center gap-3 rounded-xl px-4 py-3"
+                    style={{ background: "rgba(246,247,251,0.07)", border: "1px solid rgba(246,247,251,0.12)" }}
+                  >
+                    <mod.icon size={18} style={{ color: "var(--lime)" }} />
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-sm font-medium" style={{ color: "var(--white)" }}>{mod.name}</span>
+                      <span className="block text-xs" style={{ color: "var(--gray)" }}>{mod.scope}</span>
+                    </span>
+                    {mod.stage === "First" && (
+                      <span className="text-[10px] uppercase tracking-[0.14em] px-2 py-0.5 rounded-full" style={{ background: "var(--lime)", color: "var(--ink)" }}>
+                        First
+                      </span>
+                    )}
+                  </motion.li>
+                ))}
+              </ul>
+              <Link href="/product" className="mt-7 inline-flex items-center gap-2 text-sm font-medium" style={{ color: "var(--lime)" }}>
+                Explore YuCampus <ArrowRight size={14} />
+              </Link>
+            </motion.div>
           </div>
         </div>
       </div>
