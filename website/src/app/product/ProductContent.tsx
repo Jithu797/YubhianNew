@@ -5,13 +5,14 @@ import { fadeUp } from "@/lib/motion";
 import { motion } from "framer-motion";
 import { Sparkles, Shield, Zap, LineChart, Plug } from "lucide-react";
 import { useProductData } from "@/lib/useProductData";
+import PageHero from "@/components/PageHero";
 
 const FEATURES = [
-  { icon: Sparkles, title: "AI-native from the ground up", text: "Intelligence isn't bolted on — every core workflow is designed with AI assistance built in.", accent: "#7F77DD" },
-  { icon: Zap, title: "Built for speed", text: "Sub-second interactions, optimistic UI, and a backend architected to stay fast as you scale.", accent: "#F59E0B" },
-  { icon: Shield, title: "Enterprise-grade security", text: "Role-based access, audit logs, and encryption at rest — ready for serious business use from day one.", accent: "#1D9E75" },
-  { icon: Plug, title: "Integrates with your stack", text: "Open APIs and webhooks so the product fits into tools you already use, not the other way around.", accent: "#2563EB" },
-  { icon: LineChart, title: "Built on real feedback", text: "Every feature comes from problems we've seen firsthand building for clients across India.", accent: "#06B6D4" },
+  { icon: Sparkles, title: "AI-native from the ground up", text: "Intelligence isn't bolted on — every core workflow is designed with AI assistance built in.", accent: "#4B3FA0" },
+  { icon: Zap, title: "Built for speed", text: "Sub-second interactions, optimistic UI, and a backend architected to stay fast as you scale.", accent: "#5B6FB0" },
+  { icon: Shield, title: "Enterprise-grade security", text: "Role-based access, audit logs, and encryption at rest — ready for serious business use from day one.", accent: "#2C4A8C" },
+  { icon: Plug, title: "Integrates with your stack", text: "Open APIs and webhooks so the product fits into tools you already use, not the other way around.", accent: "#1E3FA8" },
+  { icon: LineChart, title: "Built on real feedback", text: "Every feature comes from problems we've seen firsthand building for clients across India.", accent: "#0E57A6" },
 ];
 
 const ROADMAP = [
@@ -52,27 +53,16 @@ export default function ProductContent() {
 
   return (
     <>
-      {/* Hero */}
-      <section className="px-6 pb-20 text-center relative overflow-hidden">
-        <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full"
-          style={{ background: "radial-gradient(ellipse, rgba(245,158,11,0.15) 0%, transparent 70%)" }} />
-        <div className="relative max-w-3xl mx-auto">
-          <motion.div {...fadeUp(0)}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm mb-6"
-            style={{ background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)", color: "var(--gold)" }}>
-            Our Flagship Product — Coming Soon
-          </motion.div>
-          <motion.h1 {...fadeUp(0.05)} className="text-4xl md:text-6xl font-extrabold mb-5" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
-            {product.tagline}
-          </motion.h1>
-          <motion.p {...fadeUp(0.1)} className="text-lg font-normal leading-relaxed" style={{ color: "var(--gray)" }}>
-            {product.description}
-          </motion.p>
-        </div>
-      </section>
+      <PageHero
+        kicker="Our flagship product · coming soon"
+        title={product.tagline}
+        subtitle={product.description}
+        page="product"
+        ghost={<Sparkles size={380} strokeWidth={0.7} />}
+      />
 
       {/* Features */}
-      <section className="px-6 pb-24">
+      <section className="px-6 pt-20 pb-24">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {FEATURES.map((f, i) => (
             <motion.div key={f.title} {...fadeUp(i * 0.08)}
@@ -90,17 +80,17 @@ export default function ProductContent() {
       {/* Roadmap */}
       <section className="px-6 pb-24" style={{ background: "var(--navy2)" }}>
         <div className="max-w-4xl mx-auto py-16">
-          <motion.h2 {...fadeUp(0)} className="text-3xl md:text-4xl font-extrabold mb-12 text-center" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+          <motion.h2 {...fadeUp(0)} className="subsection-title mb-12 text-center" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             Roadmap
           </motion.h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {ROADMAP.map((r, i) => (
               <motion.div key={r.phase} {...fadeUp(i * 0.1)}
                 className="rounded-2xl p-6" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
-                <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ background: "rgba(37,99,235,0.15)", color: "var(--blue2)" }}>
+                <span className="text-xs font-medium px-2.5 py-1 rounded-full" style={{ background: "rgba(30,63,168,0.15)", color: "var(--blue2)" }}>
                   {r.status}
                 </span>
-                <p className="text-xs mt-4 mb-1 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>{r.phase}</p>
+                <p className="kicker mt-4 mb-1">{r.phase}</p>
                 <h3 className="text-lg font-bold mb-2" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>{r.title}</h3>
                 <p className="text-sm font-normal" style={{ color: "var(--gray)" }}>{r.text}</p>
               </motion.div>
@@ -112,7 +102,7 @@ export default function ProductContent() {
       {/* Waitlist */}
       <section className="px-6 pb-24">
         <div className="max-w-2xl mx-auto text-center rounded-3xl p-12" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-3" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+          <h2 className="subsection-title mb-3" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             Be first to know when we launch
           </h2>
           <p className="text-sm font-normal mb-8" style={{ color: "var(--gray)" }}>
@@ -143,7 +133,7 @@ export default function ProductContent() {
       {/* FAQ */}
       <section className="px-6 pb-24">
         <div className="max-w-3xl mx-auto">
-          <motion.h2 {...fadeUp(0)} className="text-3xl md:text-4xl font-extrabold mb-10 text-center" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+          <motion.h2 {...fadeUp(0)} className="subsection-title mb-10 text-center" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             Frequently asked questions
           </motion.h2>
           <div className="flex flex-col gap-3">

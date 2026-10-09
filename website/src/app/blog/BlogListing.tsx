@@ -99,7 +99,7 @@ export default function BlogListing() {
                   <p className="text-sm font-normal leading-relaxed line-clamp-3 flex-1" style={{ color: "var(--gray)" }}>
                     {p.excerpt}
                   </p>
-                  <p className="text-xs pt-3" style={{ color: "var(--gray)", borderTop: "1px solid rgba(15,23,42,0.08)" }}>
+                  <p className="text-xs pt-3" style={{ color: "var(--gray)", borderTop: "1px solid rgba(11,16,51,0.08)" }}>
                     {p.author} · {p.readTime} min read · {formatDate(p.date)}
                   </p>
                 </div>

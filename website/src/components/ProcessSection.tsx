@@ -7,11 +7,11 @@ import { EASE_OUT_EXPO, REVEAL_STAGGER } from "@/lib/motion";
 import ScrollReveal from "./ScrollReveal";
 
 const STEPS = [
-  { icon: Search, title: "Discover", text: "We dig into your goals, users, and constraints before writing a single line of code.", accent: "#7F77DD" },
-  { icon: PenTool, title: "Design", text: "Architecture and interface design happen together, so the product feels right from day one.", accent: "#06B6D4" },
-  { icon: Code2, title: "Build", text: "Senior engineers ship in short, visible sprints — no black-box development.", accent: "#2563EB" },
-  { icon: Rocket, title: "Launch", text: "QA, performance tuning, and a deployment plan built for a calm launch day.", accent: "#F59E0B" },
-  { icon: LifeBuoy, title: "Support", text: "3 months of post-launch support included — we don't disappear after delivery.", accent: "#1D9E75" },
+  { icon: Search, title: "Discover", text: "We dig into your goals, users, and constraints before writing a single line of code.", accent: "#4B3FA0" },
+  { icon: PenTool, title: "Design", text: "Architecture and interface design happen together, so the product feels right from day one.", accent: "#0E57A6" },
+  { icon: Code2, title: "Build", text: "Senior engineers ship in short, visible sprints — no black-box development.", accent: "#1E3FA8" },
+  { icon: Rocket, title: "Launch", text: "QA, performance tuning, and a deployment plan built for a calm launch day.", accent: "#5B6FB0" },
+  { icon: LifeBuoy, title: "Support", text: "3 months of post-launch support included — we don't disappear after delivery.", accent: "#2C4A8C" },
 ];
 
 // A handful of slow-floating accent dots — a light, ambient touch consistent with the
@@ -30,7 +30,7 @@ export default function ProcessSection() {
   const lineInView = useInView(lineRef, { once: true, margin: "-100px" });
 
   return (
-    <section className="relative py-[var(--space-6xl)] px-6 overflow-hidden" style={{ background: "var(--navy2)" }} id="process">
+    <section className="relative py-[var(--space-6xl)] px-6 overflow-hidden" style={{ background: "var(--navy2)" }} id="process-steps">
       {/* Floating ambient particles */}
       {!reduceMotion && (
         <div className="pointer-events-none absolute inset-0">
@@ -48,11 +48,11 @@ export default function ProcessSection() {
 
       <div className="relative max-w-6xl mx-auto">
         <ScrollReveal className="text-center mb-16">
-          <p className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>
-            How We Work
+          <p className="kicker mb-5">
+            02 · How we work
           </p>
-          <h2 className="text-4xl md:text-5xl font-extrabold mb-4" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
-            From idea to production
+          <h2 className="section-title mb-4" style={{ color: "var(--white)" }}>
+            From idea to <span className="serif-accent">production</span>
           </h2>
           <p className="text-lg max-w-xl mx-auto" style={{ color: "var(--gray)" }}>
             The same five-stage process, every engagement — so you always know what happens next.

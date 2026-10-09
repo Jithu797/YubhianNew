@@ -21,8 +21,7 @@ const USE_CASES = [
     title: "For Startups",
     tagline: "Ship your MVP without burning your runway",
     points: ["Fixed-scope pricing that fits early-stage budgets", "From idea to a working product in weeks", "A technical partner you can loop in on strategy, not just code"],
-    accent: "#F59E0B",
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1600&q=70",
+    accent: "#5B6FB0",
     statKey: "stat_years" as const,
     statSuffix: "+",
     statLabel: "Years shipping fast",
@@ -32,8 +31,7 @@ const USE_CASES = [
     title: "For Enterprises",
     tagline: "Modernize systems without disrupting operations",
     points: ["Compliance-aware architecture and access control", "Phased rollouts that don't interrupt live operations", "Integration with the systems you've already invested in"],
-    accent: "#2563EB",
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&q=70",
+    accent: "#1E3FA8",
     statKey: "stat_clients" as const,
     statSuffix: "+",
     statLabel: "Happy Clients",
@@ -43,13 +41,34 @@ const USE_CASES = [
     title: "For Product Teams",
     tagline: "An extra senior team when you need to move faster",
     points: ["Slot directly into your existing sprint cadence", "AI/ML capability without a full-time hire", "Ongoing support, not a one-and-done handoff"],
-    accent: "#1D9E75",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1600&q=70",
+    accent: "#2C4A8C",
     statKey: "stat_projects" as const,
     statSuffix: "+",
     statLabel: "Projects Delivered",
   },
 ];
+
+/** Graphic backdrop for a use-case panel, built from the panel's own icon and accent
+ *  rather than a photo, so no artwork is repeated from elsewhere on the site. */
+function CardBackdrop({ u }: { u: (typeof USE_CASES)[number] }) {
+  return (
+    <div aria-hidden className="absolute inset-0 overflow-hidden">
+      <div
+        className="absolute inset-0"
+        style={{ background: `radial-gradient(ellipse 70% 80% at 75% 30%, ${u.accent} 0%, #0A1550 55%, #050A2E 100%)` }}
+      />
+      <div
+        className="absolute inset-0 opacity-[0.12]"
+        style={{ backgroundImage: "radial-gradient(circle at 1px 1px, #F6F7FB 1px, transparent 0)", backgroundSize: "26px 26px" }}
+      />
+      <u.icon
+        className="absolute -right-[6%] top-1/2 -translate-y-1/2"
+        style={{ width: "min(62vh, 52vw)", height: "min(62vh, 52vw)", color: "#7CC4FF", opacity: 0.08 }}
+        strokeWidth={0.8}
+      />
+    </div>
+  );
+}
 
 function CardContent({ u, statValue, active }: { u: (typeof USE_CASES)[number]; statValue: number; active: boolean }) {
   return (
@@ -166,11 +185,11 @@ export default function SolutionsByUseCase() {
     <section style={{ background: "var(--navy2)", borderTop: "1px solid var(--border)" }} id="solutions">
       <div className="max-w-7xl mx-auto px-6 pt-[var(--space-6xl)] pb-10">
         <ScrollReveal className="max-w-xl">
-          <p className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>
-            Built For How You Work
+          <p className="kicker mb-5">
+            07 · Built for how you work
           </p>
-          <h2 className="text-4xl md:text-5xl font-extrabold" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
-            Solutions by use case
+          <h2 className="section-title" style={{ color: "var(--white)" }}>
+            Solutions by <span className="serif-accent">use case</span>
           </h2>
         </ScrollReveal>
       </div>
@@ -183,9 +202,7 @@ export default function SolutionsByUseCase() {
               className="stack-card absolute inset-0 flex items-center justify-center overflow-hidden"
               style={{ zIndex: i + 1 }}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={u.image} alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover" />
-              <div className="absolute inset-0" style={{ background: `linear-gradient(160deg, ${u.accent}66, rgba(11,18,32,0.88))` }} />
+              <CardBackdrop u={u} />
               <CardContent u={u} statValue={settings[u.statKey]} active={activeIndex === i} />
             </div>
           ))}
@@ -195,9 +212,7 @@ export default function SolutionsByUseCase() {
           {USE_CASES.map((u, i) => (
             <ScrollReveal key={u.title} delay={i * REVEAL_STAGGER}>
               <div className="relative rounded-2xl overflow-hidden flex items-center justify-center py-14 sm:py-16">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={u.image} alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute inset-0" style={{ background: `linear-gradient(160deg, ${u.accent}66, rgba(11,18,32,0.88))` }} />
+                <CardBackdrop u={u} />
                 <CardContent u={u} statValue={settings[u.statKey]} active />
               </div>
             </ScrollReveal>

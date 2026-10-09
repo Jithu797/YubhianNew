@@ -5,26 +5,37 @@
  * (--navy = primary background, --white = primary text) so no component
  * markup had to change — only the values were flipped/retuned for light-on-white.
  *
- * Color values below are tuned to antigravity.google's actual shipped palette (pulled
- * from their production CSS): a restrained neutral grey scale plus one blue accent,
- * rather than the wider navy/blue/cyan/gold spread this site started with. --cyan is
- * kept as a variable (dozens of components reference it) but its value now lives in the
- * same blue family instead of being a separate hue, to match that one-accent restraint.
+ * Editorial palette, modelled on Contra Labs' "Creative Intelligence 2026" report: warm
+ * paper instead of pure white, soft ink instead of pure black, a family of muted
+ * sage/teal accents, and a single sharp lime reserved for highlights. Structure comes
+ * from hairlines and whitespace rather than shadows. --blue/--cyan keep their names
+ * (dozens of components reference them) but now hold the deep-teal accent family.
  */
 :root {
-  --navy: #FFFFFF;
-  --navy2: #F8F9FC;
-  --navy3: #EFF2F7;
+  --navy: #F6F7FB;
+  --navy2: #ECEFF7;
+  --navy3: #E1E6F2;
   --surface: #FFFFFF;
-  --blue: #3279F9;
-  --blue2: #5C93FA;
-  --cyan: #2E6ADB;
-  --gold: #D97706;
-  --white: #121317;
-  --gray: #45474D;
-  --gray2: #212226;
-  --border: rgba(33,34,38,0.12);
-  --grad: linear-gradient(135deg, #3279F9 0%, #2E6ADB 100%);
+  --blue: #1E3FA8;
+  --blue2: #3A5CC4;
+  --cyan: #0E57A6;
+  --gold: #B08A3E;
+  --white: #0B1033;
+  --gray: #4A5172;
+  --gray2: #262C4F;
+  --border: rgba(11,16,51,0.12);
+  --grad: linear-gradient(135deg, #0A1250 0%, #0E3F8F 100%);
+
+  /* Brand accents, from the logo (deep navy → royal blue, white, cool grey) plus one
+     electric sky-blue highlight, used sparingly — one highlight per view */
+  --ink: #0B1033;
+  --paper: #F6F7FB;
+  --sage: #93A7D6;
+  --moss: #2C4A8C;
+  --peach: #DCE6FF;
+  --sky: #DDEEFF;
+  --lime: #7CC4FF;
+  --hairline: #DFE3EE;
 
   /* Spacing scale — antigravity.google's exact 8px-rooted scale */
   --space-xs: 4px;
@@ -217,18 +228,226 @@ body {
   color: var(--white);
   font-size: 1.0625rem;
   line-height: 1.68;
-  font-family: var(--font-dm-sans), 'Inter', sans-serif;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Editorial serif headings. This rule is deliberately unlayered: Tailwind v4 puts its
+   utilities in @layer, and unlayered CSS wins over any layer — so the many existing
+   `font-bold`/`font-extrabold` classes on headings resolve to the serif's book weight
+   without touching each component. A heavy serif reads as shouting; 500 reads as print. */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-syne), 'Plus Jakarta Sans', sans-serif;
+  font-family: var(--font-syne), Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-optical-sizing: auto;
 }
 
 ::selection {
-  background: #2563EB;
-  color: #fff;
+  background: var(--lime);
+  color: var(--ink);
+}
+
+/* Small uppercase label above a section headline ("01 — Services"). */
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+.kicker::before {
+  content: "";
+  width: 1.75rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+/* Lime marker-pen highlight behind a word — the one loud colour on the page. */
+.hl {
+  background: linear-gradient(transparent 58%, var(--lime) 58%, var(--lime) 92%, transparent 92%);
+  padding: 0 0.08em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* Section headline — one size for every homepage chapter, so the page reads as a
+   single report rather than a stack of differently-sized blocks. */
+.section-title {
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  font-weight: 400;
+  text-wrap: balance;
+}
+
+/* ─── Cinematic chapters (homepage) ──────────────────────────────────────────────
+   ScrollStage paints a world behind the page; Chapter sections are transparent over
+   it. A giant serif title opens each chapter, then content floats on a paper panel. */
+.chapter-title {
+  font-size: clamp(3.75rem, 13vw, 12rem);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  font-weight: 400;
+  color: var(--white);
+  text-wrap: balance;
+}
+.chapter-subtitle {
+  margin-top: 1.25rem;
+  text-align: right;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: clamp(0.8rem, 1.3vw, 1.2rem);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+/* A soft halo in the opposite tone keeps giant titles readable over busy artwork:
+   a light glow behind dark titles, a dark one behind light titles. */
+.chapter-title,
+.chapter-subtitle {
+  text-shadow: 0 0 28px rgba(246, 247, 251, 0.55), 0 0 6px rgba(246, 247, 251, 0.35);
+}
+.tone-light .chapter-title,
+.tone-light .chapter-subtitle {
+  text-shadow: 0 2px 40px rgba(0, 0, 0, 0.18);
+}
+
+/* Light text for chapters whose world is dark (night sky, forest). */
+.tone-light {
+  --white: #F6F7FB;
+  --gray: rgba(246, 247, 251, 0.8);
+  --gray2: rgba(246, 247, 251, 0.9);
+  --hairline: rgba(246, 247, 251, 0.24);
+  --border: rgba(246, 247, 251, 0.2);
+  --blue: #BFDBFF;
+}
+/* …but a paper panel is always dark-on-light, whatever world it floats in. */
+.chapter-panel {
+  --white: #2B2B29;
+  --gray: #5E5C56;
+  --gray2: #3A3936;
+  --hairline: #E4E1D8;
+  --border: rgba(43, 43, 41, 0.12);
+  --blue: #2F5D57;
+  max-width: 1280px;
+  margin-inline: auto;
+  background: rgba(246, 247, 251, 0.94);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(43, 43, 41, 0.1);
+  color: var(--white);
+}
+/* Sections dropped into a panel give up their own full-bleed background. */
+.chapter-panel > section {
+  background: transparent !important;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
+}
+
+/* Painted placeholder worlds (DreamWorld) — slow ambient drift and twinkle. */
+@keyframes dream-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 2% -3%; }
+}
+.dream-float {
+  animation: dream-float 14s ease-in-out infinite;
+}
+@keyframes dream-twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.7) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(20deg); }
+}
+.dream-sparkle {
+  animation: dream-twinkle 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 6px currentColor);
+}
+.dream-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media (prefers-reduced-motion: reduce) {
+  .dream-float, .dream-sparkle { animation: none; }
+}
+
+/* Hero practice chips: frosted glass over the night art, bobbing gently out of step
+   with each other (each gets a negative animation-delay). */
+@keyframes chip-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -6px; }
+}
+.hero-chip {
+  color: #F6F7FB;
+  background: rgba(5, 9, 40, 0.42);
+  border: 1px solid rgba(246, 247, 251, 0.16);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  animation: chip-float 5s ease-in-out infinite;
+}
+.hero-chip:hover {
+  border-color: rgba(124, 196, 255, 0.6);
+  background: rgba(10, 21, 80, 0.55);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-chip { animation: none; }
+}
+
+/* Inner-page header art: a very slow push-in, the stills' answer to the homepage's
+   scroll-zoom. Pure CSS so it never costs a frame of JS. */
+@keyframes page-hero-drift {
+  from { transform: scale(1.12) translateY(1.5%); }
+  to   { transform: scale(1) translateY(0); }
+}
+.page-hero-art {
+  animation: page-hero-drift 14s cubic-bezier(0.165, 0.84, 0.44, 1) both;
+}
+/* Branded page-hero backdrop: the sky-blue glow drifts slowly across the navy. */
+@keyframes page-hero-glow {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-8%, 10%) scale(1.08); }
+}
+.page-hero-glow {
+  animation: page-hero-glow 16s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-hero-art, .page-hero-glow { animation: none; }
+}
+
+/* Top-of-page headline on inner pages (About, Services, Blog…). */
+.page-title {
+  font-size: clamp(2.75rem, 7vw, 6rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  font-weight: 400;
+  text-wrap: balance;
+}
+/* Long article/job titles — same voice, a step smaller so they wrap gracefully. */
+.article-title {
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  font-weight: 400;
+  text-wrap: balance;
+}
+/* Headline for a block inside a page. */
+.subsection-title {
+  font-size: clamp(1.9rem, 3.6vw, 2.75rem);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  font-weight: 400;
+  text-wrap: balance;
+}
+
+/* Italic serif accent for one emphasised word inside a headline. */
+.serif-accent {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--blue);
 }
 
 ::-webkit-scrollbar {
@@ -246,16 +465,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Gradient text utility */
+/* Formerly a blue gradient fill; an editorial page doesn't gradient its type, so this
+   is now a flat accent colour. Kept as a class so existing usages restyle in place. */
 .grad-text {
-  background: var(--grad);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--blue);
 }
 
 /* Dot grid background */
 .dot-grid {
-  background-image: radial-gradient(circle, rgba(15,23,42,0.08) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(11,16,51,0.07) 1px, transparent 1px);
   background-size: 28px 28px;
 }
 
@@ -271,7 +489,7 @@ h1, h2, h3, h4, h5, h6 {
 .blog-content h1, .blog-content h2, .blog-content h3 {
   color: var(--white);
   font-family: var(--font-syne);
-  font-weight: 700;
+  font-weight: 600;
   margin-top: 1.5em;
   margin-bottom: 0.5em;
 }

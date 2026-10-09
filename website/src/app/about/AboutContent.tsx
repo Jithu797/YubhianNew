@@ -3,13 +3,14 @@
 import { useRef } from "react";
 import { fadeUp } from "@/lib/motion";
 import { motion, useInView } from "framer-motion";
-import { Eye, Target, HeartHandshake } from "lucide-react";
+import { Eye, Target, HeartHandshake, Landmark } from "lucide-react";
 import EnvelopeReveal from "@/components/EnvelopeReveal";
+import PageHero from "@/components/PageHero";
 
 const VALUES = [
-  { icon: Eye, title: "Vision", accent: "#2563EB", text: "To be India's most trusted partner for building intelligent, enterprise-grade software — from Andhra Pradesh to the world." },
-  { icon: Target, title: "Mission", accent: "#06B6D4", text: "Deliver AI-first digital products with startup speed and enterprise quality, so every client — big or small — gets world-class engineering." },
-  { icon: HeartHandshake, title: "Values", accent: "#F59E0B", text: "Transparency, ownership, and craftsmanship. We treat every client's product like it's our own, and we never disappear after delivery." },
+  { icon: Eye, title: "Vision", accent: "#1E3FA8", text: "To be India's most trusted partner for building intelligent, enterprise-grade software — from Andhra Pradesh to the world." },
+  { icon: Target, title: "Mission", accent: "#0E57A6", text: "Deliver AI-first digital products with startup speed and enterprise quality, so every client — big or small — gets world-class engineering." },
+  { icon: HeartHandshake, title: "Values", accent: "#5B6FB0", text: "Transparency, ownership, and craftsmanship. We treat every client's product like it's our own, and we never disappear after delivery." },
 ];
 
 const TIMELINE = [
@@ -24,21 +25,24 @@ export default function AboutContent() {
 
   return (
     <>
-      {/* Story */}
-      <section className="px-6 pb-20">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.p {...fadeUp(0)} className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>
-            Our Story
-          </motion.p>
-          <motion.h1 {...fadeUp(0.05)} className="text-4xl md:text-6xl font-extrabold mb-6" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
-            Enterprise-grade software, built from Andhra Pradesh
-          </motion.h1>
-          <motion.p {...fadeUp(0.1)} className="text-lg font-normal leading-relaxed" style={{ color: "var(--gray)" }}>
-            Yubhian Technologies LLP started in Kaikaluru, Andhra Pradesh, with a simple belief: enterprise-grade
-            software doesn&apos;t need to come from Silicon Valley or a metro city. We combine startup speed with
-            enterprise discipline — AI-first, full-stack, and fully accountable for what we build.
-          </motion.p>
-        </div>
+      <PageHero
+        kicker="Our story"
+        title={<>Enterprise-grade software, built from <em className="serif-accent">Andhra Pradesh</em></>}
+        page="about"
+        ghost={<Landmark size={380} strokeWidth={0.7} />}
+      />
+
+      {/* Story — set as a large editorial lead under the hero */}
+      <section className="px-6 pt-20 pb-20">
+        <motion.p
+          {...fadeUp(0)}
+          className="max-w-4xl mx-auto"
+          style={{ fontFamily: "var(--font-syne)", fontSize: "clamp(1.4rem, 2.6vw, 2.1rem)", lineHeight: 1.35, color: "var(--white)" }}
+        >
+          Yubhian Technologies LLP started in Kaikaluru, Andhra Pradesh, with a simple belief: enterprise-grade
+          software doesn&apos;t need to come from Silicon Valley or a metro city. We combine startup speed with
+          enterprise discipline — <em className="serif-accent">AI-first, full-stack, and fully accountable</em> for what we build.
+        </motion.p>
       </section>
 
       {/* Vision / Mission / Values */}
@@ -66,7 +70,7 @@ export default function AboutContent() {
       {/* Timeline */}
       <section className="px-6 pb-24" style={{ background: "var(--navy2)" }}>
         <div className="max-w-3xl mx-auto py-20">
-          <motion.h2 {...fadeUp(0)} className="text-3xl md:text-4xl font-extrabold mb-14 text-center" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
+          <motion.h2 {...fadeUp(0)} className="subsection-title mb-14 text-center" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
             Our journey
           </motion.h2>
           <div className="relative flex flex-col gap-12 pl-8" style={{ borderLeft: "1px solid var(--border)" }}>
@@ -88,7 +92,7 @@ export default function AboutContent() {
       {/* A note from the team */}
       <section className="px-6 py-24">
         <EnvelopeReveal>
-          <p className="text-sm font-medium mb-4 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>
+          <p className="kicker mb-5">
             A Note From Our Team
           </p>
           <p className="text-lg font-normal leading-relaxed mb-4" style={{ color: "var(--gray2)" }}>

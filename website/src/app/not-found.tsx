@@ -13,7 +13,7 @@ export default function NotFound() {
       >
         <div
           className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full"
-          style={{ background: "radial-gradient(ellipse, rgba(37,99,235,0.18) 0%, transparent 70%)" }}
+          style={{ background: "radial-gradient(ellipse, rgba(30,63,168,0.18) 0%, transparent 70%)" }}
         />
         <div className="relative">
           <p
@@ -31,7 +31,7 @@ export default function NotFound() {
           <Link
             href="/"
             className="btn-shine inline-flex items-center gap-2 px-6 py-3 rounded-full text-white text-sm font-medium transition-all duration-300 hover:-translate-y-0.5"
-            style={{ background: "var(--grad)", boxShadow: "0 4px 24px rgba(37,99,235,0.35)" }}
+            style={{ background: "var(--grad)", boxShadow: "0 4px 24px rgba(30,63,168,0.35)" }}
           >
             <ArrowLeft size={15} /> Back to Home
           </Link>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ArrowRight, Menu, X, ChevronDown } from "lucide-react";
@@ -19,6 +20,15 @@ function toMenuItems(list: ServiceDef[]) {
   }));
 }
 
+// Pages whose top is a dark artwork hero (homepage stage or PageHero), where the bar
+// starts with light text until it gains its paper background on scroll.
+function opensOnArtwork(path: string) {
+  return (
+    ["/", "/about", "/services", "/product", "/blog", "/careers", "/contact"].includes(path) ||
+    path.startsWith("/services/")
+  );
+}
+
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Services", href: "/services", hasDropdown: true },
@@ -30,6 +40,7 @@ const navLinks = [
 
 export default function Navbar() {
   const reduceMotion = useReducedMotion();
+  const onDarkHero = opensOnArtwork(usePathname());
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -107,8 +118,8 @@ export default function Navbar() {
         transition={{ duration: 0.3, ease: EASE_OUT_QUART }}
         className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
           scrolled || servicesOpen
-            ? "bg-[rgba(255,255,255,0.92)] backdrop-blur-md border-b border-[var(--border)]"
-            : "bg-transparent"
+            ? "bg-[rgba(246,247,251,0.92)] backdrop-blur-md border-b border-[var(--border)]"
+            : `bg-transparent ${onDarkHero && !mobileOpen ? "tone-light" : ""}`
         }`}
       >
         <motion.div
@@ -175,13 +186,13 @@ export default function Navbar() {
               className="btn-shine flex items-center gap-2 px-5 py-2 rounded-full text-white text-sm font-medium transition-all duration-300 hover:-translate-y-0.5"
               style={{
                 background: "var(--grad)",
-                boxShadow: "0 4px 20px rgba(50,121,249,0.3)",
+                boxShadow: "0 4px 20px rgba(30,63,168,0.3)",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 30px rgba(50,121,249,0.5)";
+                (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 30px rgba(30,63,168,0.5)";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 20px rgba(50,121,249,0.3)";
+                (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 20px rgba(30,63,168,0.3)";
               }}
             >
               Get in Touch <ArrowRight size={14} />
@@ -224,7 +235,7 @@ export default function Navbar() {
                 background: "var(--surface)",
                 borderTop: "1px solid var(--border)",
                 borderRadius: "0 0 var(--shape-corner-lg) var(--shape-corner-lg)",
-                boxShadow: "0 24px 70px rgba(15,23,42,0.14)",
+                boxShadow: "0 24px 70px rgba(11,16,51,0.14)",
               }}
             >
               <div className="w-full px-6 xl:px-10 py-8 flex gap-8 max-w-[1400px] mx-auto">

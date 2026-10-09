@@ -1,25 +1,28 @@
 import type { Metadata } from "next";
-import { Sora, Inter } from "next/font/google";
+import { Source_Serif_4, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import PageLoader from "@/components/PageLoader";
 import PageTransition from "@/components/PageTransition";
 import CookieConsent from "@/components/CookieConsent";
 import SmoothScroll from "@/components/SmoothScroll";
 
-// Two families, deliberately contrasting: Sora carries the headings (geometric,
-// technical character) while Inter handles everything else (designed for legibility at
-// small sizes). Both are variable fonts, so no discrete `weight` array is passed —
-// requesting per-weight files from a variable-only family 404s on Google's CDN.
+// Two families, deliberately contrasting: Source Serif 4 carries the headings (an
+// editorial, print-report voice) while Hanken Grotesk handles everything else (a clean,
+// warm grotesk close to Contra's GT Standard). Both are variable fonts, so no discrete `weight` array is
+// passed — requesting per-weight files from a variable-only family 404s on Google's CDN.
+// The italic style is loaded too, for the `.serif-accent` emphasis inside headlines.
 //
 // The CSS variable names are unchanged from the original pairing so no component markup
 // had to be touched.
-const headingFont = Sora({
+const headingFont = Source_Serif_4({
   subsets: ["latin"],
+  style: ["normal", "italic"],
+  axes: ["opsz"],
   variable: "--font-syne",
   display: "swap",
 });
 
-const bodyFont = Inter({
+const bodyFont = Hanken_Grotesk({
   subsets: ["latin"],
   variable: "--font-dm-sans",
   display: "swap",

@@ -86,11 +86,11 @@ export default function Testimonials() {
     <section className="py-[var(--space-6xl)] px-6" style={{ background: "var(--navy)", borderTop: "1px solid var(--border)" }} id="testimonials">
       <div className="max-w-3xl mx-auto">
         <ScrollReveal className="mb-14 text-center">
-          <p className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>
-            Testimonials
+          <p className="kicker mb-5">
+            08 · Testimonials
           </p>
-          <h2 className="text-4xl md:text-5xl font-extrabold" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
-            What clients say about us
+          <h2 className="section-title" style={{ color: "var(--white)" }}>
+            What clients <span className="serif-accent">say</span> about us
           </h2>
         </ScrollReveal>
 
@@ -123,7 +123,7 @@ export default function Testimonials() {
                 <p className="text-lg leading-relaxed font-normal" style={{ color: "var(--gray2)" }}>
                   &ldquo;{t.quote}&rdquo;
                 </p>
-                <div className="pt-4 flex items-center gap-3" style={{ borderTop: "1px solid rgba(15,23,42,0.08)" }}>
+                <div className="pt-4 flex items-center gap-3" style={{ borderTop: "1px solid rgba(11,16,51,0.08)" }}>
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
                     style={{ background: "var(--grad)" }}

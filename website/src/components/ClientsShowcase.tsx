@@ -80,9 +80,9 @@ export default function ClientsShowcase() {
     <section className="py-[var(--space-6xl)]" style={{ background: "var(--navy2)", borderTop: "1px solid var(--border)" }} id="clients">
       <div className="max-w-6xl mx-auto px-6">
         <ScrollReveal className="text-center mb-14">
-          <p className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>Our Clients</p>
-          <h2 className="text-4xl md:text-5xl font-extrabold" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
-            Trusted by businesses across India
+          <p className="kicker mb-5">09 · Our clients</p>
+          <h2 className="section-title" style={{ color: "var(--white)" }}>
+            Trusted by businesses across <span className="serif-accent">India</span>
           </h2>
         </ScrollReveal>
       </div>

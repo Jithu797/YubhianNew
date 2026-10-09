@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { ArrowRight, MapPin, Briefcase } from "lucide-react";
+import PageHero from "@/components/PageHero";
+import { ArrowRight, MapPin, Briefcase, Users } from "lucide-react";
 import { getAllCareers } from "@/lib/careers-data";
 
 // Revalidate periodically so postings added/edited in the admin CMS show up without a full redeploy.
@@ -18,16 +19,14 @@ export default async function CareersPage() {
   return (
     <>
       <Navbar />
-      <main className="page-top px-6 pb-24 min-h-[60vh]" style={{ background: "var(--navy)" }}>
-        <div className="max-w-4xl mx-auto text-center mb-16">
-          <p className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>Join Us</p>
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-5" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
-            Open Positions
-          </h1>
-          <p className="text-lg font-normal" style={{ color: "var(--gray)" }}>
-            Build products that matter, with a team that ships. Explore current openings at Yubhian Technologies.
-          </p>
-        </div>
+      <PageHero
+        kicker="Join us"
+        title={<>Build what&rsquo;s <em className="serif-accent">next</em> with us</>}
+        subtitle="Work on real products with a small, senior team that ships — from Kaikaluru, Andhra Pradesh."
+        page="careers"
+        ghost={<Users size={380} strokeWidth={0.7} />}
+      />
+      <main className="px-6 pt-16 pb-24 min-h-[40vh]" style={{ background: "var(--navy)" }}>
 
         {careers.length === 0 ? (
           <div className="max-w-2xl mx-auto text-center rounded-2xl p-12" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
@@ -54,7 +53,7 @@ export default async function CareersPage() {
                     {c.location && (
                       <span className="flex items-center gap-1.5"><MapPin size={12} /> {c.location}</span>
                     )}
-                    <span className="px-2 py-0.5 rounded-full" style={{ background: "rgba(37,99,235,0.15)", color: "var(--blue2)" }}>{c.type}</span>
+                    <span className="px-2 py-0.5 rounded-full" style={{ background: "rgba(30,63,168,0.15)", color: "var(--blue2)" }}>{c.type}</span>
                   </div>
                 </div>
                 <ArrowRight size={18} className="shrink-0 transition-transform group-hover:translate-x-1" style={{ color: "var(--cyan)" }} />

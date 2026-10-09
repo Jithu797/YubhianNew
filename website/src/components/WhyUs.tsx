@@ -15,12 +15,12 @@ const CARDS = [
 
 export default function WhyUs() {
   return (
-    <section className="py-[var(--space-6xl)] px-6" style={{ background: "var(--navy2)" }} id="why-us">
+    <section className="py-[var(--space-6xl)] px-6" style={{ background: "var(--navy2)" }} id="why-us-list">
       <div className="max-w-6xl mx-auto">
         <ScrollReveal className="mb-14">
-          <p className="text-sm font-medium mb-3 uppercase tracking-widest" style={{ color: "var(--cyan)" }}>Why Us</p>
-          <h2 className="text-4xl md:text-5xl font-extrabold mb-4" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>
-            Engineering partners who build like founders
+          <p className="kicker mb-5">06 · Why us</p>
+          <h2 className="section-title mb-4" style={{ color: "var(--white)" }}>
+            Engineering partners who build like <span className="serif-accent">founders</span>
           </h2>
           <p className="text-lg max-w-xl" style={{ color: "var(--gray)" }}>
             We combine startup speed with enterprise quality.
