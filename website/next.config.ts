@@ -8,9 +8,38 @@ const CSP = "frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-ac
 const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
-  // The single product page moved into the product catalogue; keep old links working.
   async redirects() {
-    return [{ source: "/product", destination: "/products/yucampus", permanent: true }];
+    // Addresses from the previous site (a single-page app served from /index.html) and
+    // common old-style page names. Phones' history, bookmarks and search results still
+    // open these; without a redirect they landed on the 404 page.
+    const legacy: [string, string][] = [
+      ["/index.html", "/"],
+      ["/index.htm", "/"],
+      ["/home", "/"],
+      ["/about-us", "/about"],
+      ["/aboutus", "/about"],
+      ["/contact-us", "/contact"],
+      ["/contactus", "/contact"],
+      ["/portfolio", "/work"],
+      ["/our-work", "/work"],
+      ["/projects", "/work"],
+      ["/clients", "/work"],
+      ["/service", "/services"],
+      ["/our-services", "/services"],
+      ["/career", "/careers"],
+      ["/jobs", "/careers"],
+      ["/blogs", "/blog"],
+      ["/privacy", "/privacy-policy"],
+      ["/cookies", "/cookie-policy"],
+      // The single product page moved into the product catalogue.
+      ["/product", "/products/yucampus"],
+      ["/yucampus", "/products/yucampus"],
+    ];
+    return [
+      ...legacy.map(([source, destination]) => ({ source, destination, permanent: true })),
+      // Any other old "page.html" address → the same page without the extension.
+      { source: "/:page([a-z0-9-]+)\\.html", destination: "/:page", permanent: true },
+    ];
   },
   async headers() {
     return [
