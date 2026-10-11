@@ -5,18 +5,22 @@ import { motion, useMotionValue, useReducedMotion, useTransform } from "framer-m
 import { CHAPTER_WORLDS, WORLD_BY_ID, artSources } from "@/lib/chapters";
 import DreamWorld from "./DreamWorld";
 
-// Which video encode fits this screen, in real pixels: 960 for phones, 1920 for
+// Which video encode fits this screen. Portrait screens (phones, upright tablets) get a
+// 3:4 crop at native resolution centred on the scene's focal point: covering a tall screen
+// with a landscape clip showed only a thin middle strip of it, blown up 4–5×, so it
+// looked blurred and over-zoomed. Landscape screens: 960 for small windows, 1920 for
 // standard screens, "full" (native resolution) for scaled and high-density displays.
-type VideoSize = "960" | "1920" | "full";
-const SIZE_QUERIES = ["(max-width: 960px)", "(min-resolution: 1.34dppx), (min-width: 1921px)"];
+type VideoSize = "portrait" | "960" | "1920" | "full";
+const SIZE_QUERIES = ["(orientation: portrait)", "(max-width: 960px)", "(min-resolution: 1.34dppx), (min-width: 1921px)"];
 function subscribeSize(onChange: () => void) {
   const mqs = SIZE_QUERIES.map((q) => window.matchMedia(q));
   mqs.forEach((mq) => mq.addEventListener("change", onChange));
   return () => mqs.forEach((mq) => mq.removeEventListener("change", onChange));
 }
 function getSize(): VideoSize {
-  if (window.matchMedia(SIZE_QUERIES[0]).matches) return "960";
-  return window.matchMedia(SIZE_QUERIES[1]).matches ? "full" : "1920";
+  if (window.matchMedia(SIZE_QUERIES[0]).matches) return "portrait";
+  if (window.matchMedia(SIZE_QUERIES[1]).matches) return "960";
+  return window.matchMedia(SIZE_QUERIES[2]).matches ? "full" : "1920";
 }
 
 /**
@@ -33,12 +37,14 @@ export default function ScrollStage() {
   const [front, setFront] = useState(0);
   const [loaded, setLoaded] = useState<Record<string, boolean>>({});
   const progress = useMotionValue(0);
-  const scale = useTransform(progress, [0, 1], [1, reduceMotion ? 1 : 1.14]);
-  const pan = useTransform(progress, [0, 1], ["0%", reduceMotion ? "0%" : "-2.5%"]);
-
   const videos = useRef<(HTMLVideoElement | null)[]>([null, null]);
   // Null on the server (it can't know the screen), so the video only mounts in the browser.
   const videoWidth = useSyncExternalStore<VideoSize | null>(subscribeSize, getSize, () => null);
+  const portrait = videoWidth === "portrait";
+  // The scroll push-in. Portrait screens already see the scene cropped close, so they get
+  // only a hint of it.
+  const scale = useTransform(progress, [0, 1], [1, reduceMotion ? 1 : portrait ? 1.04 : 1.14]);
+  const pan = useTransform(progress, [0, 1], ["0%", reduceMotion ? "0%" : portrait ? "-1%" : "-2.5%"]);
   const eased = useRef(0);
   const state = useRef({ slots, front });
   useEffect(() => {
@@ -119,7 +125,9 @@ export default function ScrollStage() {
   // Warm the cache with every chapter's artwork once the page is idle, so a world is
   // already decoded when the reader scrolls into it instead of popping in late.
   useEffect(() => {
-    const px = window.innerWidth * (window.devicePixelRatio || 1);
+    // Same choice the browser makes from `sizes` below (portrait: 1.8 × the height).
+    const portraitScreen = window.innerHeight > window.innerWidth;
+    const px = (portraitScreen ? window.innerHeight * 1.8 : window.innerWidth) * (window.devicePixelRatio || 1);
     const width = px <= 960 ? 960 : px <= 1920 ? 1920 : 2560;
     const load = () => {
       for (const w of CHAPTER_WORLDS) {
@@ -218,7 +226,7 @@ export default function ScrollStage() {
               <motion.div
                 key={world.id}
                 className="absolute inset-0"
-                initial={reduceMotion ? false : { scale: 1.08 }}
+                initial={reduceMotion ? false : { scale: portrait ? 1.03 : 1.08 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 1.8, ease: [0.165, 0.84, 0.44, 1] }}
               >
@@ -226,7 +234,9 @@ export default function ScrollStage() {
                     never exposes an edge; the slot's zoom adds the push-in. */}
                 <motion.img
                   {...artSources(world.image)}
-                  sizes="100vw"
+                  // On a portrait screen the picture is scaled to the screen's height, so
+                  // it needs a file about 1.8 × the height wide, not the screen's width.
+                  sizes="(orientation: portrait) 180vh, 100vw"
                   alt=""
                   fetchPriority={world.id === CHAPTER_WORLDS[0].id ? "high" : "auto"}
                   className="absolute left-0 w-full object-cover"
@@ -251,7 +261,8 @@ export default function ScrollStage() {
                 preload="auto"
                 disablePictureInPicture
                 className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
-                style={{ opacity: loaded[world.id] ? 1 : 0, objectPosition: world.imagePosition }}
+                // The portrait encode is already centred on the focal point.
+                style={{ opacity: loaded[world.id] ? 1 : 0, objectPosition: portrait ? "50% 50%" : world.imagePosition }}
                 onLoadedMetadata={(e) => {
                   // iOS Safari only lets a video seek once it has been played; prime it.
                   if (world.videoMode !== "scrub") return;

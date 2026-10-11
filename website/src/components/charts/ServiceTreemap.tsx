@@ -22,8 +22,10 @@ export default function ServiceTreemap() {
   const inView = useInView(ref, { once: true, margin: "-10% 0px" });
   const [narrow, setNarrow] = useState(false);
 
+  // Below 1024px the treemap's smallest tiles get too narrow for names like "Generative
+  // AI & LLM Development", so phones and upright tablets get the same groups as a grid.
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
+    const mq = window.matchMedia("(max-width: 1023px)");
     const update = () => setNarrow(mq.matches);
     update();
     mq.addEventListener("change", update);
@@ -31,7 +33,7 @@ export default function ServiceTreemap() {
   }, []);
 
   const W = 1000;
-  const H = narrow ? 1500 : 620;
+  const H = 620;
 
   const { groups, tiles } = useMemo(() => {
     const data: Node = {
@@ -64,6 +66,50 @@ export default function ServiceTreemap() {
 
   const total = SERVICES.length;
   const pct = (v: number, of: number) => `${(v / of) * 100}%`;
+
+  if (narrow) {
+    return (
+      <div ref={ref} className="flex flex-col gap-8">
+        {groups.map((g, gi) => (
+          <motion.section
+            key={g.name}
+            initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+            animate={inView ? { opacity: 1, y: 0 } : undefined}
+            transition={{ duration: 0.6, delay: gi * 0.08, ease: EASE_OUT_QUART }}
+            aria-label={g.name}
+          >
+            <div className="flex items-baseline justify-between gap-3 mb-3 text-sm" style={{ color: "var(--gray)" }}>
+              <span className="font-medium min-w-0" style={{ color: "var(--white)" }}>{g.name}</span>
+              <span className="tabular-nums shrink-0 text-xs">
+                {g.count} of {total} · {Math.round((g.count / total) * 100)}%
+              </span>
+            </div>
+            <ul className="grid grid-cols-2 sm:grid-cols-3 gap-1">
+              {tiles
+                .filter((t) => t.group === g.name)
+                .map((t) => {
+                  const Icon = t.service.icon;
+                  return (
+                    <li key={t.service.slug}>
+                      <Link
+                        href={`/services/${t.service.slug}`}
+                        className="group flex h-full min-h-[96px] flex-col justify-between gap-3 p-3 transition-[filter] duration-300 hover:brightness-95 focus-visible:brightness-95"
+                        style={{ background: g.shade, color: "var(--ink)" }}
+                      >
+                        <Icon size={18} className="shrink-0 opacity-70" />
+                        <span className="leading-tight break-words" style={{ fontFamily: "var(--font-syne)", fontSize: "0.9rem", hyphens: "auto" }}>
+                          {t.service.title}
+                        </span>
+                      </Link>
+                    </li>
+                  );
+                })}
+            </ul>
+          </motion.section>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div ref={ref} className="relative w-full" style={{ aspectRatio: `${W} / ${H}` }}>

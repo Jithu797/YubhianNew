@@ -63,3 +63,17 @@ ffmpeg -i input.mp4 -an -vf "scale=1920:-2,fps=30" -c:v libx264 -preset slow -cr
 ```
 
 Aim for under ~6 MB per clip. Audio is removed (`-an`); the videos are always muted.
+
+### Portrait versions (phones and upright tablets)
+
+Portrait screens play `opt/<name>-portrait.mp4`: a 968x1290 window of the cropped clip at
+native resolution, centred on the chapter's focal point (the x of its `imagePosition` in
+`src/lib/chapters.ts`), with the same forward-only crossfade loop. Covering a tall screen
+with the landscape encode showed only a thin, heavily enlarged strip of it. For a focal
+point at P% across:
+
+```
+X = (2293 - 968) * P / 100   (rounded down to an even number)
+ffmpeg -i <name>.mp4 -an -filter_complex "[0:v]crop=2293:1290:133:0,crop=968:1290:X:0,fps=24,split[a][b];[a]trim=start=1,setpts=PTS-STARTPTS[main];[b]trim=end=1,setpts=PTS-STARTPTS[head];[main][head]xfade=transition=fade:duration=1:offset=<duration-2>,format=yuv420p[v]" \
+  -map "[v]" -c:v libx264 -preset slow -crf 24 -tune film -movflags +faststart opt/<name>-portrait.mp4
+```

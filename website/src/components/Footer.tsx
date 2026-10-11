@@ -243,7 +243,8 @@ export default function Footer() {
                 <li>
                   <a href={`mailto:${settings.contact_email}`} className="flex items-center gap-2.5 text-sm transition-colors hover:text-[var(--lime)] group" style={{ color: PANEL_MUTED }}>
                     <Mail size={14} className="shrink-0 group-hover:text-[var(--lime)] transition-colors" />
-                    {settings.contact_email}
+                    {/* A long address may break after any character in a narrow column */}
+                    <span className="min-w-0 [overflow-wrap:anywhere]">{settings.contact_email}</span>
                   </a>
                 </li>
                 <li>

@@ -30,9 +30,10 @@ function ClientTile({ c, i }: { c: ClientDef; i: number }) {
           </span>
         )}
       </div>
-      <div className="text-center min-w-0">
-        <p className="text-sm font-medium truncate" style={{ color: "var(--white)" }}>{c.name}</p>
-        {c.industry && <p className="text-xs truncate" style={{ color: "var(--gray)" }}>{c.industry}</p>}
+      {/* Full width of the tile so long names wrap inside it rather than spill out */}
+      <div className="text-center w-full min-w-0">
+        <p className="text-sm font-medium break-words" style={{ color: "var(--white)" }}>{c.name}</p>
+        {c.industry && <p className="text-xs break-words" style={{ color: "var(--gray)" }}>{c.industry}</p>}
       </div>
       {href && (
         <ArrowUpRight size={15} className="absolute top-4 right-4 opacity-0 transition-opacity group-hover:opacity-100" style={{ color: "var(--blue)" }} />

@@ -36,12 +36,14 @@ export default function PageHero({ kicker, title, subtitle, page, ghost, childre
         };
 
   return (
-    <section className="tone-light relative overflow-hidden flex items-end" style={{ minHeight: "min(78svh, 760px)" }}>
+    // Phones: about half the screen, so the title isn't stranded under a tall empty block.
+    <section className="tone-light relative overflow-hidden flex items-end min-h-[min(56svh,520px)] md:min-h-[min(78svh,760px)]">
       {art ? (
         // eslint-disable-next-line @next/next/no-img-element -- pre-optimized WebP set; next/image adds nothing here
         <img
           {...artSources(page, "pages")}
-          sizes="100vw"
+          // Portrait screens scale the picture to the header's height, not its width.
+          sizes="(orientation: portrait) 100vh, 100vw"
           alt=""
           fetchPriority="high"
           className="page-hero-art absolute inset-0 w-full h-full object-cover"
@@ -54,7 +56,8 @@ export default function PageHero({ kicker, title, subtitle, page, ghost, childre
           <div className="page-hero-glow absolute -top-1/4 right-[-10%] w-[70vw] h-[70vw] rounded-full" style={{ background: "radial-gradient(closest-side, rgba(124,196,255,0.28), transparent)" }} />
           <div className="absolute inset-0 opacity-[0.1]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, #F6F7FB 1px, transparent 0)", backgroundSize: "28px 28px" }} />
           {ghost && (
-            <div className="absolute right-[4%] top-1/2 -translate-y-1/2 hidden md:block" style={{ color: "#7CC4FF", opacity: 0.1 }}>
+            // Phones: smaller, tucked into the top-right corner above the title.
+            <div className="absolute right-[-14%] top-[12%] scale-[0.55] origin-top-right md:right-[4%] md:top-1/2 md:-translate-y-1/2 md:scale-100" style={{ color: "#7CC4FF", opacity: 0.1 }}>
               {ghost}
             </div>
           )}
