@@ -20,6 +20,16 @@ type Application = {
 
 const TABS = ["All", "New", "Reviewed", "Shortlisted", "Rejected"] as const;
 
+/** True for an https link into Yubhian's Cloudinary account (where résumés are uploaded). */
+function isOwnResumeLink(url?: string) {
+  try {
+    const u = new URL(url ?? "");
+    return u.protocol === "https:" && u.hostname === "res.cloudinary.com" && u.pathname.startsWith("/dvq2shkor/");
+  } catch {
+    return false;
+  }
+}
+
 function formatDate(ts?: Timestamp) {
   if (!ts) return "";
   return ts.toDate().toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
@@ -177,9 +187,17 @@ export default function CareerApplicationsInbox() {
               )}
 
               <div className="flex flex-wrap gap-3 pt-2">
-                <a href={selected.resume_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm font-medium" style={{ background: "var(--grad)" }}>
-                  <FileText size={14} /> View Resume
-                </a>
+                {/* Applications can be written by anyone, so only a link to a file in
+                    our own Cloudinary account becomes a button. */}
+                {isOwnResumeLink(selected.resume_url) ? (
+                  <a href={selected.resume_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm font-medium" style={{ background: "var(--grad)" }}>
+                    <FileText size={14} /> View Resume
+                  </a>
+                ) : (
+                  <span className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm" style={{ background: "var(--navy2)", color: "var(--gray)", border: "1px solid var(--border)" }}>
+                    <FileText size={14} /> Resume link looks unsafe — not opened
+                  </span>
+                )}
                 <a href={`mailto:${selected.email}`} className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium" style={{ background: "var(--navy2)", color: "var(--gray2)", border: "1px solid var(--border)" }}>
                   <Mail size={14} /> Email Applicant
                 </a>

@@ -94,16 +94,16 @@ export function formatDate(iso: string) {
  *  Components — it only ever performs a read. */
 export async function getAllPosts(): Promise<BlogPost[]> {
   try {
-    const { db } = await import("./firebase");
+    const { db, within } = await import("./firebase");
     const { collection, getDocs, limit, orderBy, query, where } = await import("firebase/firestore");
-    const snap = await getDocs(
+    const snap = await within(getDocs(
       query(
         collection(db, "blogs"),
         where("status", "==", "published"),
         orderBy("published_at", "desc"),
         limit(100)
       )
-    );
+    ));
     if (!snap.empty) {
       return snap.docs.map((doc) => {
         const d = doc.data();

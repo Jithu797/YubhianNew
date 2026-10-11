@@ -2,9 +2,10 @@ rules_version = '2';
 
 // Paste this into Firebase Console -> Firestore Database -> Rules, then Publish.
 //
-// BEFORE PUBLISHING: replace the placeholder UIDs below with the real UID of every admin
-// account (Firebase Console -> Authentication -> Users -> "User UID" column). Until
-// you do, nobody can save content from the admin portal.
+// The admin list below holds the UID of every admin account (Firebase Console ->
+// Authentication -> Users -> "User UID" column). When an admin is added or removed,
+// change it here AND in ADMIN_UIDS on the website's Vercel project (the upload route
+// uses the same list), then publish.
 //
 // Why a UID list: the Firebase web config is public by design, and email/password
 // sign-up is open to anyone who has it, so "any signed-in user" (request.auth != null)
@@ -20,16 +21,68 @@ service cloud.firestore {
 
     function isAdmin() {
       return request.auth != null && request.auth.uid in [
-        "REPLACE_WITH_ADMIN_UID_1",
-        "REPLACE_WITH_ADMIN_UID_2"
+        "Ac85ltYltGWC4PnyXN0kgTe88DG2",
+        "S07c0ibA8idD4l0MF8H9UoLeFd83"
       ];
     }
 
-    // A new form submission: bounded in size, created as "new" with a server timestamp.
-    function isFormSubmission(maxFields) {
-      return request.resource.data.size() <= maxFields
-        && request.resource.data.status == "new"
+    // A new form submission: created as "new" with a server timestamp.
+    function isFormSubmission() {
+      return request.resource.data.status == "new"
         && request.resource.data.created_at == request.time;
+    }
+
+    // Field checks for anonymous submissions. Anyone can write to the inbox collections
+    // directly with the public web config (not only through the site's forms), so the
+    // rules - not the forms - must enforce field names, types and lengths.
+    function text(d, key, max) {
+      return d.get(key, null) is string && d.get(key, "").size() > 0 && d.get(key, "").size() <= max;
+    }
+    function optionalText(d, key, max) {
+      return d.get(key, null) == null || (d.get(key, null) is string && d.get(key, "").size() <= max);
+    }
+    function emailAddress(d) {
+      return text(d, "email", 254) && d.email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
+    }
+
+    // Fields written by the contact, product (pilot / demo) and newsletter forms.
+    function isLead(d) {
+      return d.keys().hasOnly(["name", "email", "phone", "company", "service_interest", "budget",
+                               "message", "source", "campaign", "status", "created_at"])
+        && text(d, "name", 120) && emailAddress(d) && text(d, "message", 5000)
+        && d.source in ["contact_form", "newsletter", "waitlist", "yucampus-pilot"]
+        && optionalText(d, "phone", 20) && optionalText(d, "company", 160)
+        && optionalText(d, "service_interest", 120) && optionalText(d, "budget", 60)
+        && optionalText(d, "campaign", 80);
+    }
+
+    // Fields written by the careers form. The resume must be a file in Yubhian's own
+    // Cloudinary account: the admin shows this link as a button, so it must never be a
+    // javascript: link or a page on someone else's site.
+    function isApplication(d) {
+      return d.keys().hasOnly(["career_slug", "career_title", "name", "email", "phone",
+                               "resume_url", "message", "status", "created_at"])
+        && text(d, "career_title", 160) && optionalText(d, "career_slug", 120)
+        && text(d, "name", 120) && emailAddress(d) && optionalText(d, "phone", 20)
+        && optionalText(d, "message", 5000)
+        && text(d, "resume_url", 600)
+        && d.resume_url.matches("^https://res\\.cloudinary\\.com/dvq2shkor/[^\\s\"'<>]+$");
+    }
+
+    // Fields written by /api/log-consent.
+    function isConsentLog(d) {
+      return d.keys().hasOnly(["visitor_id", "action", "analytics", "marketing", "consent_version",
+                               "ip", "user_agent", "country", "page", "referrer", "language",
+                               "region", "city", "timezone", "screen", "created_at"])
+        && d.action in ["accept_all", "reject_non_essential", "custom"]
+        && d.analytics is bool && d.marketing is bool && d.consent_version is int
+        && d.created_at == request.time
+        && optionalText(d, "visitor_id", 64) && optionalText(d, "ip", 64)
+        && optionalText(d, "user_agent", 512) && optionalText(d, "country", 64)
+        && optionalText(d, "page", 512) && optionalText(d, "referrer", 512)
+        && optionalText(d, "language", 64) && optionalText(d, "region", 64)
+        && optionalText(d, "city", 64) && optionalText(d, "timezone", 64)
+        && optionalText(d, "screen", 32);
     }
 
     // Public content - readable by anyone, writable only by admins.
@@ -72,15 +125,15 @@ service cloud.firestore {
 
     // Inbox collections - public forms can create, only admins can read/manage.
     match /leads/{docId} {
-      allow create: if isFormSubmission(12);
+      allow create: if isFormSubmission() && isLead(request.resource.data);
       allow read, update, delete: if isAdmin();
     }
     match /career_applications/{docId} {
-      allow create: if isFormSubmission(12);
+      allow create: if isFormSubmission() && isApplication(request.resource.data);
       allow read, update, delete: if isAdmin();
     }
     match /consent_logs/{docId} {
-      allow create: if request.resource.data.size() <= 20;
+      allow create: if isConsentLog(request.resource.data);
       allow read, update, delete: if isAdmin();
     }
   }

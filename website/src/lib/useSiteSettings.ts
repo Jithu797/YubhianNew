@@ -49,9 +49,9 @@ export function useSiteSettings() {
   useEffect(() => {
     (async () => {
       try {
-        const { db } = await import("./firebase");
+        const { db, within } = await import("./firebase");
         const { collection, getDocs, limit, query } = await import("firebase/firestore");
-        const snap = await getDocs(query(collection(db, "site_settings"), limit(1)));
+        const snap = await within(getDocs(query(collection(db, "site_settings"), limit(1))));
         if (!snap.empty) {
           setSettings({ ...SITE_SETTINGS_DEFAULTS, ...(snap.docs[0].data() as Partial<SiteSettings>) });
         }

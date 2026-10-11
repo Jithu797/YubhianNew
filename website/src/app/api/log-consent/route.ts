@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { CONSENT_ACTIONS, CONSENT_VERSION, type ConsentAction } from "@/lib/consent";
+import { allowedOrigin, bodyTooLarge, clientIp, rateLimited } from "@/lib/api-guard";
 
 /** Caps every stored string so a malicious client can't write unbounded documents.
  *  This endpoint necessarily accepts anonymous input, so nothing from the request
@@ -19,6 +20,14 @@ function getClientIp(req: NextRequest): string {
 }
 
 export async function POST(req: NextRequest) {
+  // Same protections as the other public routes: only this site's pages, a bounded body,
+  // and a per-visitor limit (a visitor changes their cookie choice a handful of times).
+  if (allowedOrigin(req) === null) return NextResponse.json({ error: "Origin not allowed" }, { status: 403 });
+  if (rateLimited(`consent:${clientIp(req)}`, 20, 10 * 60 * 1000)) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+  if (bodyTooLarge(req, 8 * 1024)) return NextResponse.json({ error: "Request too large" }, { status: 413 });
+
   let body: Record<string, unknown>;
   try {
     body = await req.json();

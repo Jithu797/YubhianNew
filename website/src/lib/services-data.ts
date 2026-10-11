@@ -257,11 +257,11 @@ export const SERVICE_ICON_MAP: Record<string, LucideIcon> = {
  *  the same slug, or generic placeholders for a service that only exists in the CMS. */
 export async function getAllServices(): Promise<ServiceDef[]> {
   try {
-    const { db } = await import("./firebase");
+    const { db, within } = await import("./firebase");
     const { collection, getDocs, orderBy, query, where } = await import("firebase/firestore");
-    const snap = await getDocs(
+    const snap = await within(getDocs(
       query(collection(db, "services"), where("is_active", "==", true), orderBy("order", "asc"))
-    );
+    ));
     if (!snap.empty) {
       return snap.docs.map((doc) => {
         const d = doc.data();

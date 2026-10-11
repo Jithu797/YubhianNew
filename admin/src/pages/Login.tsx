@@ -8,7 +8,7 @@ const COOLDOWN_SECONDS = 30;
 const MAX_ATTEMPTS = 3;
 
 export default function Login() {
-  const { login, user } = useAuth();
+  const { login, resetPassword, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -18,6 +18,7 @@ export default function Login() {
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [shake, setShake] = useState(false);
   const [attempts, setAttempts] = useState(0);
   const [cooldown, setCooldown] = useState(0);
@@ -32,13 +33,30 @@ export default function Login() {
     return () => clearTimeout(t);
   }, [cooldown]);
 
+  // The same message whether or not the address has an account, so this form can't be
+  // used to discover which emails are admins.
+  async function handleForgot() {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setNotice("");
+      setError("Enter your email address above, then select “Forgot password?”.");
+      return;
+    }
+    setError("");
+    try {
+      await resetPassword(email);
+    } catch {
+      // Ignored on purpose — see the comment above.
+    }
+    setNotice("If that address has an admin account, a password-reset link is on its way.");
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (cooldown > 0) return;
     setLoading(true);
     setError("");
     try {
-      await login(email, password);
+      await login(email, password, remember);
       const from = (location.state as { from?: string })?.from || "/dashboard";
       navigate(from, { replace: true });
     } catch (err) {
@@ -77,6 +95,12 @@ export default function Login() {
         {error && (
           <div className="mb-5 px-4 py-2.5 rounded-lg text-sm text-center" style={{ background: "rgba(248,113,113,0.1)", color: "#dc2626", border: "1px solid rgba(248,113,113,0.25)" }}>
             {error}
+          </div>
+        )}
+
+        {notice && !error && (
+          <div role="status" className="mb-5 px-4 py-2.5 rounded-lg text-sm text-center" style={{ background: "rgba(34,197,94,0.1)", color: "#15803d", border: "1px solid rgba(34,197,94,0.25)" }}>
+            {notice}
           </div>
         )}
 
@@ -129,7 +153,7 @@ export default function Login() {
               <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} className="accent-[var(--blue)]" />
               Remember me
             </label>
-            <a href="#" className="hover:text-[var(--white)] transition-colors" style={{ color: "var(--cyan)" }}>Forgot password?</a>
+            <button type="button" onClick={handleForgot} className="hover:text-[var(--white)] transition-colors" style={{ color: "var(--cyan)" }}>Forgot password?</button>
           </div>
 
           <button

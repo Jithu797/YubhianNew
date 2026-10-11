@@ -30,7 +30,9 @@ export async function appendCareerApplicationRow(row: {
   await client.sheets.spreadsheets.values.append({
     spreadsheetId: client.spreadsheetId,
     range: "Sheet1!A:G",
-    valueInputOption: "USER_ENTERED",
+    // RAW stores every value as typed. USER_ENTERED would evaluate applicant input that
+    // starts with "=" as a spreadsheet formula (e.g. =HYPERLINK or =IMPORTDATA).
+    valueInputOption: "RAW",
     requestBody: {
       values: [[
         new Date().toISOString(),

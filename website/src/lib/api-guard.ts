@@ -12,8 +12,8 @@ const ALLOWED_ORIGINS = new Set(
     SITE_URL,
     SITE_URL.replace("://www.", "://"),
     "https://admin.yubhiantechnologies.in",
-    "http://localhost:3000",
-    "http://localhost:5173",
+    // Local development only — a deployed site has no reason to trust localhost pages.
+    ...(process.env.NODE_ENV === "production" && process.env.VERCEL ? [] : ["http://localhost:3000", "http://localhost:5173"]),
     ...(process.env.ALLOWED_ORIGINS ?? "").split(","),
   ]
     .map((o) => o.trim().replace(/\/+$/, ""))
@@ -42,7 +42,7 @@ export function corsHeaders(origin: string): Record<string, string> {
   return {
     "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
     Vary: "Origin",
   };
 }
@@ -67,6 +67,14 @@ export function rateLimited(key: string, limit: number, windowMs: number): boole
   }
   entry.count += 1;
   return entry.count > limit;
+}
+
+/** True when the request declares a body larger than `maxBytes` (or none at all for a
+ *  chunked upload larger than the cap) — checked before the body is read, so an oversized
+ *  request is refused instead of being buffered into memory first. */
+export function bodyTooLarge(req: NextRequest, maxBytes: number): boolean {
+  const declared = Number(req.headers.get("content-length"));
+  return Number.isFinite(declared) && declared > maxBytes;
 }
 
 /** Trimmed string capped at `max` characters, or "" for anything that isn't a string. */

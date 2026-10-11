@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendNotificationEmail, escapeHtml } from "@/lib/mailer";
-import { allowedOrigin, cleanText, clientIp, isEmail, rateLimited } from "@/lib/api-guard";
+import { allowedOrigin, bodyTooLarge, cleanText, clientIp, isEmail, rateLimited } from "@/lib/api-guard";
 
 const SOURCE_LABELS: Record<string, string> = {
   contact_form: "Contact Form",
@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
   if (rateLimited(`lead:${clientIp(req)}`, 5, 10 * 60 * 1000)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
+  if (bodyTooLarge(req, 32 * 1024)) return NextResponse.json({ error: "Request too large" }, { status: 413 });
 
   let body: Record<string, unknown>;
   try {
