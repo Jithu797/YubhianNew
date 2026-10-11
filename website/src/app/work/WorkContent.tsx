@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Briefcase } from "lucide-react";
 import PageHero from "@/components/PageHero";
 import { useSiteSettings } from "@/lib/useSiteSettings";
-import { getAllClients, type ClientDef } from "@/lib/clients-data";
+import { CLIENTS_FALLBACK, getAllClients, type ClientDef } from "@/lib/clients-data";
 import { DELIVERED_PROJECTS, getAllProjects, type Project } from "@/lib/projects-data";
 import ProjectCard from "@/components/products/ProjectCard";
 import { initials, externalUrl } from "@/lib/utils";
@@ -55,7 +55,7 @@ function ClientTile({ c, i }: { c: ClientDef; i: number }) {
 
 export default function WorkContent() {
   const settings = useSiteSettings();
-  const [clients, setClients] = useState<ClientDef[] | null>(null);
+  const [clients, setClients] = useState<ClientDef[]>(CLIENTS_FALLBACK);
   // The delivered projects are part of the site, so they show at once; projects added
   // in the admin join them when Firestore answers.
   const [projects, setProjects] = useState<Project[]>(DELIVERED_PROJECTS);
@@ -97,7 +97,7 @@ export default function WorkContent() {
       </section>
 
       {/* Clients */}
-      {clients && clients.length > 0 && (
+      {clients.length > 0 && (
         <section className="px-6 xl:px-10 pt-24 pb-8">
           <div className="max-w-7xl mx-auto">
             <motion.div {...fadeUp(0)} className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
