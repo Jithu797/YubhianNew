@@ -1,5 +1,14 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut, type User } from "firebase/auth";
+import {
+  indexedDBLocalPersistence,
+  browserSessionPersistence,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  setPersistence,
+  signInWithEmailAndPassword,
+  signOut,
+  type User,
+} from "firebase/auth";
 import { auth } from "../lib/firebase";
 import { AuthContext, type AdminUser } from "./authContext";
 
@@ -41,9 +50,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return unsubscribe;
   }, []);
 
-  async function login(email: string, password: string) {
+  async function login(email: string, password: string, remember = true) {
+    // Unticking "Remember me" keeps the session in this tab's storage only, so it ends
+    // when the browser is closed (useful on a shared computer).
+    await setPersistence(auth, remember ? indexedDBLocalPersistence : browserSessionPersistence);
     await signInWithEmailAndPassword(auth, email, password);
     await refresh();
+  }
+
+  async function resetPassword(email: string) {
+    await sendPasswordResetEmail(auth, email);
   }
 
   async function logout() {
@@ -52,7 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, refresh }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, refresh, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,19 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import cloudinary, { CLOUDINARY_ROOT } from "@/lib/cloudinary";
-import { allowedOrigin, clientIp, corsHeaders, rateLimited } from "@/lib/api-guard";
+import { allowedOrigin, bodyTooLarge, clientIp, corsHeaders, rateLimited } from "@/lib/api-guard";
+import { verifyAdmin } from "@/lib/admin-auth";
 
 // What each folder may receive. The folder name comes from request input, so this both
 // confines uploads to known subfolders and fixes the file types and sizes per folder —
 // previously any file of any size and type could be pushed to the Cloudinary account.
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"];
-const FOLDERS: Record<string, { types: string[]; maxBytes: number; resource: "image" | "raw" }> = {
-  team: { types: IMAGE_TYPES, maxBytes: 8 * 1024 * 1024, resource: "image" },
-  blogs: { types: IMAGE_TYPES, maxBytes: 8 * 1024 * 1024, resource: "image" },
+// Admin folders need a signed-in admin (verified server-side); only résumés, sent by job
+// applicants who have no account, can be uploaded anonymously.
+const FOLDERS: Record<string, { types: string[]; maxBytes: number; resource: "image" | "raw"; admin: boolean }> = {
+  team: { types: IMAGE_TYPES, maxBytes: 8 * 1024 * 1024, resource: "image", admin: true },
+  blogs: { types: IMAGE_TYPES, maxBytes: 8 * 1024 * 1024, resource: "image", admin: true },
   // Project screenshots for the Work page and product pages.
-  projects: { types: IMAGE_TYPES, maxBytes: 8 * 1024 * 1024, resource: "image" },
+  projects: { types: IMAGE_TYPES, maxBytes: 8 * 1024 * 1024, resource: "image", admin: true },
   // Client logos are often SVG; Cloudinary serves them from its own domain, not ours.
-  clients: { types: [...IMAGE_TYPES, "image/svg+xml"], maxBytes: 4 * 1024 * 1024, resource: "image" },
+  clients: { types: [...IMAGE_TYPES, "image/svg+xml"], maxBytes: 4 * 1024 * 1024, resource: "image", admin: true },
   "career-applications": {
+    admin: false,
     types: ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"],
     maxBytes: 10 * 1024 * 1024,
     resource: "raw",
@@ -43,6 +47,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Too many uploads — please try again in a few minutes." }, { status: 429, headers });
   }
 
+  // Largest folder cap (10 MB) plus room for the multipart wrapping.
+  if (bodyTooLarge(req, 11 * 1024 * 1024)) {
+    return NextResponse.json({ error: "File must be under 10 MB." }, { status: 413, headers });
+  }
+
   try {
     const formData = await req.formData();
     const file = formData.get("file");
@@ -54,6 +63,10 @@ export async function POST(req: NextRequest) {
         { error: "Missing file, or folder must be one of: " + Object.keys(FOLDERS).join(", ") },
         { status: 400, headers },
       );
+    }
+    if (rules.admin) {
+      const check = await verifyAdmin(req);
+      if (!check.ok) return NextResponse.json({ error: check.error }, { status: check.status, headers });
     }
     if (!rules.types.includes(file.type)) {
       return NextResponse.json({ error: `That file type isn't accepted here (${file.type || "unknown"}).` }, { status: 415, headers });

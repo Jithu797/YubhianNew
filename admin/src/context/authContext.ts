@@ -7,7 +7,10 @@ export type AdminUser = { name: string; email: string };
 export type AuthContextValue = {
   user: AdminUser | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  /** remember=false keeps the session only until the browser is closed. */
+  login: (email: string, password: string, remember?: boolean) => Promise<void>;
+  /** Emails a Firebase password-reset link to the address. */
+  resetPassword: (email: string) => Promise<void>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
 };

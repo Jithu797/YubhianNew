@@ -103,7 +103,14 @@ export default function LeadsInbox() {
   function exportCsv() {
     const header = ["Name", "Email", "Phone", "Company", "Service", "Budget", "Source", "Campaign", "Status", "Date", "Message"];
     const rows = filtered.map((l) => [l.name, l.email, l.phone ?? "", l.company ?? "", l.service_interest ?? "", l.budget ?? "", SOURCE_LABELS[l.source ?? ""] ?? l.source ?? "", l.campaign ?? "", l.status, formatDate(l.created_at), l.message.replace(/\n/g, " ")]);
-    const csv = [header, ...rows].map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+    // Leads are typed by anonymous visitors: a cell starting with = + - @ (or a tab/CR)
+    // would run as a formula when the file is opened in Excel or Sheets, so it is
+    // prefixed with an apostrophe to keep it as plain text.
+    const cell = (c: unknown) => {
+      const s = String(c);
+      return `"${(/^[=+\-@\t\r]/.test(s) ? `'${s}` : s).replace(/"/g, '""')}"`;
+    };
+    const csv = [header, ...rows].map((r) => r.map(cell).join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

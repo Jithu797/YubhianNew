@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sendNotificationEmail, escapeHtml } from "@/lib/mailer";
 import { appendCareerApplicationRow } from "@/lib/sheets";
-import { allowedOrigin, cleanText, clientIp, isEmail, rateLimited } from "@/lib/api-guard";
+import { allowedOrigin, bodyTooLarge, cleanText, clientIp, isEmail, rateLimited } from "@/lib/api-guard";
 
-/** The résumé link must be a file this site uploaded to Cloudinary over HTTPS — never an
- *  arbitrary URL (e.g. javascript:) that would end up as a link in the team's inbox. */
+/** The résumé link must be a file this site uploaded to its own Cloudinary account over
+ *  HTTPS — never an arbitrary URL (e.g. javascript:, or a file in someone else's
+ *  Cloudinary account) that would end up as a link in the team's inbox. */
 function isOwnUpload(url: string): boolean {
   try {
     const u = new URL(url);
-    return u.protocol === "https:" && u.hostname === "res.cloudinary.com";
+    const cloud = process.env.CLOUDINARY_CLOUD_NAME;
+    return u.protocol === "https:" && u.hostname === "res.cloudinary.com" && !!cloud && u.pathname.startsWith(`/${cloud}/`);
   } catch {
     return false;
   }
@@ -19,6 +21,7 @@ export async function POST(req: NextRequest) {
   if (rateLimited(`apply:${clientIp(req)}`, 5, 10 * 60 * 1000)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
+  if (bodyTooLarge(req, 32 * 1024)) return NextResponse.json({ error: "Request too large" }, { status: 413 });
 
   let body: Record<string, unknown>;
   try {
