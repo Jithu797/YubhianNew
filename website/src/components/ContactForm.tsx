@@ -83,45 +83,45 @@ export default function ContactForm() {
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Full Name *</label>
-          <input required value={form.name} onChange={(e) => update("name", e.target.value)}
+          <label htmlFor="contact-name" className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Full Name *</label>
+          <input id="contact-name" name="name" autoComplete="name" required value={form.name} onChange={(e) => update("name", e.target.value)}
             className={fieldClass} style={fieldStyle} placeholder="Your name" />
         </div>
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Email Address *</label>
-          <input required type="email" value={form.email} onChange={(e) => update("email", e.target.value)}
+          <label htmlFor="contact-email" className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Email Address *</label>
+          <input id="contact-email" name="email" autoComplete="email" required type="email" value={form.email} onChange={(e) => update("email", e.target.value)}
             className={fieldClass} style={fieldStyle} placeholder="you@company.com" />
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Phone Number</label>
+          <label htmlFor="contact-phone" className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Phone Number</label>
           <div className="flex items-center rounded-xl overflow-hidden" style={fieldStyle}>
             <span className="pl-4 pr-2 text-sm" style={{ color: "var(--gray)" }}>+91</span>
-            <input value={form.phone} onChange={(e) => update("phone", e.target.value.replace(/\D/g, ""))}
+            <input id="contact-phone" name="phone" type="tel" inputMode="numeric" autoComplete="tel-national" value={form.phone} onChange={(e) => update("phone", e.target.value.replace(/\D/g, ""))}
               maxLength={10} className="flex-1 py-3 pr-4 bg-transparent text-sm outline-none" style={{ color: "var(--white)" }} placeholder="98765 43210" />
           </div>
         </div>
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Company Name</label>
-          <input value={form.company} onChange={(e) => update("company", e.target.value)}
+          <label htmlFor="contact-company" className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Company Name</label>
+          <input id="contact-company" name="company" autoComplete="organization" value={form.company} onChange={(e) => update("company", e.target.value)}
             className={fieldClass} style={fieldStyle} placeholder="Company Pvt. Ltd." />
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Service Interest</label>
-          <select value={form.service} onChange={(e) => update("service", e.target.value)}
+          <label htmlFor="contact-service" className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Service Interest</label>
+          <select id="contact-service" name="service" value={form.service} onChange={(e) => update("service", e.target.value)}
             className={fieldClass} style={fieldStyle}>
             <option value="">Select a service</option>
             {SERVICE_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </div>
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Budget Range</label>
-          <select value={form.budget} onChange={(e) => update("budget", e.target.value)}
+          <label htmlFor="contact-budget" className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Budget Range</label>
+          <select id="contact-budget" name="budget" value={form.budget} onChange={(e) => update("budget", e.target.value)}
             className={fieldClass} style={fieldStyle}>
             <option value="">Select a range</option>
             {BUDGET_OPTIONS.map((b) => <option key={b} value={b}>{b}</option>)}
@@ -130,11 +130,11 @@ export default function ContactForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Message * (min 20 characters)</label>
-        <textarea required rows={5} value={form.message} onChange={(e) => update("message", e.target.value)}
+        <label htmlFor="contact-message" className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Message * (min 20 characters)</label>
+        <textarea id="contact-message" name="message" required rows={5} value={form.message} onChange={(e) => update("message", e.target.value)}
           className={fieldClass + " resize-none"} style={fieldStyle} placeholder="Tell us about your project..." />
         {status === "error" && (
-          <p className="text-xs" style={{ color: "#f87171" }}>Please enter at least 20 characters describing your project.</p>
+          <p role="alert" className="text-xs" style={{ color: "#B42318" }}>Please enter at least 20 characters describing your project.</p>
         )}
       </div>
 

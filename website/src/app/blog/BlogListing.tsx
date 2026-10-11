@@ -40,6 +40,8 @@ export default function BlogListing() {
         <div className="relative w-full md:w-72">
           <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: "var(--gray)" }} />
           <input
+            type="search"
+            aria-label="Search articles"
             value={query}
             onChange={(e) => { setQuery(e.target.value); setPage(1); }}
             placeholder="Search articles..."
@@ -64,6 +66,9 @@ export default function BlogListing() {
           ))}
         </div>
       </div>
+
+      {/* Section heading for the card list (cards use h3), visually hidden */}
+      <h2 className="sr-only">Articles</h2>
 
       {/* Grid */}
       {pageItems.length === 0 ? (

@@ -12,6 +12,7 @@ import { getAllServices, SERVICE_CATEGORIES } from "@/lib/services-data";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/services" },
   title: "Services",
   description: "End-to-end technology services from Yubhian Technologies — AI & machine learning, generative AI, custom software, web and mobile development, cloud, DevOps, UI/UX, data analytics, blockchain, and IT consulting.",
 };
@@ -36,6 +37,7 @@ export default async function ServicesPage() {
   return (
     <>
       <Navbar />
+      <main>
       <PageHero
         kicker="What we do"
         title={<>Our <em className="serif-accent">services</em></>}
@@ -43,7 +45,7 @@ export default async function ServicesPage() {
         page="services"
         ghost={<Layers size={380} strokeWidth={0.7} />}
       />
-      <main className="px-6 pt-16 pb-8" style={{ background: "var(--navy)" }}>
+      <div className="px-6 pt-16 pb-8" style={{ background: "var(--navy)" }}>
 
         {/* Report-style index: a sticky practice card beside one ruled list per practice */}
         <div className="max-w-7xl mx-auto grid lg:grid-cols-[300px_minmax(0,1fr)] gap-12 xl:gap-16 pb-20">
@@ -100,8 +102,9 @@ export default async function ServicesPage() {
           })}
           </div>
         </div>
-      </main>
+      </div>
       <CTABanner standalone />
+      </main>
       <Footer />
     </>
   );

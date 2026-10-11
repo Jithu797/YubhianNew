@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -14,4 +14,14 @@ const firebaseConfig = {
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 export const db = getFirestore(app);
+
+// Local end-to-end testing against the Firebase Emulator Suite (never set in production).
+const emulatorHost = process.env.NEXT_PUBLIC_FIREBASE_EMULATOR_HOST;
+if (emulatorHost) {
+  try {
+    connectFirestoreEmulator(db, emulatorHost, 8080);
+  } catch {
+    // This Firestore instance is already connected (module loaded more than once).
+  }
+}
 export default app;

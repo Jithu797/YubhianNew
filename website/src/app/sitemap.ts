@@ -2,8 +2,9 @@ import type { MetadataRoute } from "next";
 import { getAllServices } from "@/lib/services-data";
 import { getAllPosts } from "@/lib/blog-data";
 import { getAllCareers } from "@/lib/careers-data";
+import { SITE_URL } from "@/lib/site";
 
-const BASE_URL = "https://yubhiantechnologies.in";
+const BASE_URL = SITE_URL;
 
 // Regenerate periodically so services/posts/careers added via the admin CMS appear in the
 // sitemap without a full redeploy.
@@ -12,7 +13,7 @@ export const revalidate = 60;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [services, posts, careers] = await Promise.all([getAllServices(), getAllPosts(), getAllCareers()]);
 
-  const staticRoutes = ["", "/about", "/services", "/product", "/blog", "/careers", "/contact"].map((path) => ({
+  const staticRoutes = ["", "/about", "/services", "/blog", "/careers", "/contact", "/work", "/products", "/products/yucampus"].map((path) => ({
     url: `${BASE_URL}${path}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,

@@ -25,6 +25,8 @@ export type ChapterWorld = {
   image?: string;
   /** CSS object-position for the artwork, to keep its subject in frame on narrow screens */
   imagePosition?: string;
+  /** CSS filter colour grade for the world's picture and video (richer than the raw clip) */
+  grade?: string;
   /** Where the slow scroll-zoom pushes in towards (CSS transform-origin) */
   zoomOrigin: string;
   /** Text tone that reads on top of this world */
@@ -35,6 +37,7 @@ export type ChapterWorld = {
 export const CHAPTER_WORLDS: ChapterWorld[] = [
   {
     id: "hero",
+    grade: "saturate(1.28) contrast(1.08) brightness(1.06)",
     image: "hero",
     video: "hero",
     videoMode: "loop",
@@ -47,7 +50,7 @@ export const CHAPTER_WORLDS: ChapterWorld[] = [
     id: "services",
     image: "service",
     video: "service",
-    videoMode: "scrub",
+    videoMode: "loop",
     imagePosition: "50% 50%",
     zoomOrigin: "50% 60%",
     tone: "dark",
@@ -57,7 +60,7 @@ export const CHAPTER_WORLDS: ChapterWorld[] = [
     id: "process",
     image: "process",
     video: "process",
-    videoMode: "scrub",
+    videoMode: "loop",
     imagePosition: "62% 50%",
     zoomOrigin: "50% 70%",
     tone: "dark",
@@ -67,7 +70,7 @@ export const CHAPTER_WORLDS: ChapterWorld[] = [
     id: "numbers",
     image: "number",
     video: "number",
-    videoMode: "scrub",
+    videoMode: "loop",
     imagePosition: "42% 60%",
     zoomOrigin: "20% 80%",
     tone: "dark",
@@ -77,7 +80,7 @@ export const CHAPTER_WORLDS: ChapterWorld[] = [
     id: "why-us",
     image: "why-us",
     video: "why-us",
-    videoMode: "scrub",
+    videoMode: "loop",
     imagePosition: "56% 50%",
     zoomOrigin: "50% 50%",
     tone: "dark",
@@ -87,7 +90,7 @@ export const CHAPTER_WORLDS: ChapterWorld[] = [
     id: "cta",
     image: "cta",
     video: "cta",
-    videoMode: "scrub",
+    videoMode: "loop",
     imagePosition: "50% 62%",
     zoomOrigin: "50% 65%",
     tone: "light",

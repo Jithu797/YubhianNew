@@ -2,6 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   compress: true,
+  // The single product page moved into the product catalogue; keep old links working.
+  async redirects() {
+    return [{ source: "/product", destination: "/products/yucampus", permanent: true }];
+  },
   async headers() {
     return [
       {

@@ -13,7 +13,11 @@ export type LeadInput = {
  *  "created at" field like Appwrite's $createdAt, so we set one explicitly via
  *  serverTimestamp(). Throws on failure — callers already wrap this in try/catch and
  *  fall back to a locally-confirmed UX when Firestore isn't reachable yet. */
-export async function createLead(data: LeadInput) {
+export async function createLead(input: LeadInput) {
+  // Tag the lead with the outreach campaign the visitor arrived through, if any.
+  const { getAttribution } = await import("./attribution");
+  const campaign = getAttribution();
+  const data = campaign ? { ...input, campaign } : input;
   const { db } = await import("./firebase");
   const { addDoc, collection, serverTimestamp } = await import("firebase/firestore");
   await addDoc(collection(db, "leads"), {

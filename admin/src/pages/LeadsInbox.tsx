@@ -16,10 +16,20 @@ type Lead = {
   budget?: string;
   status: "new" | "read" | "replied" | "closed";
   source?: string;
+  /** Outreach campaign tag (?ref=…) the visitor arrived through, if any */
+  campaign?: string;
   created_at?: Timestamp;
 };
 
-const TABS = ["All", "New", "Read", "Replied", "Closed"] as const;
+const TABS = ["All", "New", "Read", "Replied", "Closed", "From outreach"] as const;
+
+// Readable labels for the website form each lead came from.
+const SOURCE_LABELS: Record<string, string> = {
+  contact_form: "Contact form",
+  newsletter: "Newsletter",
+  waitlist: "Product waitlist",
+  "yucampus-pilot": "YuCampus demo / pilot",
+};
 
 function formatDate(ts?: Timestamp) {
   if (!ts) return "";
@@ -54,12 +64,13 @@ export default function LeadsInbox() {
   }, [load]);
 
   const filtered = leads.filter((l) => {
-    const matchesTab = tab === "All" || l.status === tab.toLowerCase();
+    const matchesTab = tab === "All" || (tab === "From outreach" ? !!l.campaign : l.status === tab.toLowerCase());
     const matchesQuery = !query || l.name.toLowerCase().includes(query.toLowerCase()) || l.email.toLowerCase().includes(query.toLowerCase());
     return matchesTab && matchesQuery;
   });
 
   const unreadCount = leads.filter((l) => l.status === "new").length;
+  const outreachCount = leads.filter((l) => l.campaign).length;
 
   async function updateStatus(lead: Lead, status: Lead["status"]) {
     setLeads((list) => list.map((l) => (l.$id === lead.$id ? { ...l, status } : l)));
@@ -90,8 +101,8 @@ export default function LeadsInbox() {
   }
 
   function exportCsv() {
-    const header = ["Name", "Email", "Phone", "Company", "Service", "Budget", "Status", "Date", "Message"];
-    const rows = filtered.map((l) => [l.name, l.email, l.phone ?? "", l.company ?? "", l.service_interest ?? "", l.budget ?? "", l.status, formatDate(l.created_at), l.message.replace(/\n/g, " ")]);
+    const header = ["Name", "Email", "Phone", "Company", "Service", "Budget", "Source", "Campaign", "Status", "Date", "Message"];
+    const rows = filtered.map((l) => [l.name, l.email, l.phone ?? "", l.company ?? "", l.service_interest ?? "", l.budget ?? "", SOURCE_LABELS[l.source ?? ""] ?? l.source ?? "", l.campaign ?? "", l.status, formatDate(l.created_at), l.message.replace(/\n/g, " ")]);
     const csv = [header, ...rows].map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
@@ -106,7 +117,7 @@ export default function LeadsInbox() {
     <div className="flex flex-col gap-5 lg:h-[calc(100vh-160px)]">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <p className="text-sm" style={{ color: "var(--gray)" }}>
-          {leads.length} total · <span style={{ color: unreadCount ? "#dc2626" : "var(--gray)" }}>{unreadCount} unread</span>
+          {leads.length} total · <span style={{ color: unreadCount ? "#dc2626" : "var(--gray)" }}>{unreadCount} unread</span> · {outreachCount} from outreach
         </p>
         <div className="flex gap-2">
           <button onClick={load} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium" style={{ background: "var(--surface)", color: "var(--gray2)", border: "1px solid var(--border)" }}>
@@ -135,7 +146,7 @@ export default function LeadsInbox() {
                   className="px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap"
                   style={tab === t ? { background: "var(--grad)", color: "white" } : { color: "var(--gray)", background: "var(--navy2)" }}
                 >
-                  {t}{t === "New" && unreadCount > 0 ? ` (${unreadCount})` : ""}
+                  {t}{t === "New" && unreadCount > 0 ? ` (${unreadCount})` : ""}{t === "From outreach" && outreachCount > 0 ? ` (${outreachCount})` : ""}
                 </button>
               ))}
             </div>
@@ -164,6 +175,9 @@ export default function LeadsInbox() {
                   </div>
                   <span className="text-xs truncate" style={{ color: "var(--gray)" }}>{l.email}</span>
                   <div className="flex items-center gap-2 mt-0.5">
+                    {l.campaign && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(22,163,74,0.15)", color: "#15803d" }}>↗ {l.campaign}</span>
+                    )}
                     {l.service_interest && (
                       <span className="text-[10px] px-2 py-0.5 rounded-full" style={{ background: "rgba(37,99,235,0.15)", color: "var(--blue2)" }}>{l.service_interest}</span>
                     )}
@@ -195,7 +209,8 @@ export default function LeadsInbox() {
               <div className="flex flex-wrap gap-2">
                 {selected.service_interest && <span className="text-xs px-3 py-1 rounded-full" style={{ background: "var(--navy2)", color: "var(--gray2)" }}>{selected.service_interest}</span>}
                 {selected.budget && <span className="text-xs px-3 py-1 rounded-full" style={{ background: "var(--navy2)", color: "var(--gray2)" }}>{selected.budget}</span>}
-                {selected.source && <span className="text-xs px-3 py-1 rounded-full" style={{ background: "var(--navy2)", color: "var(--gray2)" }}>{selected.source}</span>}
+                {selected.source && <span className="text-xs px-3 py-1 rounded-full" style={{ background: "var(--navy2)", color: "var(--gray2)" }}>{SOURCE_LABELS[selected.source] ?? selected.source}</span>}
+                {selected.campaign && <span className="text-xs px-3 py-1 rounded-full" style={{ background: "rgba(22,163,74,0.15)", color: "#15803d" }}>Outreach: {selected.campaign}</span>}
               </div>
 
               <p className="text-xs" style={{ color: "var(--gray)" }}>{formatDate(selected.created_at)}</p>

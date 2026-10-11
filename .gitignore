@@ -37,3 +37,8 @@ lerna-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 .vercel
+
+# Downloaded copies of environment files (real secrets) — never commit
+env.download
+*.env.download
+env*.download

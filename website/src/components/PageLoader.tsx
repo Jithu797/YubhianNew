@@ -11,7 +11,7 @@ import { LOGO_PARTS, LOGO_VIEWBOX } from "./LogoMark";
 const SEEN_KEY = "yubhian-intro-seen";
 const FULL_MS = 2900; // draw + fill + wordmark + a beat to read it
 const QUICK_MS = 650;
-const MAX_MS = 6000; // a stalled asset can never trap anyone behind the intro
+const MAX_MS = 4500; // a stalled font can never trap anyone behind the intro
 
 const EASE = [0.165, 0.84, 0.44, 1] as const;
 const WORD = "Yubhian";
@@ -46,12 +46,19 @@ export default function PageLoader() {
       }
       setVisible(false);
     };
-    const whenReady = () => setTimeout(finish, Math.max(0, minMs - (performance.now() - start)));
+    // Lift once the web fonts are ready (so the page appears in its real typography)
+    // and the intro's minimum time has passed. Deliberately not window "load": that
+    // waits for every image and the hero video to download, which held the intro up
+    // for seconds on fast screens that fetch the larger video.
     let readyTimer: ReturnType<typeof setTimeout> | undefined;
-    if (document.readyState === "complete") readyTimer = whenReady();
-    else window.addEventListener("load", () => (readyTimer = whenReady()), { once: true });
+    let cancelled = false;
+    document.fonts.ready.then(() => {
+      if (cancelled) return;
+      readyTimer = setTimeout(finish, Math.max(0, minMs - (performance.now() - start)));
+    });
     const capTimer = setTimeout(finish, MAX_MS);
     return () => {
+      cancelled = true;
       clearTimeout(capTimer);
       if (readyTimer) clearTimeout(readyTimer);
     };

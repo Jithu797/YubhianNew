@@ -18,6 +18,8 @@ const JOBS = [
   { folder: "chapters", widths: [2560, 1920, 960], quality: 84 },
   { folder: "pages", widths: [2560, 1920, 960], quality: 84 },
   { folder: "cards", widths: [1080, 720], quality: 86 },
+  // Homepage screenshots of delivered client projects (Work page proof)
+  { folder: "projects", widths: [1440, 720], quality: 80 },
 ];
 const SOURCE = /\.(jpe?g|png|webp)$/i;
 // Optional crops (in source pixels), applied before resizing. Every chapter clip had its

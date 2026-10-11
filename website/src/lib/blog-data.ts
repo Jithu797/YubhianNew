@@ -14,13 +14,15 @@ export type BlogPost = {
   image?: string;
 };
 
+// Brand-family colours, each dark enough to read as text on its own 13% tint
+// (WCAG AA, 4.5:1) — they're used for category badges as well as accents.
 export const CATEGORY_COLOR: Record<string, string> = {
-  "AI & ML": "#7F77DD",
-  "Web Dev": "#2563EB",
-  Company: "#F59E0B",
-  Mobile: "#06B6D4",
-  Tutorial: "#1D9E75",
-  News: "#D85A30",
+  "AI & ML": "#4B3FA0",
+  "Web Dev": "#1E3FA8",
+  Company: "#7A5A12",
+  Mobile: "#0E57A6",
+  Tutorial: "#2C4A8C",
+  News: "#9A3412",
 };
 
 export const BLOG_POSTS: BlogPost[] = [

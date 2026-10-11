@@ -12,14 +12,13 @@ import ClientsShowcase from "@/components/ClientsShowcase";
 import BlogPreview from "@/components/BlogPreview";
 import CTABanner from "@/components/CTABanner";
 import Footer from "@/components/Footer";
-import ChapterIndex from "@/components/ChapterIndex";
 import ScrollStage from "@/components/ScrollStage";
 import Chapter from "@/components/Chapter";
 
 // The homepage is told as a scroll story: ScrollStage paints a cinematic world behind
 // the page, and each <Chapter> (transparent) opens with a giant title over its world
 // before its content floats past on a paper panel. Sections outside chapters are
-// opaque "interludes" that cover the stage. ChapterIndex is the report-style tab bar.
+// opaque "interludes" that cover the stage.
 export default function Home() {
   return (
     <>
@@ -59,10 +58,9 @@ export default function Home() {
 
         <CTABanner />
       </main>
-      <div className="relative z-[1] md:pb-14" style={{ background: "var(--navy)" }}>
+      <div className="relative z-[1]" style={{ background: "var(--navy)" }}>
         <Footer />
       </div>
-      <ChapterIndex />
     </>
   );
 }

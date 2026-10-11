@@ -68,30 +68,32 @@ export default function CareerApplyForm({ careerSlug, careerTitle }: { careerSlu
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Full Name *</label>
-          <input required value={form.name} onChange={(e) => update("name", e.target.value)}
+          <label htmlFor="apply-name" className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Full Name *</label>
+          <input id="apply-name" name="name" autoComplete="name" required value={form.name} onChange={(e) => update("name", e.target.value)}
             className={fieldClass} style={fieldStyle} placeholder="Your name" />
         </div>
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Email Address *</label>
-          <input required type="email" value={form.email} onChange={(e) => update("email", e.target.value)}
+          <label htmlFor="apply-email" className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Email Address *</label>
+          <input id="apply-email" name="email" autoComplete="email" required type="email" value={form.email} onChange={(e) => update("email", e.target.value)}
             className={fieldClass} style={fieldStyle} placeholder="you@example.com" />
         </div>
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Phone Number</label>
+        <label htmlFor="apply-phone" className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Phone Number</label>
         <div className="flex items-center rounded-xl overflow-hidden" style={fieldStyle}>
           <span className="pl-4 pr-2 text-sm" style={{ color: "var(--gray)" }}>+91</span>
-          <input value={form.phone} onChange={(e) => update("phone", e.target.value.replace(/\D/g, ""))}
+          <input id="apply-phone" name="phone" type="tel" inputMode="numeric" autoComplete="tel-national" value={form.phone} onChange={(e) => update("phone", e.target.value.replace(/\D/g, ""))}
             maxLength={10} className="flex-1 py-3 pr-4 bg-transparent text-sm outline-none" style={{ color: "var(--white)" }} placeholder="98765 43210" />
         </div>
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Resume / CV *</label>
+        <label htmlFor="apply-resume" className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Resume / CV *</label>
+        {/* The real file input stays in the tab order (sr-only, not display:none) so
+            keyboard users can attach a CV; the styled box shows its focus ring. */}
         <label
-          className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm cursor-pointer"
+          className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm cursor-pointer focus-within:ring-2 focus-within:ring-[var(--blue)]"
           style={fieldStyle}
         >
           <Upload size={15} style={{ color: "var(--gray)" }} />
@@ -99,21 +101,23 @@ export default function CareerApplyForm({ careerSlug, careerTitle }: { careerSlu
             {resumeFile ? resumeFile.name : "Attach PDF or Word document"}
           </span>
           <input
+            id="apply-resume"
+            name="resume"
             type="file"
             accept=".pdf,.doc,.docx"
-            className="hidden"
+            className="sr-only"
             onChange={(e) => setResumeFile(e.target.files?.[0] ?? null)}
           />
         </label>
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Cover Note (optional)</label>
-        <textarea rows={4} value={form.message} onChange={(e) => update("message", e.target.value)}
+        <label htmlFor="apply-message" className="text-xs font-medium" style={{ color: "var(--gray2)" }}>Cover Note (optional)</label>
+        <textarea id="apply-message" name="message" rows={4} value={form.message} onChange={(e) => update("message", e.target.value)}
           className={fieldClass + " resize-none"} style={fieldStyle} placeholder="Tell us why you'd be a great fit..." />
       </div>
 
-      {status === "error" && <p className="text-xs" style={{ color: "#f87171" }}>{error}</p>}
+      {status === "error" && <p role="alert" className="text-xs" style={{ color: "#B42318" }}>{error}</p>}
 
       <button
         type="submit"

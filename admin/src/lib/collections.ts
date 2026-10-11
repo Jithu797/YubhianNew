@@ -9,6 +9,7 @@ export const COLLECTIONS = {
   testimonials: "testimonials",
   product: "product",
   clients: "clients",
+  projects: "projects",
   careers: "careers",
   careerApplications: "career_applications",
 };

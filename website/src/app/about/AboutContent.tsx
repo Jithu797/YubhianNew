@@ -47,6 +47,8 @@ export default function AboutContent() {
 
       {/* Vision / Mission / Values */}
       <section ref={valuesRef} className="px-6 pb-24">
+        {/* Section heading for the cards (which use h3), visually hidden */}
+        <h2 className="sr-only">Vision, mission and values</h2>
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
           {VALUES.map((v, i) => (
             <motion.div

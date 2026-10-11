@@ -30,8 +30,8 @@ export default function PageHero({ kicker, title, subtitle, page, ghost, childre
     reduceMotion
       ? {}
       : {
-          initial: { opacity: 0, y: 40, filter: "blur(10px)" },
-          animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+          initial: { y: 40, filter: "blur(10px)" },
+          animate: { y: 0, filter: "blur(0px)" },
           transition: { duration: 1, delay, ease: EASE_OUT_QUART },
         };
 
