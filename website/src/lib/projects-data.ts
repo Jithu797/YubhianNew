@@ -134,9 +134,9 @@ export async function getAllProjects(): Promise<Project[]> {
 /** Active projects from the Firestore "projects" collection. Client-side. */
 async function getAdminProjects(): Promise<Project[]> {
   try {
-    const { db } = await import("./firebase");
+    const { db, within } = await import("./firebase");
     const { collection, getDocs, orderBy, query, where } = await import("firebase/firestore");
-    const snap = await getDocs(query(collection(db, "projects"), where("is_active", "==", true), orderBy("order", "asc")));
+    const snap = await within(getDocs(query(collection(db, "projects"), where("is_active", "==", true), orderBy("order", "asc"))));
     return snap.docs.map((doc) => {
       const d = doc.data();
       const documents = Array.isArray(d.documents)

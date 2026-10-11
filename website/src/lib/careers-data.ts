@@ -16,11 +16,11 @@ export const CAREERS_FALLBACK: CareerDef[] = [];
  *  Returns an empty array (not fake data) when Firestore isn't reachable yet or is empty. */
 export async function getAllCareers(): Promise<CareerDef[]> {
   try {
-    const { db } = await import("./firebase");
+    const { db, within } = await import("./firebase");
     const { collection, getDocs, orderBy, query, where } = await import("firebase/firestore");
-    const snap = await getDocs(
+    const snap = await within(getDocs(
       query(collection(db, "careers"), where("is_active", "==", true), orderBy("order", "asc"))
-    );
+    ));
     if (!snap.empty) {
       return snap.docs.map((doc) => {
         const d = doc.data();

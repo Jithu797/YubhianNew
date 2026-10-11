@@ -34,11 +34,11 @@ export default function Testimonials() {
   useEffect(() => {
     (async () => {
       try {
-        const { db } = await import("@/lib/firebase");
+        const { db, within } = await import("@/lib/firebase");
         const { collection, getDocs, orderBy, query, where } = await import("firebase/firestore");
-        const snap = await getDocs(
+        const snap = await within(getDocs(
           query(collection(db, "testimonials"), where("is_active", "==", true), orderBy("order", "asc"))
-        );
+        ));
         if (!snap.empty) {
           setItems(
             snap.docs.map((doc) => {

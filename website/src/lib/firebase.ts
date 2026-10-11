@@ -15,6 +15,16 @@ const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 export const db = getFirestore(app);
 
+/** Rejects a Firestore read that hasn't answered within `ms`. Without a limit, a read
+ *  waits indefinitely when Firestore can't be reached (blocked network, missing config),
+ *  and a section that waits for it never appears; with it, the caller's fallback runs. */
+export function within<T>(read: Promise<T>, ms = 8000): Promise<T> {
+  return Promise.race([
+    read,
+    new Promise<T>((_, reject) => setTimeout(() => reject(new Error("Firestore read timed out")), ms)),
+  ]);
+}
+
 // Local end-to-end testing against the Firebase Emulator Suite (never set in production).
 const emulatorHost = process.env.NEXT_PUBLIC_FIREBASE_EMULATOR_HOST;
 if (emulatorHost) {
