@@ -152,7 +152,7 @@ export default function CookieConsent() {
                 <p className="text-xs font-medium" style={{ color: "var(--white)" }}>Necessary</p>
                 <p className="text-xs" style={{ color: "var(--gray)" }}>Required for the site to function. Always on.</p>
               </div>
-              <input type="checkbox" checked disabled className="accent-[var(--blue)] opacity-60" />
+              <input type="checkbox" checked disabled aria-label="Necessary cookies (always on)" className="accent-[var(--blue)] opacity-60" />
             </div>
 
             <div className="flex items-center justify-between gap-4 py-2" style={{ borderBottom: "1px solid var(--border)" }}>
@@ -160,7 +160,7 @@ export default function CookieConsent() {
                 <p className="text-xs font-medium" style={{ color: "var(--white)" }}>Analytics</p>
                 <p className="text-xs" style={{ color: "var(--gray)" }}>Helps us understand how visitors use our site.</p>
               </div>
-              <input type="checkbox" checked={analytics} onChange={(e) => setAnalytics(e.target.checked)} className="accent-[var(--blue)]" />
+              <input type="checkbox" checked={analytics} onChange={(e) => setAnalytics(e.target.checked)} aria-label="Analytics cookies" className="accent-[var(--blue)]" />
             </div>
 
             <div className="flex items-center justify-between gap-4 py-2">
@@ -168,7 +168,7 @@ export default function CookieConsent() {
                 <p className="text-xs font-medium" style={{ color: "var(--white)" }}>Marketing</p>
                 <p className="text-xs" style={{ color: "var(--gray)" }}>Used to deliver relevant content and offers.</p>
               </div>
-              <input type="checkbox" checked={marketing} onChange={(e) => setMarketing(e.target.checked)} className="accent-[var(--blue)]" />
+              <input type="checkbox" checked={marketing} onChange={(e) => setMarketing(e.target.checked)} aria-label="Marketing cookies" className="accent-[var(--blue)]" />
             </div>
 
             <div className="flex flex-wrap gap-3 justify-end">

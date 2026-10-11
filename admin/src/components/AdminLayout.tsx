@@ -3,7 +3,7 @@ import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, BarChart3, FileEdit, Briefcase, Package, Users, Newspaper,
   MessageSquareQuote, Building2, GraduationCap, FileUser, Inbox, Mail, Settings as SettingsIcon, LogOut, Menu, X,
-  Search, Bell,
+  Search, Bell, FolderKanban,
 } from "lucide-react";
 import { useAuth } from "../context/useAuth";
 
@@ -25,6 +25,7 @@ const NAV_GROUPS = [
       { to: "/blogs", label: "Blogs", icon: Newspaper },
       { to: "/testimonials", label: "Testimonials", icon: MessageSquareQuote },
       { to: "/clients", label: "Clients", icon: Building2 },
+      { to: "/projects", label: "Projects", icon: FolderKanban },
       { to: "/careers", label: "Careers", icon: GraduationCap },
     ],
   },

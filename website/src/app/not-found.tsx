@@ -2,6 +2,14 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ArrowLeft } from "lucide-react";
+import type { Metadata } from "next";
+
+// The tab/preview title, plus robots: without it the layout's site-wide "index, follow"
+// is inherited and contradicts the "noindex" Next.js adds to every 404.
+export const metadata: Metadata = {
+  title: "Page not found",
+  robots: { index: false, follow: true },
+};
 
 export default function NotFound() {
   return (

@@ -167,11 +167,13 @@ export default function SolutionsByUseCase() {
         if (i === 0) return;
         tl.fromTo(
           card,
-          { yPercent: 100, scale: 0.9, opacity: 0 },
-          { yPercent: 0, scale: 1, opacity: 1, duration: 1, ease: "none" },
+          // Arrives fully opaque, so two panels never blend into a muddy double image.
+          { yPercent: 105, scale: 1 },
+          { yPercent: 0, scale: 1, duration: 1, ease: "none" },
           i - 1
         );
-        tl.to(items[i - 1], { scale: 0.92, opacity: 0.3, duration: 1, ease: "none" }, i - 1);
+        // The panel underneath recedes like a card being stacked on.
+        tl.to(items[i - 1], { scale: 0.9, yPercent: -4, filter: "brightness(0.8)", duration: 1, ease: "none" }, i - 1);
       });
 
       // Lenis already drives ScrollTrigger.update globally from SmoothScroll, so no
@@ -199,7 +201,7 @@ export default function SolutionsByUseCase() {
           {USE_CASES.map((u, i) => (
             <div
               key={u.title}
-              className="stack-card absolute inset-0 flex items-center justify-center overflow-hidden"
+              className="stack-card absolute inset-4 lg:inset-8 rounded-[28px] flex items-center justify-center overflow-hidden shadow-[0_-20px_60px_rgba(5,9,40,0.35)]"
               style={{ zIndex: i + 1 }}
             >
               <CardBackdrop u={u} />

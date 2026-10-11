@@ -38,9 +38,12 @@ none of them should ever be committed:
 |---|---|
 | `NEXT_PUBLIC_FIREBASE_*` (API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_SENDER_ID, APP_ID, MEASUREMENT_ID) | Firebase client config — safe to expose, gated by Firestore security rules (`firestore.rules`) |
 | `GMAIL_USER`, `GMAIL_APP_PASSWORD` | SMTP sender for lead/application notification emails |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE` | Optional. Send through another mail provider (e.g. a domain mailbox) instead of Gmail, using the same user/password |
 | `LEAD_NOTIFICATION_EMAILS` | Comma-separated list of addresses that receive notifications |
 | `GOOGLE_SHEETS_SPREADSHEET_ID`, `GOOGLE_SHEETS_CLIENT_EMAIL`, `GOOGLE_SHEETS_PRIVATE_KEY` | Service account used to append career applications to a tracking sheet |
 | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Server-only — used by `/api/upload`, never sent to the browser |
+| `NEXT_PUBLIC_SITE_URL` | Optional. Public address used for canonical URLs, Open Graph, sitemap and robots — defaults to `https://www.yubhiantechnologies.in` |
+| `ALLOWED_ORIGINS` | Optional, comma-separated. Extra origins allowed to call the API cross-site (the site itself and `https://admin.yubhiantechnologies.in` are always allowed) — e.g. the admin's Vercel URL before its custom domain is live |
 
 Server-only variables (everything except `NEXT_PUBLIC_*`) must **not** get a
 `NEXT_PUBLIC_` prefix, or they'd be bundled into client JS.

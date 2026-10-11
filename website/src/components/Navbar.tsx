@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion, useScroll } from "framer-motion";
 import { ArrowRight, Menu, X, ChevronDown } from "lucide-react";
 import { SERVICES, SERVICE_CATEGORIES, getAllServices, type ServiceDef } from "@/lib/services-data";
 import { EASE_OUT_QUART } from "@/lib/motion";
@@ -24,15 +24,16 @@ function toMenuItems(list: ServiceDef[]) {
 // starts with light text until it gains its paper background on scroll.
 function opensOnArtwork(path: string) {
   return (
-    ["/", "/about", "/services", "/product", "/blog", "/careers", "/contact", "/work"].includes(path) ||
-    path.startsWith("/services/")
+    ["/", "/about", "/services", "/products", "/blog", "/careers", "/contact", "/work"].includes(path) ||
+    path.startsWith("/services/") ||
+    path.startsWith("/products/")
   );
 }
 
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Services", href: "/services", hasDropdown: true },
-  { label: "Product", href: "/product" },
+  { label: "Products", href: "/products" },
   { label: "Work", href: "/work" },
   { label: "About", href: "/about" },
   { label: "Blog", href: "/blog" },
@@ -41,10 +42,10 @@ const navLinks = [
 
 export default function Navbar() {
   const reduceMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll();
   const onDarkHero = opensOnArtwork(usePathname());
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
@@ -61,8 +62,6 @@ export default function Navbar() {
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
-      const docH = document.documentElement.scrollHeight - window.innerHeight;
-      setScrollProgress(docH > 0 ? (y / docH) * 100 : 0);
       setScrolled(y > 80);
       // Hide on scroll-down, reveal on scroll-up — matches antigravity.google's header
       // behavior. Never hide while the dropdown/mobile menu is open.
@@ -105,13 +104,13 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Scroll progress bar */}
-      <div className="fixed top-0 left-0 right-0 h-[2px] z-[100]">
-        <div
-          className="h-full transition-all duration-100"
-          style={{ width: `${scrollProgress}%`, background: "var(--cyan)" }}
-        />
-      </div>
+      {/* Scroll progress bar — driven by a motion value, so scrolling never re-renders
+          the navbar just to move this line. */}
+      <motion.div
+        aria-hidden
+        className="fixed top-0 left-0 right-0 h-[2px] z-[100] origin-left"
+        style={{ scaleX: scrollYProgress, background: "var(--cyan)" }}
+      />
 
       <motion.nav
         ref={navRef}
@@ -123,11 +122,12 @@ export default function Navbar() {
             : `bg-transparent ${onDarkHero && !mobileOpen ? "tone-light" : ""}`
         }`}
       >
-        <motion.div
-          className="w-full px-6 xl:px-10 flex items-center"
-          style={{ height: "var(--nav-height)", transformOrigin: "left center" }}
-          animate={{ scale: scrolled ? 0.88 : 1 }}
-          transition={{ duration: reduceMotion ? 0 : 0.35, ease: EASE_OUT_QUART }}
+        {/* Compacts on scroll by shortening the bar, not by scaling it: a left-origin
+            scale on a full-width row pulled the right-hand links and CTA ~12% away from
+            the edge and shrank the whole bar out of alignment. */}
+        <div
+          className={`w-full px-6 xl:px-10 flex items-center ${reduceMotion ? "" : "transition-[height] duration-300 ease-out"}`}
+          style={{ height: scrolled ? "max(56px, calc(var(--nav-height) - 20px))" : "var(--nav-height)" }}
         >
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 sm:gap-3 min-w-0">
@@ -219,7 +219,7 @@ export default function Navbar() {
               )}
             </AnimatePresence>
           </button>
-        </motion.div>
+        </div>
 
         {/* Services mega-menu — viewport-centered so it can be far wider than its trigger */}
         <AnimatePresence>

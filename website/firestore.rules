@@ -2,19 +2,37 @@ rules_version = '2';
 
 // Paste this into Firebase Console -> Firestore Database -> Rules, then Publish.
 //
-// Pattern used throughout: public content collections are readable by anyone (so the
-// website can render without auth) and only writable by signed-in admins; the two
-// "inbox" collections (leads, career_applications) are the reverse - anyone can create
-// a new entry (so the public contact/waitlist/career forms work without login), but
-// only signed-in admins can read, update, or delete them.
+// BEFORE PUBLISHING: replace the placeholder UIDs below with the real UID of every admin
+// account (Firebase Console -> Authentication -> Users -> "User UID" column). Until
+// you do, nobody can save content from the admin portal.
+//
+// Why a UID list: the Firebase web config is public by design, and email/password
+// sign-up is open to anyone who has it, so "any signed-in user" (request.auth != null)
+// would let a stranger create an account and edit the site or read every lead and job
+// application. Only the accounts listed here are admins.
+//
+// Pattern: public content collections are readable by anyone (the website renders
+// without auth) and writable only by admins; "inbox" collections (leads, career
+// applications, consent logs) accept new entries from anyone (the public forms) but
+// can only be read or managed by admins.
 service cloud.firestore {
   match /databases/{database}/documents {
 
     function isAdmin() {
-      return request.auth != null;
-    } 
+      return request.auth != null && request.auth.uid in [
+        "REPLACE_WITH_ADMIN_UID_1",
+        "REPLACE_WITH_ADMIN_UID_2"
+      ];
+    }
 
-    // Public content - readable by anyone, writable only by signed-in admins.
+    // A new form submission: bounded in size, created as "new" with a server timestamp.
+    function isFormSubmission(maxFields) {
+      return request.resource.data.size() <= maxFields
+        && request.resource.data.status == "new"
+        && request.resource.data.created_at == request.time;
+    }
+
+    // Public content - readable by anyone, writable only by admins.
     match /site_settings/{docId} {
       allow read: if true;
       allow write: if isAdmin();
@@ -47,18 +65,22 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin();
     }
+    match /projects/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
 
     // Inbox collections - public forms can create, only admins can read/manage.
     match /leads/{docId} {
-      allow create: if true;
+      allow create: if isFormSubmission(12);
       allow read, update, delete: if isAdmin();
     }
     match /career_applications/{docId} {
-      allow create: if true;
+      allow create: if isFormSubmission(12);
       allow read, update, delete: if isAdmin();
     }
     match /consent_logs/{docId} {
-      allow create: if true;
+      allow create: if request.resource.data.size() <= 20;
       allow read, update, delete: if isAdmin();
     }
   }

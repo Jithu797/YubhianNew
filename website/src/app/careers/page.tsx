@@ -10,6 +10,7 @@ import { getAllCareers } from "@/lib/careers-data";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/careers" },
   title: "Careers",
   description: "Open positions at Yubhian Technologies LLP — join our team building AI, web, mobile, and blockchain products.",
 };
@@ -19,6 +20,7 @@ export default async function CareersPage() {
   return (
     <>
       <Navbar />
+      <main>
       <PageHero
         kicker="Join us"
         title={<>Build what&rsquo;s <em className="serif-accent">next</em> with us</>}
@@ -26,7 +28,7 @@ export default async function CareersPage() {
         page="careers"
         ghost={<Users size={380} strokeWidth={0.7} />}
       />
-      <main className="px-6 pt-16 pb-24 min-h-[40vh]" style={{ background: "var(--navy)" }}>
+      <div className="px-6 pt-16 pb-24 min-h-[40vh]" style={{ background: "var(--navy)" }}>
 
         {careers.length === 0 ? (
           <div className="max-w-2xl mx-auto text-center rounded-2xl p-12" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
@@ -61,6 +63,7 @@ export default async function CareersPage() {
             ))}
           </div>
         )}
+      </div>
       </main>
       <Footer />
     </>

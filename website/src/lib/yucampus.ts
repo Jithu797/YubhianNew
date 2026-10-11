@@ -81,7 +81,8 @@ export const YUCAMPUS_FAQ = [
   { q: "Who is it for?", a: "Mainly affiliated colleges, autonomous colleges, and private and state universities — with NIRF and government reporting modules later for NITs, IIITs and other premier institutes." },
   { q: "What happens when NAAC or NBA change their formats?", a: "Accreditation rules are stored as configurable data rather than hard-coded, so format changes are updated once and reach every college instantly." },
   { q: "Is each college's data kept separate?", a: "Yes. Every college gets its own secure account and web address on the platform." },
-  { q: "How much does it cost?", a: "YuCampus is a yearly subscription per college, priced by size and the modules you choose. We're starting with free pilots for early colleges — apply below." },
+  { q: "How much does it cost?", a: "YuCampus is a yearly subscription per college, priced by size and the modules you choose. We're onboarding early colleges on free pilots now — request one on this page." },
+  { q: "Can we see it working?", a: "Yes. Request a demo on this page and we'll walk your IQAC team through the workflow — from faculty uploads to criterion tracking and report generation." },
 ];
 
 /** The seven NAAC criteria, shown in the illustrative readiness preview. */

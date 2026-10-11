@@ -6,7 +6,8 @@ import { ArrowUpRight, Briefcase } from "lucide-react";
 import PageHero from "@/components/PageHero";
 import { useSiteSettings } from "@/lib/useSiteSettings";
 import { getAllClients, type ClientDef } from "@/lib/clients-data";
-import { PROJECTS } from "@/lib/projects-data";
+import { getAllProjects, type Project } from "@/lib/projects-data";
+import ProjectCard from "@/components/products/ProjectCard";
 import { initials, externalUrl } from "@/lib/utils";
 import { fadeUp } from "@/lib/motion";
 
@@ -55,9 +56,11 @@ function ClientTile({ c, i }: { c: ClientDef; i: number }) {
 export default function WorkContent() {
   const settings = useSiteSettings();
   const [clients, setClients] = useState<ClientDef[] | null>(null);
+  const [projects, setProjects] = useState<Project[] | null>(null);
 
   useEffect(() => {
     getAllClients().then(setClients);
+    getAllProjects().then(setProjects);
   }, []);
 
   // The same admin-managed figures the homepage shows — never invented here.
@@ -116,48 +119,24 @@ export default function WorkContent() {
         </section>
       )}
 
-      {/* Projects — shown once real projects are added to lib/projects-data.ts */}
-      {PROJECTS.length > 0 && (
-        <section className="px-6 xl:px-10 pt-24 pb-8">
+      {/* Projects — added in the admin portal → Projects (with screenshots and links) */}
+      {projects && projects.length > 0 && (
+        <section id="projects" className="px-6 xl:px-10 pt-24 pb-8 scroll-mt-24">
           <div className="max-w-7xl mx-auto">
-            <motion.div {...fadeUp(0)} className="mb-10">
-              <p className="kicker mb-5">Projects</p>
-              <h2 className="section-title" style={{ color: "var(--white)" }}>
-                What we&rsquo;ve <em className="serif-accent">shipped</em>
-              </h2>
+            <motion.div {...fadeUp(0)} className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+              <div>
+                <p className="kicker mb-5">Projects</p>
+                <h2 className="section-title" style={{ color: "var(--white)" }}>
+                  What we&rsquo;ve <em className="serif-accent">shipped</em>
+                </h2>
+              </div>
+              <p className="max-w-sm text-sm" style={{ color: "var(--gray)" }}>
+                Select a screenshot to see it full size.
+              </p>
             </motion.div>
-            <ul style={{ borderTop: "1px solid var(--ink)" }}>
-              {PROJECTS.map((p, i) => {
-                const href = p.url ? externalUrl(p.url) : null;
-                return (
-                  <motion.li key={p.name} {...fadeUp(i * 0.06)} style={{ borderBottom: "1px solid var(--hairline)" }}>
-                    <div className="grid md:grid-cols-[3rem_minmax(0,1.2fr)_minmax(0,1fr)_auto] gap-4 md:gap-8 py-8 items-start">
-                      <span className="text-sm tabular-nums" style={{ color: "var(--gray)" }}>{String(i + 1).padStart(2, "0")}</span>
-                      <div>
-                        <h3 className="text-2xl" style={{ color: "var(--white)" }}>{p.name}</h3>
-                        <p className="mt-1 text-sm" style={{ color: "var(--blue)" }}>
-                          {p.client} · {p.industry}
-                          {p.year ? ` · ${p.year}` : ""}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm leading-relaxed" style={{ color: "var(--gray)" }}>{p.summary}</p>
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {p.services.map((s) => (
-                            <span key={s} className="text-xs px-2.5 py-1 rounded-full" style={{ border: "1px solid var(--hairline)", color: "var(--gray2)" }}>{s}</span>
-                          ))}
-                        </div>
-                      </div>
-                      {href && (
-                        <a href={href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-medium" style={{ color: "var(--blue)" }}>
-                          Visit <ArrowUpRight size={14} />
-                        </a>
-                      )}
-                    </div>
-                  </motion.li>
-                );
-              })}
-            </ul>
+            {projects.map((p, i) => (
+              <ProjectCard key={p.name + i} project={p} index={i} />
+            ))}
           </div>
         </section>
       )}

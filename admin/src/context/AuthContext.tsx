@@ -4,29 +4,16 @@ import { auth } from "../lib/firebase";
 import { AuthContext, type AdminUser } from "./authContext";
 
 /**
- * Fixed admin login, requested as a bridge until real Firebase accounts are created.
- * This credential is visible to anyone who reads the client bundle — fine while the
- * only thing it gates is this CMS.
- *
- * IMPORTANT: with Firestore security rules that check `request.auth != null` (needed
- * once the rules are locked down instead of left fully open), this localStorage-only
- * bridge grants a logged-in *UI* but no real `request.auth` — every Firestore write
- * will fail with permission-denied while running under it. `login()` below tries the
- * real Firebase Auth sign-in with these same credentials FIRST, and only falls back to
- * the local-only bridge if that account doesn't exist yet. Create this exact account in
- * Firebase Console → Authentication → Add user (same email + password) and the fallback
- * stops being used automatically — no code change needed.
+ * Admin sign-in is Firebase Authentication only. An earlier hard-coded fallback login
+ * shipped its email and password inside the public JavaScript bundle (and the public
+ * repo), so anyone could read it — it has been removed. Create each admin's account in
+ * Firebase Console → Authentication → Users, and list their UIDs in firestore.rules
+ * (see the website app) so only those accounts can write content or read submissions.
  */
-const FIXED_ADMIN = {
-  email: "founders@yubhiantechnologies.com",
-  password: "Turnover#1cr",
-  name: "Founders",
-};
-const FIXED_AUTH_KEY = "yubhian-fixed-admin-session";
 
-function fixedAdminUser(): AdminUser {
-  return { name: FIXED_ADMIN.name, email: FIXED_ADMIN.email };
-}
+// Session flag left in browsers by the removed fallback login; cleared on load so no
+// one stays "signed in" to the UI without a real Firebase session.
+const LEGACY_SESSION_KEY = "yubhian-fixed-admin-session";
 
 function mapUser(user: User): AdminUser {
   return { name: user.displayName || user.email || "Admin", email: user.email || "" };
@@ -37,23 +24,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   async function refresh() {
-    if (localStorage.getItem(FIXED_AUTH_KEY)) {
-      setUser(fixedAdminUser());
-      return;
-    }
     setUser(auth.currentUser ? mapUser(auth.currentUser) : null);
   }
 
   useEffect(() => {
-    // Mount-time session check for the fixed-admin bridge, mirrored elsewhere in this codebase.
-    if (localStorage.getItem(FIXED_AUTH_KEY)) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setUser(fixedAdminUser());
-      setLoading(false);
-      return;
+    try {
+      localStorage.removeItem(LEGACY_SESSION_KEY);
+    } catch {
+      // Storage unavailable — nothing to clear.
     }
-    // Firebase's own subscription-based auth-state pattern — replaces the old
-    // fetch-on-mount check and stays in sync automatically on sign-in/out.
+    // Firebase's subscription-based auth state keeps the UI in sync on sign-in/out.
     const unsubscribe = onAuthStateChanged(auth, (fbUser) => {
       setUser(fbUser ? mapUser(fbUser) : null);
       setLoading(false);
@@ -62,33 +42,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   async function login(email: string, password: string) {
-    if (email === FIXED_ADMIN.email && password === FIXED_ADMIN.password) {
-      try {
-        // Prefer a real Firebase Auth session so `request.auth` is populated for
-        // Firestore security rules — this succeeds once the account exists in Console.
-        await signInWithEmailAndPassword(auth, email, password);
-        localStorage.removeItem(FIXED_AUTH_KEY);
-        await refresh();
-      } catch {
-        // Account not created in Firebase Auth yet — fall back to the local-only
-        // bridge so the admin UI still works, though Firestore writes will fail
-        // under real security rules until the account exists.
-        localStorage.setItem(FIXED_AUTH_KEY, "1");
-        setUser(fixedAdminUser());
-      }
-      return;
-    }
     await signInWithEmailAndPassword(auth, email, password);
     await refresh();
   }
 
   async function logout() {
-    localStorage.removeItem(FIXED_AUTH_KEY);
-    try {
-      await signOut(auth);
-    } catch {
-      // No real Firebase session existed (fixed-admin login) — nothing to sign out of.
-    }
+    await signOut(auth);
     setUser(null);
   }
 

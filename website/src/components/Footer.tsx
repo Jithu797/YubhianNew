@@ -20,7 +20,8 @@ const SERVICES_LINKS = [
 
 const COMPANY_LINKS = [
   { label: "About Us", href: "/about" },
-  { label: "YuCampus", href: "/product" },
+  { label: "Products", href: "/products" },
+  { label: "YuCampus", href: "/products/yucampus" },
   { label: "Our Work", href: "/work" },
   { label: "Blog & Insights", href: "/blog" },
   { label: "Careers", href: "/careers" },
@@ -78,7 +79,7 @@ export default function Footer() {
       {showTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="fixed bottom-8 md:bottom-20 right-8 z-50 w-11 h-11 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:-translate-y-1"
+          className="fixed bottom-8 right-8 z-50 w-11 h-11 rounded-full flex items-center justify-center text-white transition-all duration-300 hover:-translate-y-1"
           style={{ background: "var(--grad)", boxShadow: "0 4px 20px rgba(30,63,168,0.4)" }}
           aria-label="Back to top"
         >
@@ -142,6 +143,8 @@ export default function Footer() {
                 <form onSubmit={handleSubscribe} className="flex gap-3">
                   <input
                     type="email"
+                    aria-label="Email address for the newsletter"
+                    autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="your@email.com"

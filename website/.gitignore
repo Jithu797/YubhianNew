@@ -44,3 +44,6 @@ next-env.d.ts
 # Raw AI-generated chapter clips (they carry the generator's watermark). The site only
 # uses the cleaned, re-encoded copies in public/chapters/opt — keep the sources local.
 /public/chapters/*.mp4
+
+# Downloaded env file with real secrets — never commit
+env.download

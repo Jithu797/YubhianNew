@@ -6,6 +6,7 @@ import ContactForm from "@/components/ContactForm";
 import { Mail, MapPin, Clock, Send } from "lucide-react";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/contact" },
   title: "Contact Us",
   description: "Get in touch with Yubhian Technologies LLP — tell us about your project and we'll get back to you within 24 hours.",
 };
@@ -14,6 +15,7 @@ export default function ContactPage() {
   return (
     <>
       <Navbar />
+      <main>
       <PageHero
         kicker="Get in touch"
         title={<>Tell us what you&rsquo;re <em className="serif-accent">building</em></>}
@@ -21,7 +23,7 @@ export default function ContactPage() {
         page="contact"
         ghost={<Send size={380} strokeWidth={0.7} />}
       />
-      <main className="px-6 pt-16 pb-24" style={{ background: "var(--navy)" }}>
+      <div className="px-6 pt-16 pb-24" style={{ background: "var(--navy)" }}>
 
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-10">
           {/* Left — info */}
@@ -76,6 +78,7 @@ export default function ContactPage() {
             <ContactForm />
           </div>
         </div>
+      </div>
       </main>
       <Footer />
     </>

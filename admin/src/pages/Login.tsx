@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/useAuth";
+import { authErrorMessage } from "../lib/errors";
 
 const COOLDOWN_SECONDS = 30;
 const MAX_ATTEMPTS = 3;
@@ -40,10 +41,10 @@ export default function Login() {
       await login(email, password);
       const from = (location.state as { from?: string })?.from || "/dashboard";
       navigate(from, { replace: true });
-    } catch {
+    } catch (err) {
       const next = attempts + 1;
       setAttempts(next);
-      setError("Invalid email or password");
+      setError(authErrorMessage(err));
       setShake(true);
       setTimeout(() => setShake(false), 500);
       if (next >= MAX_ATTEMPTS) {

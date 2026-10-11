@@ -22,6 +22,28 @@ Each project needs its own environment variables set in its Vercel project setti
 `VITE_WEBSITE_API_URL` must point at wherever `website` actually ends up deployed —
 currently `https://www.yubhiantechnologies.in`.
 
+### Go-live checklist
+
+1. **Website project (Vercel):** Root Directory = `website`, framework Next.js. The live
+   domain must be attached to *this* project — a static/Vite build has no `/api/*`
+   routes, so uploads, notification emails and career applications silently fail.
+   Set all variables from `website/README.md`.
+2. **Admin project (Vercel):** Root Directory = `admin`, framework Vite. Set the
+   `VITE_FIREBASE_*` variables and `VITE_WEBSITE_API_URL=https://www.yubhiantechnologies.in`,
+   then redeploy (Vite reads them at build time). Add the domain
+   `admin.yubhiantechnologies.in` and create the CNAME Vercel shows at your registrar.
+3. **Firebase:** create each admin in Authentication → Users; put their UIDs in
+   `website/firestore.rules` and publish; create the indexes in
+   `website/firestore.indexes.json`; add `admin.yubhiantechnologies.in` under
+   Authentication → Settings → Authorised domains.
+4. **Smoke test:** submit the contact form → the lead appears in the admin's Leads Inbox
+   and a notification email arrives; upload an image in the admin (e.g. a client logo).
+
+**Outreach tracking:** link to the site with `?ref=<campaign>` (e.g.
+`https://www.yubhiantechnologies.in/products/yucampus?ref=cold-email-oct`). Leads from
+that visitor carry the campaign in the Leads Inbox ("From outreach" tab), the CSV export
+and the notification email.
+
 ## Local development
 
 Each app runs independently:

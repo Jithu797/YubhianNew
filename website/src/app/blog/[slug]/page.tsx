@@ -23,7 +23,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: post.title,
     description: post.excerpt,
-    openGraph: { title: post.title, description: post.excerpt, type: "article" },
+    alternates: { canonical: `/blog/${slug}` },
+    // A page-level openGraph replaces the inherited one, so the site preview image is
+    // listed again here or shared posts would have no image.
+    openGraph: { title: post.title, description: post.excerpt, type: "article", url: `/blog/${slug}`, images: ["/opengraph-image"] },
   };
 }
 

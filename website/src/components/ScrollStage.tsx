@@ -136,6 +136,55 @@ export default function ScrollStage() {
     return () => clearTimeout(t);
   }, []);
 
+  // Playback for looping clips. Relying on the autoplay attribute alone left videos
+  // frozen on their first frame whenever a browser deferred or refused autoplay (battery
+  // saver, a background tab, some mobile browsers), so the front clip is started
+  // explicitly, retried when the tab becomes visible or on the first interaction, and
+  // the clip that slides behind is paused once the crossfade ends.
+  useEffect(() => {
+    const playFront = () => {
+      const { slots: s, front: f } = state.current;
+      const v = videos.current[f];
+      if (!v || WORLD_BY_ID[s[f] ?? ""]?.videoMode !== "loop") return;
+      if (v.paused) v.play().catch(() => {});
+    };
+    playFront();
+    const back = videos.current[1 - front];
+    const pauseTimer = setTimeout(() => back?.pause(), 1000);
+
+    const onVisible = () => document.visibilityState === "visible" && playFront();
+    const onFirstGesture = () => playFront();
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("pointerdown", onFirstGesture, { once: true });
+    window.addEventListener("touchstart", onFirstGesture, { once: true, passive: true });
+    window.addEventListener("keydown", onFirstGesture, { once: true });
+    return () => {
+      clearTimeout(pauseTimer);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("pointerdown", onFirstGesture);
+      window.removeEventListener("touchstart", onFirstGesture);
+      window.removeEventListener("keydown", onFirstGesture);
+    };
+  }, [front, slots]);
+
+  // Fetch the next chapter's clip in the background while the reader is in this one,
+  // so its video is ready when they arrive instead of the still showing for seconds.
+  const prefetched = useRef(new Set<string>());
+  useEffect(() => {
+    if (!videoWidth || reduceMotion) return;
+    const current = slots[front];
+    const idx = CHAPTER_WORLDS.findIndex((w) => w.id === current);
+    const next = CHAPTER_WORLDS[idx + 1];
+    if (!next?.video) return;
+    const url = `/chapters/opt/${next.video}-${videoWidth}.mp4`;
+    if (prefetched.current.has(url)) return;
+    prefetched.current.add(url);
+    const t = setTimeout(() => {
+      fetch(url, { priority: "low" } as RequestInit).catch(() => prefetched.current.delete(url));
+    }, 1500);
+    return () => clearTimeout(t);
+  }, [front, slots, videoWidth, reduceMotion]);
+
   // A newly fronted video starts its scrub from wherever the reader already is.
   useEffect(() => {
     const v = videos.current[front];
@@ -154,7 +203,13 @@ export default function ScrollStage() {
             initial={false}
             animate={{ opacity: i === front ? 1 : 0 }}
             transition={{ duration: reduceMotion ? 0 : 0.9, ease: "easeInOut" }}
-            style={{ scale: i === front ? scale : 1, transformOrigin: world.zoomOrigin, zIndex: i === front ? 2 : 1 }}
+            style={{
+              scale: i === front ? scale : 1,
+              transformOrigin: world.zoomOrigin,
+              zIndex: i === front ? 2 : 1,
+              // A gentle default grade lifts the generated clips' slightly flat colour.
+              filter: world.grade ?? "saturate(1.15) contrast(1.05)",
+            }}
           >
             <DreamWorld palette={world.palette} progress={progress} />
             {world.image && (
@@ -203,7 +258,11 @@ export default function ScrollStage() {
                   const v = e.currentTarget;
                   v.play().then(() => v.pause()).catch(() => {});
                 }}
-                onLoadedData={() => setLoaded((m) => (m[world.id] ? m : { ...m, [world.id]: true }))}
+                onLoadedData={(e) => {
+                  setLoaded((m) => (m[world.id] ? m : { ...m, [world.id]: true }));
+                  // Start the visible loop as soon as it has data rather than trusting autoplay.
+                  if (world.videoMode === "loop" && i === state.current.front) e.currentTarget.play().catch(() => {});
+                }}
                 onError={() => setLoaded((m) => ({ ...m, [world.id]: false }))}
               />
             )}

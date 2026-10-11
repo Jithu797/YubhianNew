@@ -11,6 +11,7 @@ import BlogList from "./pages/BlogList";
 import BlogEditor from "./pages/BlogEditor";
 import TestimonialsManager from "./pages/TestimonialsManager";
 import ClientsManager from "./pages/ClientsManager";
+import ProjectsManager from "./pages/ProjectsManager";
 import CareersManager from "./pages/CareersManager";
 import CareerApplicationsInbox from "./pages/CareerApplicationsInbox";
 import LeadsInbox from "./pages/LeadsInbox";
@@ -39,6 +40,7 @@ export default function App() {
       <Route path="/blogs/edit/:id" element={<Protected><BlogEditor /></Protected>} />
       <Route path="/testimonials" element={<Protected><TestimonialsManager /></Protected>} />
       <Route path="/clients" element={<Protected><ClientsManager /></Protected>} />
+      <Route path="/projects" element={<Protected><ProjectsManager /></Protected>} />
       <Route path="/careers" element={<Protected><CareersManager /></Protected>} />
       <Route path="/career-applications" element={<Protected><CareerApplicationsInbox /></Protected>} />
       <Route path="/leads" element={<Protected><LeadsInbox /></Protected>} />

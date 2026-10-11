@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Source_Serif_4, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
+import { SITE_URL } from "@/lib/site";
 import PageLoader from "@/components/PageLoader";
 import PageTransition from "@/components/PageTransition";
 import CookieConsent from "@/components/CookieConsent";
 import SmoothScroll from "@/components/SmoothScroll";
+import AttributionCapture from "@/components/AttributionCapture";
 
 // Two families, deliberately contrasting: Source Serif 4 carries the headings (an
 // editorial, print-report voice) while Hanken Grotesk handles everything else (a clean,
@@ -29,6 +31,8 @@ const bodyFont = Hanken_Grotesk({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  alternates: { canonical: "/" },
   title: {
     default: "Yubhian Technologies LLP — Enterprise IT & Software Solutions",
     template: "%s | Yubhian Technologies LLP",
@@ -49,7 +53,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://yubhiantechnologies.in",
+    url: SITE_URL,
     siteName: "Yubhian Technologies LLP",
     title: "Yubhian Technologies LLP — Enterprise IT & Software Solutions",
     description:
@@ -67,8 +71,8 @@ const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Yubhian Technologies LLP",
-  url: "https://yubhiantechnologies.in",
-  logo: "https://yubhiantechnologies.in/logo.jpg",
+  url: SITE_URL,
+  logo: `${SITE_URL}/logo.jpg`,
   email: "info@yubhiantechnologies.in",
   address: {
     "@type": "PostalAddress",
@@ -105,6 +109,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen">
         <SmoothScroll />
+        <AttributionCapture />
         <PageLoader />
         <PageTransition>{children}</PageTransition>
         <CookieConsent />

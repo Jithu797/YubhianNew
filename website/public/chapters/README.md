@@ -3,9 +3,11 @@
 The homepage is a scroll story. Each chapter has a full-screen background "world" that
 `ScrollStage` paints behind the page. A world can be:
 
-- **a still picture** (what the site uses now): it slowly zooms and pans as you scroll, or
-- **a short video**: it plays **frame by frame as the visitor scrolls**, forwards and
-  backwards, and is shown on top of the picture once it has loaded.
+- **a still picture**: shown instantly, and it slowly zooms and pans as you scroll, and
+- **a short video** on top: a seamless forward-then-backward loop that plays on its own
+  once loaded (scrolling still drives the zoom and pan). Scroll-scrubbed playback is
+  supported (`videoMode: "scrub"`) but not used — a scrubbed clip freezes whenever the
+  visitor stops scrolling, which reads as a static image.
 
 Chapter settings (picture, video, crop point, text colour) live in `src/lib/chapters.ts`.
 

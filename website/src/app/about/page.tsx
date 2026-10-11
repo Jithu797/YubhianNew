@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import AboutContent from "./AboutContent";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/about" },
   title: "About Us",
   description: "The story, mission, and people behind Yubhian Technologies LLP — an enterprise IT and product company based in Andhra Pradesh, India.",
 };

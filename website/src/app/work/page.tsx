@@ -5,6 +5,7 @@ import CTABanner from "@/components/CTABanner";
 import WorkContent from "./WorkContent";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/work" },
   title: "Our Work",
   description: "Clients Yubhian Technologies has built for and projects we've delivered — AI, web, mobile and cloud work from Andhra Pradesh, India.",
 };
