@@ -51,35 +51,46 @@ export default function ScrollStage() {
     state.current = { slots, front };
   }, [slots, front]);
 
-  // Track the active chapter and the reader's progress through it.
+  // Track the active chapter and the reader's progress through it. Chapter positions are
+  // measured only when the layout changes (ResizeObserver), and each scroll frame works
+  // from those cached numbers and scrollY alone. Measuring every chapter on every frame
+  // (getBoundingClientRect) forced the browser to redo the page layout mid-frame, which
+  // was the single largest cost of scrolling the homepage.
   useEffect(() => {
     let frame = 0;
-    const measure = () => {
-      frame = 0;
-      const vh = window.innerHeight;
-      // The stage belongs to whichever chapter fills most of the screen. Opaque
-      // sections don't count, so a chapter rising out of one takes the stage at once,
-      // while two adjacent chapters hand over at the halfway point.
-      let best: { id: string; r: DOMRect } | null = null;
-      let bestVisible = 0;
+    let chapters: { id: string; top: number; height: number }[] = [];
+    const layout = () => {
+      chapters = [];
       for (const world of CHAPTER_WORLDS) {
         const el = document.querySelector<HTMLElement>(`[data-chapter="${world.id}"]`);
         if (!el) continue;
         const r = el.getBoundingClientRect();
-        const visible = Math.min(r.bottom, vh) - Math.max(r.top, 0);
+        chapters.push({ id: world.id, top: r.top + window.scrollY, height: r.height });
+      }
+    };
+    const measure = () => {
+      frame = 0;
+      const vh = window.innerHeight;
+      const y = window.scrollY;
+      // The stage belongs to whichever chapter fills most of the screen. Opaque
+      // sections don't count, so a chapter rising out of one takes the stage at once,
+      // while two adjacent chapters hand over at the halfway point.
+      let best: { id: string; top: number; height: number } | null = null;
+      let bestVisible = 0;
+      for (const c of chapters) {
+        const visible = Math.min(c.top + c.height - y, vh) - Math.max(c.top - y, 0);
         if (visible > bestVisible) {
           bestVisible = visible;
-          best = { id: world.id, r };
+          best = c;
         }
       }
       if (best) {
-        const { id, r } = best;
+        const { id } = best;
         // 0 when the chapter's top enters the screen (or at page top, for the hero),
         // 1 when its bottom leaves.
-        const docTop = r.top + window.scrollY;
-        const start = Math.max(0, docTop - vh);
-        const end = docTop + r.height;
-        progress.set(Math.min(1, Math.max(0, (window.scrollY - start) / (end - start))));
+        const start = Math.max(0, best.top - vh);
+        const end = best.top + best.height;
+        progress.set(Math.min(1, Math.max(0, (y - start) / (end - start))));
         const { slots: s, front: f } = state.current;
         if (s[f] !== id) {
           const back = 1 - f;
@@ -93,19 +104,29 @@ export default function ScrollStage() {
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(measure);
     };
+    const onLayout = () => {
+      layout();
+      onScroll();
+    };
+    layout();
     measure();
+    // The page's height changes whenever a section's content loads or reflows.
+    const ro = new ResizeObserver(onLayout);
+    ro.observe(document.body);
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", onLayout);
     return () => {
+      ro.disconnect();
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", onLayout);
       if (frame) cancelAnimationFrame(frame);
     };
   }, [progress]);
 
   // Scrub the front video towards the scroll position, eased so wheel steps glide.
   useEffect(() => {
-    if (reduceMotion) return;
+    // No frame loop at all unless some chapter actually scrubs its clip.
+    if (reduceMotion || !CHAPTER_WORLDS.some((w) => w.videoMode === "scrub")) return;
     let raf = 0;
     const tick = () => {
       raf = requestAnimationFrame(tick);
@@ -219,7 +240,10 @@ export default function ScrollStage() {
               filter: world.grade ?? "saturate(1.15) contrast(1.05)",
             }}
           >
-            <DreamWorld palette={world.palette} progress={progress} />
+            {/* The painted stand-in (blurred drifting blobs, grain, sparkles) only for a
+                world with no artwork: under a picture it was never seen, yet its animated
+                blur layers were repainted every frame. */}
+            {!world.image && <DreamWorld palette={world.palette} progress={progress} />}
             {world.image && (
               // Keyed per world so each newly loaded scene settles from a slight zoom
               // as it crossfades in, on top of the slot's scroll-linked push-in.
@@ -242,7 +266,10 @@ export default function ScrollStage() {
                   className="absolute left-0 w-full object-cover"
                   style={{ top: "-3%", height: "106%", objectPosition: world.imagePosition, y: pan }}
                 />
-                <DreamWorld palette={world.palette} progress={progress} sparklesOnly />
+                {/* Sparkles only on a still picture; a playing clip covers them. */}
+                {!(world.video && videoWidth && !reduceMotion) && (
+                  <DreamWorld palette={world.palette} progress={progress} sparklesOnly />
+                )}
               </motion.div>
             )}
             {/* Reduced motion keeps the still picture. The clip fades in over the

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { motion, AnimatePresence, useReducedMotion, useScroll } from "framer-motion";
+import { motion, AnimatePresence, useMotionValueEvent, useReducedMotion, useScroll } from "framer-motion";
 import { ArrowRight, Menu, X, ChevronDown } from "lucide-react";
 import { SERVICES, SERVICE_CATEGORIES, getAllServices, type ServiceDef } from "@/lib/services-data";
 import { EASE_OUT_QUART } from "@/lib/motion";
@@ -42,7 +42,7 @@ const navLinks = [
 
 export default function Navbar() {
   const reduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll();
+  const { scrollY, scrollYProgress } = useScroll();
   const onDarkHero = opensOnArtwork(usePathname());
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -59,20 +59,22 @@ export default function Navbar() {
     getAllServices().then((list) => setServices(toMenuItems(list)));
   }, []);
 
-  useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY;
-      setScrolled(y > 80);
-      // Hide on scroll-down, reveal on scroll-up — matches antigravity.google's header
-      // behavior. Never hide while the dropdown/mobile menu is open.
-      if (!servicesOpen && !mobileOpen) {
-        setHidden(y > lastScrollY.current && y > 160);
-      }
-      lastScrollY.current = y;
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [servicesOpen, mobileOpen]);
+  // Reads the scroll position framer-motion already measures once per frame, rather than
+  // reading window.scrollY again in a scroll listener (each read can force the browser to
+  // bring layout up to date mid-frame).
+  useMotionValueEvent(scrollY, "change", (y) => {
+    setScrolled(y > 80);
+    // Hide on scroll-down, reveal on scroll-up — matches antigravity.google's header
+    // behavior. Never hide while the dropdown/mobile menu is open. Movements under 6px
+    // are ignored: smooth scrolling eases to a stop in sub-pixel steps, and treating
+    // those as direction changes flipped the bar (and re-rendered it) many times a second.
+    const dy = y - lastScrollY.current;
+    if (Math.abs(dy) < 6) return;
+    if (!servicesOpen && !mobileOpen) {
+      setHidden(dy > 0 && y > 160);
+    }
+    lastScrollY.current = y;
+  });
 
   // Click-outside + Escape close for the mega-menu — more robust than onMouseLeave
   // alone once the panel is wide enough to extend beyond its trigger's bounding box.
@@ -118,7 +120,7 @@ export default function Navbar() {
         transition={{ duration: 0.3, ease: EASE_OUT_QUART }}
         className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
           scrolled || servicesOpen
-            ? "bg-[rgba(246,247,251,0.92)] backdrop-blur-md border-b border-[var(--border)]"
+            ? "bg-[rgba(246,247,251,0.97)] border-b border-[var(--border)]"
             : `bg-transparent ${onDarkHero && !mobileOpen ? "tone-light" : ""}`
         }`}
       >

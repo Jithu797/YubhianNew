@@ -22,6 +22,10 @@ export default function SmoothScroll() {
 
   useEffect(() => {
     if (reduceMotion) return;
+    // Mouse and trackpad only. Touch screens keep their native momentum scrolling (Lenis
+    // leaves touch alone anyway), so on phones and tablets Lenis added nothing but a
+    // callback on every animation frame.
+    if (!window.matchMedia("(pointer: fine)").matches) return;
 
     const lenis = new Lenis({
       duration: 1.1,

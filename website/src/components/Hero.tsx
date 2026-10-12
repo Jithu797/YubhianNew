@@ -71,14 +71,14 @@ function RotatingWord({ words, reduceMotion }: { words: string[]; reduceMotion: 
   return (
     // The holder keeps the line's height while one word leaves and the next arrives,
     // so the paragraph and buttons below never jump.
-    <span className="inline-block align-top" style={{ minHeight: "1.05em" }}>
+    <span className="hero-gradient-glow isolate inline-block align-top" style={{ minHeight: "1.05em" }}>
       <AnimatePresence mode="wait" initial={false}>
         <motion.span
           key={word}
           className="hero-gradient-word serif-accent inline-block pr-[0.08em]"
-          initial={{ y: "0.35em", opacity: 0, filter: "blur(8px)" }}
-          animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-          exit={{ y: "-0.35em", opacity: 0, filter: "blur(8px)" }}
+          initial={{ y: "0.35em", opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: "-0.35em", opacity: 0 }}
           transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
         >
           {word}
@@ -164,7 +164,8 @@ export default function Hero() {
           <Link
             href="/products/yucampus"
             className="group inline-flex items-center gap-3 rounded-full pl-2 pr-4 py-1.5 text-sm transition-colors"
-            style={{ background: "rgba(5,9,40,0.45)", border: "1px solid rgba(246,247,251,0.18)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}
+            // Tinted glass without a backdrop blur, which re-blurred the moving video every frame.
+            style={{ background: "rgba(5,9,40,0.62)", border: "1px solid rgba(246,247,251,0.18)" }}
           >
             <span className="flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.12em]" style={{ background: "var(--lime)", color: "var(--ink)" }}>
               <span className="relative flex w-1.5 h-1.5">
@@ -234,7 +235,7 @@ export default function Hero() {
         aria-label="Our ecosystem"
         {...rise(reduceMotion, 0.9)}
         className="hidden md:flex absolute z-10 left-6 right-6 xl:left-10 xl:right-10 bottom-10 max-w-7xl mx-auto items-center justify-between gap-6 rounded-2xl px-6 py-4"
-        style={{ background: "rgba(5,9,40,0.42)", border: "1px solid rgba(246,247,251,0.14)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}
+        style={{ background: "rgba(5,9,40,0.6)", border: "1px solid rgba(246,247,251,0.14)" }}
       >
         <span className="text-[11px] font-medium uppercase tracking-[0.2em] shrink-0" style={{ color: "var(--gray)" }}>
           Our ecosystem

@@ -22,7 +22,25 @@ export default function HeroDust({ px, py }: { px: MotionValue<number>; py: Moti
     let w = 0;
     let h = 0;
     let motes: Mote[] = [];
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // Phones get a lighter canvas (fewer pixels, fewer motes); the dust is soft anyway.
+    const small = window.matchMedia("(max-width: 767px)").matches;
+    const dpr = Math.min(window.devicePixelRatio || 1, small ? 1.5 : 2);
+
+    // Each mote is a copy of one glow drawn once (warm and cool), instead of a new radial
+    // gradient built per mote per frame.
+    const sprite = (rgb: string) => {
+      const c = document.createElement("canvas");
+      c.width = c.height = 64;
+      const g = c.getContext("2d")!;
+      const grad = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+      grad.addColorStop(0, `rgba(${rgb}, 0.9)`);
+      grad.addColorStop(1, `rgba(${rgb}, 0)`);
+      g.fillStyle = grad;
+      g.fillRect(0, 0, 64, 64);
+      return c;
+    };
+    const warmSprite = sprite("255, 214, 140");
+    const coolSprite = sprite("170, 215, 255");
 
     const seed = () => {
       const rect = canvas.getBoundingClientRect();
@@ -31,7 +49,7 @@ export default function HeroDust({ px, py }: { px: MotionValue<number>; py: Moti
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const count = Math.round(Math.min(90, (w * h) / 16000));
+      const count = Math.round(Math.min(small ? 28 : 90, (w * h) / 16000));
       motes = Array.from({ length: count }, () => {
         const depth = Math.random();
         return {
@@ -69,15 +87,11 @@ export default function HeroDust({ px, py }: { px: MotionValue<number>; py: Moti
         const twinkle = 0.45 + 0.55 * Math.sin(now / 700 + m.phase);
         const x = m.x + ox * 24 * m.depth;
         const y = m.y + oy * 16 * m.depth;
-        const g = ctx.createRadialGradient(x, y, 0, x, y, m.r * 4);
-        const color = m.warm ? "255, 214, 140" : "170, 215, 255";
-        g.addColorStop(0, `rgba(${color}, ${0.9 * twinkle})`);
-        g.addColorStop(1, `rgba(${color}, 0)`);
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(x, y, m.r * 4, 0, Math.PI * 2);
-        ctx.fill();
+        const size = m.r * 8;
+        ctx.globalAlpha = twinkle;
+        ctx.drawImage(m.warm ? warmSprite : coolSprite, x - size / 2, y - size / 2, size, size);
       }
+      ctx.globalAlpha = 1;
     };
     raf = requestAnimationFrame(tick);
 

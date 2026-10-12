@@ -40,8 +40,10 @@ function ChapterTitle({ title, subtitle, placement }: { title: ReactNode; subtit
     >
       <motion.div style={{ y, opacity }} className="text-center">
         <motion.h2
-          initial={reduceMotion ? false : { opacity: 0, y: 80, filter: "blur(14px)" }}
-          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          // Rise and fade only: animating a blur on screen-wide lettering re-rendered the
+          // blur on every frame, just as the reader scrolls into the chapter.
+          initial={reduceMotion ? false : { opacity: 0, y: 80 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 1.1, ease: EASE_OUT_QUART }}
           className="chapter-title"
