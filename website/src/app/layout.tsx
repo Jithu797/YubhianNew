@@ -80,11 +80,6 @@ const organizationJsonLd = {
     addressRegion: "Andhra Pradesh",
     addressCountry: "IN",
   },
-  founder: [
-    { "@type": "Person", name: "Naga Venkata Rishi Kakarla" },
-    { "@type": "Person", name: "Jithendra Venkata Sai Bonam" },
-    { "@type": "Person", name: "Satyanarayana Reddy Satti" },
-  ],
 };
 
 export default function RootLayout({

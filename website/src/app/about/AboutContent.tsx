@@ -14,7 +14,7 @@ const VALUES = [
 ];
 
 const TIMELINE = [
-  { year: "2025", title: "Yubhian Technologies LLP founded", text: "Naga Venkata Rishi Kakarla, Jithendra Venkata Sai Bonam, and Satyanarayana Reddy Satti found Yubhian in Kaikaluru, Andhra Pradesh." },
+  { year: "2025", title: "Yubhian Technologies LLP founded", text: "Yubhian is founded in Kaikaluru, Andhra Pradesh." },
   { year: "2025", title: "First client projects delivered", text: "Early web, mobile, and AI/ML engagements shipped for startups and growing businesses across India." },
   { year: "2026", title: "Building our own product", text: "Yubhian begins building its first in-house product, applying everything learned from client work to solve a problem the team knows firsthand." },
 ];
