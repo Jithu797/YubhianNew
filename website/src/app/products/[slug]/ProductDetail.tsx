@@ -116,12 +116,23 @@ export default function ProductDetail({ slug }: { slug: string }) {
               {product.summary}
             </motion.p>
             <motion.div {...fadeUp(0.2)} className="mt-9 flex flex-wrap items-center gap-5">
-              <a href="#pricing" className="group flex items-center gap-3 pl-6 pr-2 py-2 rounded-full font-semibold transition-transform hover:-translate-y-0.5" style={{ background: "#FFFFFF", color: "#0B1033" }}>
-                Request a demo
+              {/* A live product opens straight into the app; otherwise the demo form leads. */}
+              <a
+                href={product.liveUrl ?? "#pricing"}
+                {...(product.liveUrl ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className="group flex items-center gap-3 pl-6 pr-2 py-2 rounded-full font-semibold transition-transform hover:-translate-y-0.5"
+                style={{ background: "#FFFFFF", color: "#0B1033" }}
+              >
+                {product.liveUrl ? `Open ${product.name}` : "Request a demo"}
                 <span className="w-9 h-9 rounded-full flex items-center justify-center transition-transform group-hover:-rotate-45" style={{ background: brand.accent, color: "#0B1033" }}>
-                  <ArrowRight size={16} />
+                  {product.liveUrl ? <ArrowUpRight size={16} /> : <ArrowRight size={16} />}
                 </span>
               </a>
+              {product.liveUrl && (
+                <a href="#pricing" className="font-medium underline underline-offset-[6px] decoration-1" style={{ color: "var(--white)", textDecorationColor: "rgba(246,247,251,0.5)" }}>
+                  Request a demo
+                </a>
+              )}
               <a href="#how" className="font-medium underline underline-offset-[6px] decoration-1" style={{ color: "var(--white)", textDecorationColor: "rgba(246,247,251,0.5)" }}>
                 See how it works
               </a>
@@ -168,9 +179,15 @@ export default function ProductDetail({ slug }: { slug: string }) {
               </li>
             ))}
           </ul>
-          <a href="#pricing" className="hidden sm:inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-white" style={{ background: brand.primary }}>
-            Request a demo <ArrowRight size={14} />
-          </a>
+          {product.liveUrl ? (
+            <a href={product.liveUrl} target="_blank" rel="noopener noreferrer" className="hidden sm:inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-white" style={{ background: brand.primary }}>
+              Open {product.name} <ArrowUpRight size={14} />
+            </a>
+          ) : (
+            <a href="#pricing" className="hidden sm:inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-white" style={{ background: brand.primary }}>
+              Request a demo <ArrowRight size={14} />
+            </a>
+          )}
         </div>
       </nav>
 

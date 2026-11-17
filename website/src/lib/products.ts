@@ -44,8 +44,10 @@ export type Product = {
   logo: { icon: string; wordmark: string; wordmarkLight: string };
   brand: { primary: string; accent: string };
   category: string;
-  /** Short lifecycle line shown as a pill, e.g. "Now onboarding pilot colleges" */
+  /** Short lifecycle line shown as a pill, e.g. "Live now" */
   status: string;
+  /** The running product, when it's live — shown as an "Open <name>" button */
+  liveUrl?: string;
   tagline: string;
   summary: string;
   oneLiner: string;
@@ -77,7 +79,8 @@ export const PRODUCTS: Product[] = [
     },
     brand: { primary: "#2B3990", accent: "#5ECFC8" },
     category: "Higher-education accreditation",
-    status: "Now onboarding pilot colleges",
+    status: "Live now",
+    liveUrl: "https://yucampus.yubhiantechnologies.in",
     tagline: "Accreditation-ready, all year round",
     summary: YUCAMPUS.summary,
     oneLiner: YUCAMPUS.oneLiner,

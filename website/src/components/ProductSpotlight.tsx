@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { motion, useInView, useScroll, useTransform, useMotionValueEvent, useReducedMotion } from "framer-motion";
-import { ArrowRight, Check, GraduationCap } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { YUCAMPUS, YUCAMPUS_MODULES } from "@/lib/yucampus";
 import { getProduct } from "@/lib/products";
@@ -79,13 +79,25 @@ export default function ProductSpotlight() {
 
             <ScrollReveal delay={REVEAL_STAGGER * (3 + highlights.length)}>
               <div className="flex flex-wrap items-center gap-5">
-                <Link
-                  href="/products/yucampus#pricing"
-                  className="btn-shine flex items-center gap-2 px-6 py-3 rounded-full text-white text-sm font-medium"
-                  style={{ background: "var(--grad)" }}
-                >
-                  Request a demo <ArrowRight size={15} />
-                </Link>
+                {yu.liveUrl ? (
+                  <a
+                    href={yu.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-shine flex items-center gap-2 px-6 py-3 rounded-full text-white text-sm font-medium"
+                    style={{ background: "var(--grad)" }}
+                  >
+                    Open YuCampus <ArrowUpRight size={15} />
+                  </a>
+                ) : (
+                  <Link
+                    href="/products/yucampus#pricing"
+                    className="btn-shine flex items-center gap-2 px-6 py-3 rounded-full text-white text-sm font-medium"
+                    style={{ background: "var(--grad)" }}
+                  >
+                    Request a demo <ArrowRight size={15} />
+                  </Link>
+                )}
                 <Link href="/products/yucampus" className="text-sm font-medium underline underline-offset-[6px] decoration-1" style={{ color: "var(--white)", textDecorationColor: "var(--sage)" }}>
                   Explore YuCampus
                 </Link>

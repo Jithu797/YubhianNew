@@ -85,6 +85,18 @@ export default function ProductsContent() {
                     </ul>
                   </div>
                 </Link>
+                {/* Outside the card (a link inside a link isn't allowed): straight to the live app */}
+                {p.liveUrl && (
+                  <a
+                    href={p.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 ml-2 inline-flex items-center gap-1.5 text-sm font-medium underline underline-offset-4"
+                    style={{ color: p.brand.primary }}
+                  >
+                    Open {p.name} — {p.liveUrl.replace(/^https?:\/\//, "")} <ArrowUpRight size={14} />
+                  </a>
+                )}
               </motion.li>
             ))}
           </ul>

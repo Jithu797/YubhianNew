@@ -159,7 +159,7 @@ export default function Hero() {
         style={{ x: copyX, y: copyY }}
         className="relative z-10 flex-1 flex flex-col justify-center w-full max-w-7xl mx-auto px-6 xl:px-10 page-top pb-28 md:pb-48"
       >
-        {/* Live badge: the product Yubhian is building right now */}
+        {/* Live badge: Yubhian's own product, now running at yucampus.yubhiantechnologies.in */}
         <motion.div {...rise(reduceMotion, 0)}>
           <Link
             href="/products/yucampus"
@@ -172,9 +172,9 @@ export default function Hero() {
                 <span className="absolute inset-0 rounded-full animate-ping" style={{ background: "var(--ink)", opacity: 0.5 }} />
                 <span className="relative rounded-full w-1.5 h-1.5" style={{ background: "var(--ink)" }} />
               </span>
-              New
+              Live
             </span>
-            <span style={{ color: "var(--white)" }}>YuCampus — now onboarding pilot colleges</span>
+            <span style={{ color: "var(--white)" }}>YuCampus is now live for colleges</span>
             <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" style={{ color: "var(--lime)" }} />
           </Link>
         </motion.div>
