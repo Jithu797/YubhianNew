@@ -55,7 +55,7 @@ export default function ProductsContent() {
                     <p className="mt-3 text-base leading-relaxed max-w-xl" style={{ color: "var(--gray)" }}>{p.summary}</p>
                     <div className="mt-6 flex flex-wrap gap-2">
                       {p.modules.map((m) => (
-                        <span key={m.name} className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--navy2)", color: "var(--gray2)" }}>
+                        <span key={`${m.name}-${m.scope}`}className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full" style={{ background: "var(--navy2)", color: "var(--gray2)" }}>
                           <m.icon size={13} /> {m.name} · {m.scope}
                         </span>
                       ))}

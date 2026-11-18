@@ -122,7 +122,7 @@ export default function ProductSpotlight() {
               <ul className="mt-7 flex flex-col gap-2.5">
                 {YUCAMPUS_MODULES.map((mod, i) => (
                   <motion.li
-                    key={mod.name}
+                    key={`${mod.name}-${mod.scope}`}
                     initial={reduceMotion ? false : { opacity: 0, x: 20 }}
                     animate={rightInView ? { opacity: 1, x: 0 } : {}}
                     transition={{ duration: 0.5, delay: 0.3 + i * REVEAL_STAGGER, ease: "easeOut" }}
@@ -134,11 +134,6 @@ export default function ProductSpotlight() {
                       <span className="block text-sm font-medium" style={{ color: "var(--white)" }}>{mod.name}</span>
                       <span className="block text-xs" style={{ color: "var(--gray)" }}>{mod.scope}</span>
                     </span>
-                    {mod.stage === "First" && (
-                      <span className="text-[10px] uppercase tracking-[0.14em] px-2 py-0.5 rounded-full" style={{ background: "var(--lime)", color: "var(--ink)" }}>
-                        First
-                      </span>
-                    )}
                   </motion.li>
                 ))}
               </ul>
