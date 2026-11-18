@@ -7,6 +7,14 @@ import {
   Database,
   ListChecks,
   MessageSquareText,
+  ShieldCheck,
+  QrCode,
+  FileUp,
+  Wallet,
+  Ban,
+  Building2,
+  Link2,
+  Users,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -28,6 +36,22 @@ import {
   YUCAMPUS_DISCLAIMER,
   type YuModule,
 } from "./yucampus";
+import {
+  YUPROOF,
+  YUPROOF_PILLARS,
+  YUPROOF_COMPARE,
+  YUPROOF_STEPS,
+  YUPROOF_MODULES,
+  YUPROOF_LATER,
+  YUPROOF_ROLES,
+  YUPROOF_TRUST,
+  YUPROOF_AUDIENCE,
+  YUPROOF_PILOT,
+  YUPROOF_PRICING,
+  YUPROOF_DEMO,
+  YUPROOF_FAQ,
+  YUPROOF_DISCLAIMER,
+} from "./yuproof";
 
 // Yubhian's product catalogue — drives /products and every /products/<slug> page.
 // To add a product: add an entry here (and its logo files under public/products/<slug>).
@@ -42,6 +66,64 @@ export type ProductResource = {
 };
 
 export type ProductScreenshot = { src: string; alt: string; title: string; caption: string; width: number; height: number };
+
+/** A heading in two parts: plain text, then the part set in the accent serif. */
+export type SplitTitle = [string, string];
+
+/** Section wording on the product page. Each field falls back to the YuCampus wording,
+ *  so a product only lists what differs. */
+export type ProductCopy = {
+  whyTitle: SplitTitle;
+  compareBefore: string;
+  insideTitle: SplitTitle;
+  insideNote: string;
+  laterLabel: string;
+  howTitle: SplitTitle;
+  screensTitle: SplitTitle;
+  rolesKicker: string;
+  rolesTitle: SplitTitle;
+  trustTitle: string;
+  audienceTitle: string;
+  startKicker: string;
+  startTitle: SplitTitle;
+  startNote: string;
+  /** Plain part only; the product name is added in front ("See YuCampus in a") */
+  pricingTitle: SplitTitle;
+  faqTitle: SplitTitle;
+  /** Main button when the product isn't live yet */
+  ctaLabel: string;
+  /** Organisation field label on the demo / pilot form */
+  orgLabel: string;
+};
+
+export const DEFAULT_COPY: ProductCopy = {
+  whyTitle: ["Accreditation work, without the", "last-minute rush"],
+  compareBefore: "Today in many colleges",
+  insideTitle: ["Everything in", "one platform"],
+  insideNote: "Start with the modules you need today. Add more any time, on the same data.",
+  laterLabel: "Coming next on the same platform:",
+  howTitle: ["Set up once,", "ready all year"],
+  screensTitle: ["Real screens, designed for", "busy colleges"],
+  rolesKicker: "For everyone on campus",
+  rolesTitle: ["Built for", "every role"],
+  trustTitle: "Why colleges can trust it",
+  audienceTitle: "Made for Indian institutions",
+  startKicker: "Getting started",
+  startTitle: ["Up and running in", "about a month"],
+  startNote: "A typical onboarding plan, done fully online. We do the heavy lifting with your team.",
+  pricingTitle: ["in a", "short online demo"],
+  faqTitle: ["What colleges", "usually ask us"],
+  ctaLabel: "Request a demo",
+  orgLabel: "College / university",
+};
+
+/** Illustrative card shown in the hero when a product has no real screen yet. */
+export type HeroCard = {
+  label: string;
+  result: string;
+  rows: [string, string][];
+  footnote: string;
+};
 
 export type Product = {
   slug: string;
@@ -86,6 +168,8 @@ export type Product = {
   faq: { q: string; a: string }[];
   resources: ProductResource[];
   disclaimer?: string;
+  copy?: Partial<ProductCopy>;
+  heroCard?: HeroCard;
   /** Lead source recorded for demo / pilot requests from this product's page */
   leadSource: string;
 };
@@ -163,8 +247,87 @@ export const PRODUCTS: Product[] = [
     disclaimer: YUCAMPUS_DISCLAIMER,
     leadSource: "yucampus-pilot",
   },
+  {
+    slug: "yuproof",
+    name: YUPROOF.name,
+    byline: YUPROOF.byline,
+    logo: {
+      icon: "/products/yuproof/icon.png",
+      wordmark: "/products/yuproof/wordmark.svg",
+      wordmarkLight: "/products/yuproof/wordmark-light.svg",
+    },
+    brand: { primary: "#2B3990", accent: "#34D399" },
+    category: "Document verification",
+    status: "Coming soon · Free pilots open",
+    tagline: YUPROOF.tagline,
+    summary: YUPROOF.summary,
+    oneLiner: YUPROOF.oneLiner,
+    coverage: ["Degrees", "Mark sheets", "Internship letters", "Experience letters", "Course certificates"],
+    pillars: YUPROOF_PILLARS,
+    compare: YUPROOF_COMPARE,
+    steps: YUPROOF_STEPS,
+    features: [
+      { icon: ShieldCheck, title: "Tamper-proof issuing", text: "Every document gets a fingerprint on a public blockchain. Change one letter and it no longer matches." },
+      { icon: QrCode, title: "Scan to verify", text: "A QR code on every PDF. Anyone checks it with a phone camera, no app or login needed." },
+      { icon: FileUp, title: "Bulk issue from Excel", text: "Issue a whole batch at once with your own certificate template." },
+      { icon: Wallet, title: "Holder wallet", text: "Students and employees keep every verified document in one place and share it by link." },
+      { icon: Users, title: "Bulk checks for HR", text: "Upload a batch of candidates' documents and get one verification report." },
+      { icon: Ban, title: "Cancel and correct", text: "Issuers can cancel a document; anyone who checks it later sees it was cancelled." },
+      { icon: Building2, title: "Verified issuers only", text: "Every institution is checked before it can issue, so fake universities can't." },
+      { icon: Link2, title: "Built into YuCampus", text: "Colleges on YuCampus issue straight from the platform they already use." },
+    ],
+    modules: YUPROOF_MODULES,
+    later: YUPROOF_LATER,
+    screenshots: [],
+    roles: YUPROOF_ROLES,
+    trust: YUPROOF_TRUST,
+    audience: YUPROOF_AUDIENCE,
+    onboarding: YUPROOF_PILOT,
+    pricing: YUPROOF_PRICING,
+    demo: YUPROOF_DEMO,
+    faq: YUPROOF_FAQ,
+    resources: [],
+    disclaimer: YUPROOF_DISCLAIMER,
+    copy: {
+      whyTitle: ["Fake certificates", "stop here"],
+      compareBefore: "Today",
+      insideTitle: ["Issue, keep and verify in", "one place"],
+      insideNote: "For anyone who issues documents, anyone who holds them and anyone who checks them.",
+      laterLabel: "Coming next on YuProof:",
+      howTitle: ["From issue to verify,", "in four steps"],
+      rolesKicker: "For issuers, holders and verifiers",
+      rolesTitle: ["Built for", "everyone who handles documents"],
+      trustTitle: "Why you can trust it",
+      audienceTitle: "Starting in India",
+      startKicker: "Free pilot",
+      startTitle: ["How the", "free pilot works"],
+      startNote: "Four weeks, fully online, at no cost. We build it with you.",
+      pricingTitle: ["early, with a", "free pilot"],
+      faqTitle: ["What people", "usually ask us"],
+      ctaLabel: "Request a free pilot",
+      orgLabel: "Organisation (college, institute or company)",
+    },
+    heroCard: {
+      label: "Verification result",
+      result: "Genuine document",
+      rows: [
+        ["Document", "B.Tech degree certificate"],
+        ["Issued to", "Sample Student"],
+        ["Issued by", "Sample College of Engineering (verified issuer)"],
+        ["Issued on", "12 June 2026"],
+        ["Record", "Matches the blockchain record"],
+      ],
+      footnote: "Sample result for illustration",
+    },
+    leadSource: "yuproof-pilot",
+  },
 ];
 
 export function getProduct(slug: string) {
   return PRODUCTS.find((p) => p.slug === slug);
+}
+
+/** A product's section wording, with the defaults filled in. */
+export function productCopy(p: Product): ProductCopy {
+  return { ...DEFAULT_COPY, ...p.copy };
 }

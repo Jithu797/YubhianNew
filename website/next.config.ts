@@ -34,8 +34,17 @@ const nextConfig: NextConfig = {
       // The single product page moved into the product catalogue.
       ["/product", "/products/yucampus"],
       ["/yucampus", "/products/yucampus"],
+      ["/yuproof", "/products/yuproof"],
     ];
     return [
+      // yuproof.yubhiantechnologies.in → the YuProof product page (until the app itself
+      // launches on that address). Add the domain to this Vercel project for it to work.
+      {
+        source: "/:path*",
+        has: [{ type: "host" as const, value: "yuproof.yubhiantechnologies.in" }],
+        destination: "https://www.yubhiantechnologies.in/products/yuproof",
+        permanent: false,
+      },
       ...legacy.map(([source, destination]) => ({ source, destination, permanent: true })),
       // Any other old "page.html" address → the same page without the extension.
       { source: "/:page([a-z0-9-]+)\\.html", destination: "/:page", permanent: true },

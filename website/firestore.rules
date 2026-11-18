@@ -50,7 +50,7 @@ service cloud.firestore {
       return d.keys().hasOnly(["name", "email", "phone", "company", "service_interest", "budget",
                                "message", "source", "campaign", "status", "created_at"])
         && text(d, "name", 120) && emailAddress(d) && text(d, "message", 5000)
-        && d.source in ["contact_form", "newsletter", "waitlist", "yucampus-pilot"]
+        && d.source in ["contact_form", "newsletter", "waitlist", "yucampus-pilot", "yuproof-pilot"]
         && optionalText(d, "phone", 20) && optionalText(d, "company", 160)
         && optionalText(d, "service_interest", 120) && optionalText(d, "budget", 60)
         && optionalText(d, "campaign", 80);

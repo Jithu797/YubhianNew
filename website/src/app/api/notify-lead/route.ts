@@ -7,6 +7,7 @@ const SOURCE_LABELS: Record<string, string> = {
   waitlist: "Product Waitlist",
   newsletter: "Newsletter Signup",
   "yucampus-pilot": "YuCampus Pilot Request",
+  "yuproof-pilot": "YuProof Pilot Request",
 };
 
 // Emails the team about a new lead. The lead itself is already saved to Firestore by

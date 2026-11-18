@@ -29,6 +29,7 @@ const SOURCE_LABELS: Record<string, string> = {
   newsletter: "Newsletter",
   waitlist: "Product waitlist",
   "yucampus-pilot": "YuCampus demo / pilot",
+  "yuproof-pilot": "YuProof demo / pilot",
 };
 
 function formatDate(ts?: Timestamp) {

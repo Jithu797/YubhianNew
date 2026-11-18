@@ -30,6 +30,7 @@ type Project = {
 const PRODUCT_OPTIONS = [
   { value: "", label: "None — general project" },
   { value: "yucampus", label: "YuCampus" },
+  { value: "yuproof", label: "YuProof" },
 ];
 
 type Form = {

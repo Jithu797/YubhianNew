@@ -3,6 +3,7 @@ import { getAllServices } from "@/lib/services-data";
 import { getAllPosts } from "@/lib/blog-data";
 import { getAllCareers } from "@/lib/careers-data";
 import { SITE_URL } from "@/lib/site";
+import { PRODUCTS } from "@/lib/products";
 
 const BASE_URL = SITE_URL;
 
@@ -13,7 +14,7 @@ export const revalidate = 60;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [services, posts, careers] = await Promise.all([getAllServices(), getAllPosts(), getAllCareers()]);
 
-  const staticRoutes = ["", "/about", "/services", "/blog", "/careers", "/contact", "/work", "/products", "/products/yucampus"].map((path) => ({
+  const staticRoutes = ["", "/about", "/services", "/blog", "/careers", "/contact", "/work", "/products", ...PRODUCTS.map((p) => `/products/${p.slug}`)].map((path) => ({
     url: `${BASE_URL}${path}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,

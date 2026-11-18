@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, ArrowUpRight, Check, X, Minus, Plus, FileText, Phone, Mail, Maximize2 } from "lucide-react";
-import { getProduct, type ProductScreenshot } from "@/lib/products";
+import { ArrowRight, ArrowUpRight, Check, X, Minus, Plus, FileText, Phone, Mail, Maximize2, ShieldCheck } from "lucide-react";
+import { getProduct, productCopy, type ProductScreenshot, type HeroCard, type SplitTitle } from "@/lib/products";
 import { getAllProjects, type Project } from "@/lib/projects-data";
 import { fadeUp, EASE_OUT_QUART } from "@/lib/motion";
 import ProjectCard from "@/components/products/ProjectCard";
@@ -42,12 +42,51 @@ function Screen({ shot, priority = false, className = "" }: { shot: ProductScree
   );
 }
 
+/** "Plain text <em>accent</em>" heading from a two-part title. */
+function Title({ t, accent }: { t: SplitTitle; accent?: string }) {
+  return (
+    <>
+      {t[0]} <em className="serif-accent" style={accent ? { color: accent } : undefined}>{t[1]}</em>
+    </>
+  );
+}
+
+/** Illustrative result card for a product that has no real screen yet (sample data). */
+function ResultCard({ card, icon, primary }: { card: HeroCard; icon: string; primary: string }) {
+  return (
+    <div className="rounded-3xl p-6 sm:p-8" style={{ background: "#FFFFFF", boxShadow: "0 30px 80px rgba(5,10,46,0.45)" }}>
+      <div className="flex items-center gap-3">
+        {/* eslint-disable-next-line @next/next/no-img-element -- product icon */}
+        <img src={icon} alt="" aria-hidden className="w-9 h-9 rounded-xl" />
+        <p className="text-sm font-semibold" style={{ color: "#4A5172" }}>{card.label}</p>
+      </div>
+      <div className="mt-6 flex items-center gap-4 rounded-2xl px-5 py-4" style={{ background: "#E3F6EE" }}>
+        <span className="w-12 h-12 shrink-0 rounded-full flex items-center justify-center text-white" style={{ background: "#0E9F6E" }}>
+          <ShieldCheck size={24} />
+        </span>
+        <p className="text-2xl font-semibold" style={{ color: "#065F46" }}>{card.result}</p>
+      </div>
+      <dl className="mt-6 flex flex-col">
+        {card.rows.map(([k, v], i) => (
+          <div key={k} className="grid grid-cols-[7rem_1fr] gap-4 py-3 text-sm" style={{ borderTop: i ? "1px solid #ECEFF7" : undefined }}>
+            <dt style={{ color: "#4A5172" }}>{k}</dt>
+            <dd className="font-medium" style={{ color: "#0B1033" }}>{v}</dd>
+          </div>
+        ))}
+      </dl>
+      <p className="mt-4 text-xs" style={{ color: "#4A5172" }}>{card.footnote}</p>
+      <span aria-hidden className="mt-1 block h-1 rounded-full" style={{ background: primary, width: "3rem" }} />
+    </div>
+  );
+}
+
 /** Product page, structured like the product's brochure: hero with the real dashboard,
  *  three pillars, today-vs-with comparison, everything inside, how it works (with the
  *  faculty app), real screens, a year with the product, roles and trust, getting
  *  started, pricing and demo, FAQ. Optional sections render only when they have content. */
 export default function ProductDetail({ slug }: { slug: string }) {
   const product = getProduct(slug)!;
+  const copy = productCopy(product);
   const reduceMotion = useReducedMotion();
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -65,12 +104,12 @@ export default function ProductDetail({ slug }: { slug: string }) {
         product.screenshots.length > 0 && { id: "screens", label: "Screens" },
         product.year && { id: "year", label: "A year with it" },
         product.roles && { id: "roles", label: "Who it's for" },
-        product.onboarding && { id: "start", label: "Getting started" },
+        product.onboarding && { id: "start", label: copy.startKicker },
         projects.length > 0 && { id: "proof", label: "Proof" },
         { id: "pricing", label: "Pricing & demo" },
         { id: "faq", label: "FAQ" },
       ].filter(Boolean) as { id: string; label: string }[],
-    [product, projects.length],
+    [product, projects.length, copy.startKicker],
   );
 
   // Highlight the section currently under the sticky bar.
@@ -165,7 +204,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
                 className="group flex items-center gap-3 pl-6 pr-2 py-2 rounded-full font-semibold transition-transform hover:-translate-y-0.5"
                 style={{ background: "#FFFFFF", color: "#0B1033" }}
               >
-                {product.liveUrl ? `Open ${product.name}` : "Request a demo"}
+                {product.liveUrl ? `Open ${product.name}` : copy.ctaLabel}
                 <span className="w-9 h-9 rounded-full flex items-center justify-center transition-transform group-hover:-rotate-45" style={{ background: brand.accent, color: "#0B1033" }}>
                   {product.liveUrl ? <ArrowUpRight size={16} /> : <ArrowRight size={16} />}
                 </span>
@@ -180,6 +219,17 @@ export default function ProductDetail({ slug }: { slug: string }) {
               </a>
             </motion.div>
           </div>
+
+          {!product.heroScreen && product.heroCard && (
+            <motion.div
+              initial={reduceMotion ? false : { y: 40, rotate: 1.2 }}
+              animate={{ y: 0, rotate: 0 }}
+              transition={{ duration: 1, delay: 0.2, ease: EASE_OUT_QUART }}
+              className="w-full max-w-lg lg:justify-self-end"
+            >
+              <ResultCard card={product.heroCard} icon={product.logo.icon} primary={brand.primary} />
+            </motion.div>
+          )}
 
           {product.heroScreen && (
             <motion.div
@@ -222,7 +272,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
             </a>
           ) : (
             <a href="#pricing" className="hidden sm:inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-white" style={{ background: brand.primary }}>
-              Request a demo <ArrowRight size={14} />
+              {copy.ctaLabel} <ArrowRight size={14} />
             </a>
           )}
         </div>
@@ -246,13 +296,13 @@ export default function ProductDetail({ slug }: { slug: string }) {
           <motion.div {...fadeUp(0)} className="max-w-3xl">
             <Kicker>Why {product.name}</Kicker>
             <h2 className="section-title" style={{ color: "var(--white)" }}>
-              Accreditation work, without the <em className="serif-accent">last-minute rush</em>
+              <Title t={copy.whyTitle} />
             </h2>
           </motion.div>
           {product.compare && (
             <div className="mt-12 grid md:grid-cols-2 gap-6">
               <motion.div {...fadeUp(0.05)} className="rounded-3xl p-8" style={{ background: "#FBF1EA" }}>
-                <h3 className="text-xl font-semibold" style={{ color: "#9A3412", fontFamily: "var(--font-dm-sans)" }}>Today in many colleges</h3>
+                <h3 className="text-xl font-semibold" style={{ color: "#9A3412", fontFamily: "var(--font-dm-sans)" }}>{copy.compareBefore}</h3>
                 <ul className="mt-6 flex flex-col gap-4">
                   {product.compare.before.map((t) => (
                     <li key={t} className="flex items-start gap-3 text-base" style={{ color: "#3A3936" }}>
@@ -283,10 +333,10 @@ export default function ProductDetail({ slug }: { slug: string }) {
             <div className="max-w-3xl">
               <Kicker>What&rsquo;s inside</Kicker>
               <h2 className="section-title" style={{ color: "var(--white)" }}>
-                Everything in <em className="serif-accent">one platform</em>
+                <Title t={copy.insideTitle} />
               </h2>
             </div>
-            <p className="max-w-sm text-sm" style={{ color: "var(--gray)" }}>Start with the modules you need today. Add more any time, on the same data.</p>
+            <p className="max-w-sm text-sm" style={{ color: "var(--gray)" }}>{copy.insideNote}</p>
           </motion.div>
           <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {product.features.map((f, i) => (
@@ -306,7 +356,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
           </div>
           {product.later.length > 0 && (
             <motion.div {...fadeUp(0.2)} className="mt-6 flex flex-wrap items-center gap-3 rounded-2xl px-6 py-5" style={{ border: "1px dashed var(--hairline)" }}>
-              <span className="text-sm font-medium mr-2" style={{ color: "var(--white)" }}>Coming next on the same platform:</span>
+              <span className="text-sm font-medium mr-2" style={{ color: "var(--white)" }}>{copy.laterLabel}</span>
               {product.later.map((l) => (
                 <span key={l.name} className="flex items-center gap-2 text-sm px-3 py-1.5 rounded-full" style={{ background: "#FDF3E3", color: "#7C4A03" }}>
                   <l.icon size={14} /> {l.name}
@@ -324,7 +374,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
             <motion.div {...fadeUp(0)}>
               <Kicker>How it works</Kicker>
               <h2 className="section-title" style={{ color: "var(--white)" }}>
-                Set up once, <em className="serif-accent">ready all year</em>
+                <Title t={copy.howTitle} />
               </h2>
             </motion.div>
             <ol className="mt-12 flex flex-col gap-8">
@@ -358,7 +408,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
               <div className="max-w-3xl">
                 <Kicker>See it in action</Kicker>
                 <h2 className="section-title" style={{ color: "var(--white)" }}>
-                  Real screens, designed for <em className="serif-accent" style={{ color: brand.accent }}>busy colleges</em>
+                  <Title t={copy.screensTitle} accent={brand.accent} />
                 </h2>
               </div>
               <p className="max-w-sm text-sm" style={{ color: "var(--gray2)" }}>Select a screen to see it full size. Screens show sample data.</p>
@@ -446,9 +496,9 @@ export default function ProductDetail({ slug }: { slug: string }) {
         <section id="roles" className="px-6 xl:px-10 py-24 scroll-mt-32" style={{ background: "var(--navy2)" }}>
           <div className="max-w-7xl mx-auto">
             <motion.div {...fadeUp(0)} className="max-w-3xl">
-              <Kicker>For everyone on campus</Kicker>
+              <Kicker>{copy.rolesKicker}</Kicker>
               <h2 className="section-title" style={{ color: "var(--white)" }}>
-                Built for <em className="serif-accent">every role</em>
+                <Title t={copy.rolesTitle} />
               </h2>
             </motion.div>
             <motion.dl {...fadeUp(0.08)} className="mt-10 rounded-2xl overflow-hidden" style={{ background: "var(--surface)", border: "1px solid var(--hairline)" }}>
@@ -463,7 +513,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
             <div className="mt-14 grid lg:grid-cols-2 gap-12">
               {product.trust && (
                 <motion.div {...fadeUp(0)}>
-                  <h3 className="subsection-title" style={{ color: "var(--white)" }}>Why colleges can trust it</h3>
+                  <h3 className="subsection-title" style={{ color: "var(--white)" }}>{copy.trustTitle}</h3>
                   <ul className="mt-6 grid sm:grid-cols-2 gap-3">
                     {product.trust.map((t) => (
                       <li key={t} className="flex items-center gap-3 rounded-xl px-4 py-3.5 text-sm font-medium" style={{ background: "var(--surface)", border: "1px solid var(--hairline)", color: "var(--white)" }}>
@@ -474,7 +524,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
                 </motion.div>
               )}
               <motion.div {...fadeUp(0.1)}>
-                <h3 className="subsection-title" style={{ color: "var(--white)" }}>Made for Indian institutions</h3>
+                <h3 className="subsection-title" style={{ color: "var(--white)" }}>{copy.audienceTitle}</h3>
                 <ul className="mt-6 grid sm:grid-cols-2 gap-3">
                   {product.audience.now.map((a) => (
                     <li key={a} className="flex items-center gap-3 rounded-xl px-4 py-3.5 text-sm" style={{ background: "var(--surface)", border: "1px solid var(--hairline)", color: "var(--white)" }}>
@@ -494,11 +544,11 @@ export default function ProductDetail({ slug }: { slug: string }) {
         <section id="start" className="px-6 xl:px-10 py-24 scroll-mt-32">
           <div className="max-w-7xl mx-auto">
             <motion.div {...fadeUp(0)} className="max-w-3xl">
-              <Kicker>Getting started</Kicker>
+              <Kicker>{copy.startKicker}</Kicker>
               <h2 className="section-title" style={{ color: "var(--white)" }}>
-                Up and running in <em className="serif-accent">about a month</em>
+                <Title t={copy.startTitle} />
               </h2>
-              <p className="mt-4 text-lg" style={{ color: "var(--gray)" }}>A typical onboarding plan, done fully online. We do the heavy lifting with your team.</p>
+              <p className="mt-4 text-lg" style={{ color: "var(--gray)" }}>{copy.startNote}</p>
             </motion.div>
             <ol className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-8 relative">
               <span aria-hidden className="hidden lg:block absolute top-6 left-12 right-12 h-px" style={{ background: "var(--hairline)" }} />
@@ -569,7 +619,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
           <motion.div {...fadeUp(0)}>
             <Kicker>Pricing &amp; demo</Kicker>
             <h2 className="section-title" style={{ color: "var(--white)" }}>
-              See {product.name} in a <em className="serif-accent" style={{ color: brand.accent }}>short online demo</em>
+              See {product.name} <Title t={copy.pricingTitle} accent={brand.accent} />
             </h2>
             <p className="mt-6 text-lg leading-relaxed max-w-lg" style={{ color: "var(--gray2)" }}>{product.pricing.model}</p>
             {product.demo && (
@@ -598,7 +648,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
             )}
           </motion.div>
           <motion.div {...fadeUp(0.15)} className="rounded-2xl p-7 sm:p-8" style={{ background: "#F6F7FB" }}>
-            <ProductLeadForm productName={product.name} leadSource={product.leadSource} />
+            <ProductLeadForm productName={product.name} leadSource={product.leadSource} orgLabel={copy.orgLabel} defaultIntent={product.liveUrl ? "demo" : "pilot"} />
             {product.resources.map((r) => (
               <a key={r.href} href={r.href} target="_blank" rel="noopener noreferrer" className="group mt-6 flex items-start gap-4 rounded-xl p-4 transition-colors" style={{ background: "#FFFFFF", border: "1px solid #E4E1D8" }}>
                 <span className="w-10 h-10 shrink-0 rounded-lg flex items-center justify-center" style={{ background: `${brand.primary}14`, color: brand.primary }}>
@@ -622,7 +672,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
           <motion.div {...fadeUp(0)} className="text-center mb-12">
             <Kicker>Good questions</Kicker>
             <h2 className="section-title" style={{ color: "var(--white)" }}>
-              What colleges <em className="serif-accent">usually ask us</em>
+              <Title t={copy.faqTitle} />
             </h2>
           </motion.div>
           <div className="flex flex-col" style={{ borderTop: "1px solid var(--ink)" }}>

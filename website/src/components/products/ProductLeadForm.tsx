@@ -7,8 +7,18 @@ type Intent = "demo" | "pilot";
 
 /** Demo / free-pilot request for a product. Saved as a lead (source = the product's lead
  *  source) and emailed to the team, the same pipeline as the contact form. */
-export default function ProductLeadForm({ productName, leadSource }: { productName: string; leadSource: string }) {
-  const [intent, setIntent] = useState<Intent>("demo");
+export default function ProductLeadForm({
+  productName,
+  leadSource,
+  orgLabel = "College / university",
+  defaultIntent = "demo",
+}: {
+  productName: string;
+  leadSource: string;
+  orgLabel?: string;
+  defaultIntent?: Intent;
+}) {
+  const [intent, setIntent] = useState<Intent>(defaultIntent);
   const [org, setOrg] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -72,7 +82,7 @@ export default function ProductLeadForm({ productName, leadSource }: { productNa
         ))}
       </fieldset>
       <label htmlFor="pl-org" className={label} style={{ color: "#4A5172" }}>
-        College / university *
+        {orgLabel} *
         <input id="pl-org" name="organization" autoComplete="organization" required value={org} onChange={(e) => setOrg(e.target.value)} className={field} style={fieldStyle} />
       </label>
       <div className="grid sm:grid-cols-2 gap-4">
