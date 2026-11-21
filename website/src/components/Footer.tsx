@@ -23,6 +23,7 @@ const COMPANY_LINKS = [
   { label: "Products", href: "/products" },
   { label: "YuCampus", href: "/products/yucampus" },
   { label: "YuProof", href: "/products/yuproof" },
+  { label: "Training", href: "/training" },
   { label: "Our Work", href: "/work" },
   { label: "Blog & Insights", href: "/blog" },
   { label: "Careers", href: "/careers" },
