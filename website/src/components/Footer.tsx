@@ -252,7 +252,7 @@ export default function Footer() {
                 <li>
                   <div className="flex items-start gap-2.5 text-sm" style={{ color: PANEL_MUTED }}>
                     <MapPin size={14} className="shrink-0 mt-0.5" />
-                    {settings.address}
+                    <address className="not-italic leading-relaxed whitespace-pre-line">{settings.address}</address>
                   </div>
                 </li>
               </ul>

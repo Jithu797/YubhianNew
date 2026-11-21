@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { OFFICE_ADDRESS } from "./site";
 
 export type SiteSettings = {
   hero_title: string;
@@ -34,7 +35,7 @@ export const SITE_SETTINGS_DEFAULTS: SiteSettings = {
   cta_banner_title: "Ready to build something great?",
   cta_banner_subtitle: "Let's turn your idea into a powerful digital product. Talk to us today.",
   contact_email: "info@yubhiantechnologies.in",
-  address: "Kaikaluru, Andhra Pradesh, India",
+  address: OFFICE_ADDRESS,
   linkedin_url: "https://linkedin.com/company/yubhian-technologies",
   twitter_url: "",
   instagram_url: "",

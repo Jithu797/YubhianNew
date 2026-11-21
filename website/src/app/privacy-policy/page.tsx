@@ -39,7 +39,7 @@ const SECTIONS = [
   },
   {
     title: "Contact Us",
-    body: "If you have questions about this Privacy Policy or how we handle your data, contact us at info@yubhiantechnologies.in or write to us at Kaikaluru, Andhra Pradesh, India.",
+    body: "If you have questions about this Privacy Policy or how we handle your data, contact us at info@yubhiantechnologies.in or write to us at Yubhian Technologies LLP, H.No: 2-159, Saravana Bhavan, Gummuluru, Akividu Mandal, West Godavari District, Andhra Pradesh, India – 534235.",
   },
 ];
 

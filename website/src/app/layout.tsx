@@ -76,8 +76,10 @@ const organizationJsonLd = {
   email: "info@yubhiantechnologies.in",
   address: {
     "@type": "PostalAddress",
-    addressLocality: "Kaikaluru",
+    streetAddress: "H.No: 2-159, Saravana Bhavan, Gummuluru, Akividu Mandal",
+    addressLocality: "West Godavari District",
     addressRegion: "Andhra Pradesh",
+    postalCode: "534235",
     addressCountry: "IN",
   },
 };

@@ -26,7 +26,7 @@ const DEFAULT_CONFIG: SiteConfig = {
   linkedin_url: "https://linkedin.com/company/yubhian-technologies",
   twitter_url: "",
   instagram_url: "",
-  address: "Kaikaluru, Andhra Pradesh, India",
+  address: "H.No: 2-159, Saravana Bhavan,\nGummuluru, Akividu Mandal,\nWest Godavari District,\nAndhra Pradesh, India – 534235",
 };
 
 const inputClass = "w-full px-4 py-2.5 rounded-xl text-sm outline-none";
@@ -241,7 +241,7 @@ export default function Settings() {
           </div>
           <div>
             <label className={labelClass} style={{ color: "var(--gray2)" }}>Company Address</label>
-            <input className={inputClass} style={inputStyle} value={config.address} onChange={(e) => setConfig({ ...config, address: e.target.value })} />
+            <textarea rows={4} className={`${inputClass} resize-y`} style={inputStyle} value={config.address} onChange={(e) => setConfig({ ...config, address: e.target.value })} />
           </div>
           <button onClick={handleSaveConfig} disabled={savingConfig} className="self-start px-5 py-2 rounded-xl text-white text-sm font-medium disabled:opacity-60" style={{ background: "var(--grad)" }}>
             {savingConfig ? "Saving..." : "Save Config"}

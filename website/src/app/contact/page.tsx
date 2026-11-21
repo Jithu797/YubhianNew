@@ -3,7 +3,10 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageHero from "@/components/PageHero";
 import ContactForm from "@/components/ContactForm";
-import { Mail, MapPin, Clock, Send } from "lucide-react";
+import { Mail, MapPin, Clock, Send, ArrowUpRight } from "lucide-react";
+import { OFFICE_ADDRESS_LINES, OFFICE_MAP_QUERY } from "@/lib/site";
+
+const mapQuery = encodeURIComponent(OFFICE_MAP_QUERY);
 
 export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
@@ -45,8 +48,21 @@ export default function ContactPage() {
                 <MapPin size={18} style={{ color: "var(--cyan)" }} />
               </div>
               <div>
-                <p className="text-sm font-semibold mb-1" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>Location</p>
-                <p className="text-sm" style={{ color: "var(--gray)" }}>Kaikaluru, Andhra Pradesh, India</p>
+                <p className="text-sm font-semibold mb-1" style={{ fontFamily: "var(--font-syne)", color: "var(--white)" }}>Office address</p>
+                <address className="not-italic text-sm leading-relaxed" style={{ color: "var(--gray)" }}>
+                  {OFFICE_ADDRESS_LINES.map((line) => (
+                    <span key={line} className="block">{line}</span>
+                  ))}
+                </address>
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-flex items-center gap-1 text-sm font-medium underline underline-offset-4"
+                  style={{ color: "var(--blue)" }}
+                >
+                  Get directions <ArrowUpRight size={14} />
+                </a>
               </div>
             </div>
 
@@ -62,8 +78,8 @@ export default function ContactPage() {
 
             <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid var(--border)", minHeight: 240 }}>
               <iframe
-                title="Yubhian Technologies location — Kaikaluru, Andhra Pradesh"
-                src="https://www.google.com/maps?q=Kaikaluru,+Andhra+Pradesh,+India&output=embed"
+                title="Yubhian Technologies office: Gummuluru, Akividu Mandal, Andhra Pradesh"
+                src={`https://www.google.com/maps?q=${mapQuery}&output=embed`}
                 width="100%"
                 height="240"
                 style={{ border: 0, filter: "grayscale(0.15) contrast(0.95)" }}
